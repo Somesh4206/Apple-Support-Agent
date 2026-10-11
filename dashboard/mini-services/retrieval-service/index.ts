@@ -363,11 +363,26 @@ async function runSearch(query: string, k: number): Promise<SearchOutcome> {
 // --------------------------------------------------------------------- //
 
 function spawnWorker(): void {
+  // bun --hot re-evaluates this module on file edits, resetting module-level
+  // state (`child` -> null) — a previously spawned Python worker would be
+  // ORPHANED, silently holding ~600 MB of resident ML artifacts. globalThis
+  // survives hot reloads, so the survivor is tracked there and killed before
+  // a replacement spawns (this box only has 4 GB).
+  const survivor = (globalThis as any).__retrievalWorkerChild;
+  if (survivor && survivor !== child) {
+    try {
+      survivor.kill();
+      console.log("[retrieval] killed orphaned python worker from a hot reload");
+    } catch {
+      /* already gone */
+    }
+  }
   child = Bun.spawn([PYTHON, "-u", WORKER_PATH], {
     stdin: "pipe",
     stdout: "pipe",
     stderr: "inherit",
   });
+  (globalThis as any).__retrievalWorkerChild = child;
   workerState = "loading";
   consumeLines(child.stdout as ReadableStream<Uint8Array>);
   child.exited.then((code: number) => {
@@ -1735,17 +1750,21 @@ let lastDevServerSpawn = 0;
 
 // Autonomous half of the mutual watchdog: probe the dev server every 60 s
 // and revive it when the kernel OOM killer (or anything else) takes it
-// down. Log only state CHANGES so the log stays readable.
+// down. Log only state CHANGES so the log stays readable. The globalThis
+// guard prevents duplicate intervals when bun --hot re-evaluates this
+// module (each re-eval would otherwise register another 60 s timer).
 let lastDevServerUp: boolean | null = null;
-setInterval(() => {
-  void ensureDevServer().then((result) => {
-    const isUp = result.dev_server !== "error";
-    if (isUp !== lastDevServerUp) {
-      lastDevServerUp = isUp;
-      console.log(`[watchdog] dev-server: ${result.detail}`);
-    }
-  });
-}, 60_000);
+if (!(globalThis as any).__retrievalWatchdogInterval) {
+  (globalThis as any).__retrievalWatchdogInterval = setInterval(() => {
+    void ensureDevServer().then((result) => {
+      const isUp = result.dev_server !== "error";
+      if (isUp !== lastDevServerUp) {
+        lastDevServerUp = isUp;
+        console.log(`[watchdog] dev-server: ${result.detail}`);
+      }
+    });
+  }, 60_000);
+}
 
 const server = Bun.serve({
   port: PORT,
@@ -1980,3 +1999,5 @@ const server = Bun.serve({
 });
 
 console.log(`[retrieval-service] listening on :${PORT} (worker lazy)`);
+
+// hot-reload orphan guard verified 2024-10-11: single worker after module re-eval

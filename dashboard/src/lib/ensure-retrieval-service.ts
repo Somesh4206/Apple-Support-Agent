@@ -54,7 +54,11 @@ async function probeHealth(timeoutMs: number): Promise<boolean> {
 function spawnService(): { pid: number | null; detail: string } {
   try {
     const logFd = openSync(`${SERVICE_DIR}/retrieval.log`, "a");
-    const child = spawn("bun", ["run", "start"], {
+    // `run dev` (bun --hot), NOT `run start`: a respawned service without
+    // hot reload keeps serving whatever code was on disk at spawn time —
+    // later edits to index.ts / lexical_engine.ts silently never apply, and
+    // users get stale buggy behavior (observed twice). --hot picks up edits.
+    const child = spawn("bun", ["run", "dev"], {
       cwd: SERVICE_DIR,
       detached: true,
       stdio: ["ignore", logFd, logFd],
@@ -80,8 +84,8 @@ export function ensureRetrievalService(): Promise<EnsureResult> {
       if (pid === null) {
         return { started: false, healthy: false, detail };
       }
-      // Wait up to ~10 s for the service to come up (bun start is fast;
-      // the built-in engine needs no model loading).
+      // Wait up to ~10 s for the service to come up (binding is fast; the
+      // FAISS worker still loads lazily on the first warmup request).
       for (let attempt = 0; attempt < 20; attempt++) {
         await new Promise((resolve) => setTimeout(resolve, 500));
         if (await probeHealth(800)) {
