@@ -1,0 +1,13 @@
+{
+  "name": "retrieval-service",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Phase 4 live FAISS retrieval + Phase 5 grounded generation (Bun HTTP + Python ML worker + z-ai LLM)",
+  "scripts": {
+    "dev": "bun --hot index.ts",
+    "start": "bun index.ts"
+  },
+  "dependencies": {
+    "z-ai-web-dev-sdk": "^0.0.18"
+  }
+}

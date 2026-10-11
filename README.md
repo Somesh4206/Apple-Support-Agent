@@ -5,13 +5,18 @@
 A machine-learning system that classifies AppleSupport customer issues,
 retrieves historically similar support cases, generates responses **grounded
 in that historical evidence**, and decides safely between auto-handling and
-escalation — with quantitative evaluation of every component.
+escalation — with quantitative evaluation of every component. A production
+**Next.js dashboard** (`dashboard/`) exposes the live agent as a real
+multi-turn support chat experience.
 
 > **Current status: Phases 1–9 complete — data foundation + taxonomy &
 > baselines + embedding classifier + FAISS retrieval + grounded generation
 > + escalation policy + unified agent + Streamlit app + final report, every
 > phase measured.** The assignment's phased build is finished: each phase
-> was implemented only after the prior one was working and tested.
+> was implemented only after the prior one was working and tested. On top of
+> the pipeline sits the dashboard: a live, stateful, multi-turn agent chat
+> (SQLite-persisted sessions, decision badges, evidence citations, one-click
+> transcript export).
 
 ---
 
@@ -52,7 +57,7 @@ applesupport_tweets.csv · conversations.csv · conversation_pairs.csv
 pipeline_run.json · (run_eda.py) eda_summary.json + charts/
    ▼
 notebooks/01_data_exploration.ipynb (executed, cross-checked)
-web dashboard (Next.js page + /api/phase1/status — this repo's root app)
+Next.js dashboard (dashboard/ — live pipeline status, agent chat, phase consoles)
 ```
 
 Phases 6–9 (built): escalation policy
@@ -70,7 +75,7 @@ and the AppleSupport account-identification workflow: see
 ## Setup
 
 ```bash
-cd hiver-support-agent
+# repo root = the ML pipeline
 python3 -m venv .venv && source .venv/bin/activate   # optional
 pip install -r requirements.txt                      # pandas, numpy, matplotlib, seaborn, python-dotenv, scikit-learn
 cp .env.example .env
@@ -113,8 +118,11 @@ python scripts/evaluate_agent.py              # 29 live agent calls + consistenc
 # 11) Phase 8: Streamlit app (needs the live service on :3030)
 streamlit run streamlit_app.py --server.port 8501 --server.headless true
 
-# 12) Optional: the live retrieval + generation + agent service powering the demos
-bun run dev          # inside mini-services/retrieval-service (port 3030)
+# 12) The live retrieval + generation + agent service powering the demos
+bun run dev          # inside dashboard/mini-services/retrieval-service (port 3030)
+
+# 13) The Next.js dashboard (live agent chat — see dashboard/README.md)
+cd dashboard && bun install && bun run dev        # http://localhost:3000
 ```
 
 Environment variables (`.env`) — full list in `.env.example`:
@@ -200,8 +208,8 @@ detail: `evaluation/results/retrieval_results.json`; Phase 5 detail:
 ## Repository layout
 
 ```
-hiver-support-agent/
-├── data/                  # raw (gitignored) + processed outputs
+apple-support-agent/
+├── data/                  # raw (gitignored) + processed outputs + charts
 ├── notebooks/             # 01_data_exploration.ipynb (executed)
 ├── scripts/               # find_author_ids · prepare_data · run_eda · build_golden_set · train_baselines · train_embedding_classifier · build_retrieval_index · evaluate_generation · evaluate_escalation · evaluate_agent · make_synthetic_sample
 ├── src/
@@ -216,12 +224,27 @@ hiver-support-agent/
 ├── streamlit_app.py       # Phase 8 UI (thin client over the live agent)
 ├── requirements.txt       # only packages actually used (Phases 1–8)
 ├── .env.example           # configuration template
-└── .gitignore             # keeps the 516 MB corpus out of git
-
-# sibling (dashboard + live retrieval/generation/agent, outside this repo):
-../src/components/phase{5,6,7,8,9}/  # dashboard panels (live generation + agent consoles)
-../mini-services/retrieval-service/  # Bun :3030 + Python worker + z-ai LLM — search, grounded drafts, unified agent
+├── .gitignore             # keeps the 516 MB corpus out of git
+└── dashboard/             # Next.js 16 production app (see dashboard/README.md)
+    ├── src/app/               # / — landing page + embedded agent chat
+    ├── src/components/        # agent-chat/ (panel, messages, composer) + phase consoles
+    ├── src/lib, src/hooks/    # typed API client + chat state (sessions, retries)
+    ├── mini-services/
+    │   └── retrieval-service/ # Bun :3030 + Python FAISS worker + z-ai LLM
+    │                          # /api/agent/chat — stateful multi-turn agent (SQLite)
+    ├── prisma/                # schema (SQLite)
+    └── public/                # logo + Streamlit screenshots
 ```
+
+### The dashboard (Phase 9+)
+
+`dashboard/` is the user-facing product built on the pipeline: a live
+**agent chat** (multi-turn, session persistence via SQLite, auto-handle vs
+escalate decision badges, retrieval evidence citations, policy gate traces,
+transcript export) served by the same Bun service that the Streamlit app
+talks to. Start the retrieval service first (step 12), then the dashboard
+(step 13) — the frontend calls it through relative gateway URLs and needs
+no absolute addresses.
 
 ## Limitations & safety
 
