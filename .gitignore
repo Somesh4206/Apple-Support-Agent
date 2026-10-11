@@ -66,3 +66,6 @@ dashboard/dev*.log
 .DS_Store
 .idea/
 .vscode/
+
+# keep the configuration template versioned
+!dashboard/.env.example
