@@ -921,17 +921,18 @@ function HandoffCard({ result }: { result: AgentResponse }) {
         </span>
       </p>
 
-      {/* the suggested acknowledgment — optional context, never auto-sent */}
+      {/* the safe reply that was auto-sent on the escalate path */}
       {handoff.suggested_public_acknowledgment ? (
         <div className="mt-2.5 min-w-0 rounded-lg border border-zinc-200/80 bg-white/70 p-2.5 dark:border-zinc-800 dark:bg-zinc-900/50">
           <p className="text-[10px] font-medium text-zinc-600 dark:text-zinc-400">
-            Suggested public acknowledgment
+            Safe public reply (auto-sent · 0 LLM calls)
           </p>
           <blockquote className="mt-1 border-l-2 border-red-300 pl-2.5 text-xs font-medium leading-relaxed text-zinc-700 dark:border-red-700/60 dark:text-zinc-300">
             &ldquo;{handoff.suggested_public_acknowledgment}&rdquo;
           </blockquote>
           <p className="mt-1.5 text-[10px] font-medium text-amber-700 dark:text-amber-400">
-            Optional context for the human — never sent automatically.
+            Official self-service pointers only — account-specific resolution
+            continues with the human in DMs.
           </p>
         </div>
       ) : null}

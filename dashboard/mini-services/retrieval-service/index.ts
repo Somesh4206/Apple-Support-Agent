@@ -754,19 +754,104 @@ function decideEscalation(
   };
 }
 
-// Deterministic, evidence-styled public acknowledgment suggested to the
-// human agent who receives an escalation. NEVER sent automatically.
-function suggestedAcknowledgment(
+// Deterministic, intent-aware escalation reply ("smart macro"). The Phase 6
+// policy still decides escalate (same rules, same thresholds, 0 LLM calls) —
+// but the customer now always receives a REAL, helpful, SAFE public reply:
+// official self-service pointers only, plus an honest handoff note. Nothing
+// account-specific is ever automated.
+type EscalationAck = {
+  reply: string;
+  kind: "greeting" | "self_service" | "clarify" | "secure_continue";
+};
+
+const GREETING_RE =
+  /^(?:hi|hey|hello|yo|hiya|good\s*(?:morning|afternoon|evening)|thanks|thank\s*you|thx|ty)[\s!.,?]*$/i;
+
+function escalationReply(
   message: string,
   reasons: EscalationReason[],
-): string {
+  intentLabel: string | undefined,
+): EscalationAck {
   const hasPrivate = reasons.some(
     (r) => r.rule === "E2" || r.name.startsWith("content:"),
   );
-  if (hasPrivate) {
-    return "Thanks for reaching out — we'd like to look into this with you in Direct Messages where we can help with the details.";
+  const hasPii = reasons.some((r) => r.name.startsWith("content:"));
+
+  // 1) Bare greeting ("hello", "hi") — answer like a human. No handoff
+  //    ceremony: just invite the customer to describe their issue.
+  if (GREETING_RE.test(message.trim())) {
+    return {
+      reply:
+        "Hi! We're here to help. What's going on with your device, Apple ID, or an app? A little detail helps us point you the right way.",
+      kind: "greeting",
+    };
   }
-  return "Thanks for reaching out — we'd like to gather a few more details so we can help accurately. Could you tell us more about what you're seeing?";
+
+  // 2) Public PII (E4) — the FIRST thing to say is "move this out of public".
+  if (hasPii) {
+    return {
+      reply:
+        "Thanks for reaching out — please don't share personal details like email addresses, phone numbers or card numbers in public. Please delete that message if you can, and DM us instead — we'll help you there securely.",
+      kind: "secure_continue",
+    };
+  }
+
+  // 3) Private-state domains (E2) — give the official self-service pointer,
+  //    then continue with a human in DMs for anything account-specific.
+  if (hasPrivate) {
+    if (intentLabel === "account_icloud") {
+      if (
+        /\b(?:password|reset|forgot|locked|sign\s?in|log\s?in|passcode|verification\s?code)\b/i.test(
+          message,
+        )
+      ) {
+        return {
+          reply:
+            "You can reset your Apple ID password yourself at iforgot.apple.com, or on a device you're already signed into: Settings → [your name] → Password & Security. If the account is locked or that doesn't work, DM us — account-specific help needs a human and a secure channel.",
+          kind: "self_service",
+        };
+      }
+      return {
+        reply:
+          "Thanks for reaching out — anything specific to your Apple ID or iCloud needs to be verified securely, so DM us and we'll help you there. You can also manage your account yourself at appleid.apple.com.",
+        kind: "self_service",
+      };
+    }
+    if (intentLabel === "billing_purchases") {
+      return {
+        reply:
+          "You can review your charges and request a refund yourself at reportaproblem.apple.com. For anything specific to your account or an order, DM us and we'll look into it with you securely.",
+        kind: "self_service",
+      };
+    }
+    if (intentLabel === "repair_warranty") {
+      return {
+        reply:
+          "You can check your coverage yourself at checkcoverage.apple.com with your device's serial number. For service options specific to your device, DM us and we'll go through them with you.",
+        kind: "self_service",
+      };
+    }
+    if (intentLabel === "security_privacy") {
+      return {
+        reply:
+          "Thanks for reaching out — for anything involving your account's security we'd like to continue in Direct Messages where we can verify you safely. Never share your password or verification codes publicly.",
+        kind: "secure_continue",
+      };
+    }
+    return {
+      reply:
+        "Thanks for reaching out — we'd like to look into this with you in Direct Messages where we can help with the details securely.",
+      kind: "secure_continue",
+    };
+  }
+
+  // 4) G1/G2/E3 — warm clarifying question; the conversation stays open and
+  //    the customer's next (more specific) message gets a grounded reply.
+  return {
+    reply:
+      "Thanks for reaching out — we'd like to gather a few more details so we can help accurately. What device or app is this about, and what exactly are you seeing?",
+    kind: "clarify",
+  };
 }
 
 async function handleAgent(body: any): Promise<Response> {
@@ -869,21 +954,22 @@ async function handleAgent(body: any): Promise<Response> {
     }
 
     // Escalation path: NO LLM call is made — the draft is deliberately not
-    // generated. The human receives a structured handoff bundle instead.
+    // generated. The customer receives the deterministic, intent-aware safe
+    // reply (official self-service pointers + honest handoff note); the
+    // human receives the structured handoff bundle with the evidence.
+    const ack = escalationReply(message, decision.reasons, intent.label);
     return json({
       ...base,
       decision: "escalate",
-      reply: null,
-      reply_status: "not_generated_by_policy",
+      reply: ack.reply,
+      reply_status: "handoff_acknowledgment",
       handoff: {
         next_step: "human_review",
         reasons: decision.reasons,
-        suggested_public_acknowledgment: suggestedAcknowledgment(
-          message,
-          decision.reasons,
-        ),
+        ack_kind: ack.kind,
+        suggested_public_acknowledgment: ack.reply,
         note_for_agent:
-          "Draft generation was intentionally skipped (policy: escalate). The acknowledgment template above is optional context — it is never sent automatically.",
+          "Draft generation was intentionally skipped (policy: escalate, 0 LLM calls). The acknowledgment above is auto-sent as the safe public reply — official self-service pointers only. Account-specific resolution continues with you in DMs.",
         evidence_for_review: evidence.slice(0, 3),
       },
       timings: {
@@ -1297,14 +1383,15 @@ async function handleChatTurn(body: any): Promise<Response> {
       });
     }
 
-    // Escalation path: ZERO LLM calls. The agent message is the suggested
-    // public acknowledgment (the one a human agent would send), clearly
-    // marked as a handoff — never silently auto-sent as policy advice.
-    const acknowledgment = suggestedAcknowledgment(message, decision.reasons);
+    // Escalation path: ZERO LLM calls. The agent message is the
+    // deterministic, intent-aware safe reply (official self-service
+    // pointers + honest handoff note) — the customer always gets a real
+    // answer; account-specific resolution stays with the human in DMs.
+    const ack = escalationReply(message, decision.reasons, intent.label);
     const agentMsgId = persistChatMessage(
       sessionId,
       "agent",
-      acknowledgment,
+      ack.reply,
       "escalate",
       {
         reply_status: "handoff_acknowledgment",
@@ -1314,8 +1401,9 @@ async function handleChatTurn(body: any): Promise<Response> {
         evidence: evidence.slice(0, 3),
         handoff: {
           reasons: decision.reasons,
+          ack_kind: ack.kind,
           note_for_agent:
-            "Draft generation was intentionally skipped (policy: escalate). This acknowledgment is the suggested public reply for the human agent — never sent automatically.",
+            "Draft generation was intentionally skipped (policy: escalate, 0 LLM calls). This acknowledgment was auto-sent as the safe public reply — official self-service pointers only. Account-specific resolution continues with you in DMs.",
         },
       },
     );
@@ -1332,7 +1420,7 @@ async function handleChatTurn(body: any): Promise<Response> {
       agent_message: {
         id: agentMsgId,
         role: "agent",
-        content: acknowledgment,
+        content: ack.reply,
         decision: "escalate",
         created_at: new Date().toISOString(),
       },
@@ -1342,9 +1430,10 @@ async function handleChatTurn(body: any): Promise<Response> {
       handoff: {
         next_step: "human_review",
         reasons: decision.reasons,
-        suggested_public_acknowledgment: acknowledgment,
+        ack_kind: ack.kind,
+        suggested_public_acknowledgment: ack.reply,
         note_for_agent:
-          "Draft generation was intentionally skipped (policy: escalate). The acknowledgment above is what a human agent would send — it is never sent automatically as policy advice.",
+          "Draft generation was intentionally skipped (policy: escalate, 0 LLM calls). The acknowledgment above was auto-sent as the safe public reply; account-specific resolution continues with you in DMs.",
         evidence_for_review: evidence.slice(0, 3),
       },
       conversation: conversationState(loadSessionMessages(sessionId)),

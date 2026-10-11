@@ -58,11 +58,14 @@ export function downloadAgentChatTranscript(
     }
 
     const meta = message.meta ?? {};
+    const ackKind = meta.handoff?.ack_kind;
     const decision =
       message.decision === "auto_handle"
         ? "auto-handled (reply ready to send)"
         : message.decision === "escalate"
-          ? "escalated to human (no auto-reply)"
+          ? ackKind === "greeting" || ackKind === "clarify"
+            ? "gathering details (reply sent)"
+            : "human handoff (safe reply sent)"
           : "";
     lines.push(
       `## ${who}${stamp ? ` — ${stamp}` : ""}${decision ? ` · ${decision}` : ""}`,

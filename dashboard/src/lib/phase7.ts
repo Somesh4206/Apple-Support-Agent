@@ -224,6 +224,7 @@ export interface AgentHandoff {
     detail?: string;
   }[];
   suggested_public_acknowledgment?: string;
+  ack_kind?: "greeting" | "self_service" | "clarify" | "secure_continue";
   note_for_agent?: string;
   evidence_for_review?: AgentEvidenceItem[];
 }
@@ -250,9 +251,9 @@ export interface AgentResponse {
   };
   /** "auto_handle" | "escalate" */
   decision?: string;
-  /** the drafted reply on the auto path, null on the escalate path */
+  /** grounded LLM draft on the auto path; the deterministic safe reply on the escalate path */
   reply?: string | null;
-  /** "ready_to_send" | "not_generated_by_policy" */
+  /** "ready_to_send" (auto) | "handoff_acknowledgment" (escalate, safe reply auto-sent) */
   reply_status?: string;
   /** auto path only */
   scores?: AgentScores;

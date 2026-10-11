@@ -60,6 +60,21 @@ export function AgentChatMessage({ message }: { message: ChatMessage }) {
   const meta = message.meta ?? {};
   const reasons: ChatPolicyReason[] =
     meta.handoff?.reasons ?? meta.policy?.reasons ?? [];
+  const ackKind = meta.handoff?.ack_kind;
+
+  /* The escalation note above the bubble is kind-aware: a greeting gets no
+     ceremony (the reply reads like a normal human greeting), other kinds get
+     one honest line about what was sent and what a human takes over. */
+  const handoffNote =
+    !isEscalate || ackKind === "greeting"
+      ? null
+      : ackKind === "self_service"
+        ? "Self-service options sent · a human specialist will follow up in DMs for anything account-specific:"
+        : ackKind === "clarify"
+          ? "Gathering a few details first so we can help accurately:"
+          : ackKind === "secure_continue"
+            ? "Human handoff · secure reply sent:"
+            : "Human handoff · safe reply sent:";
 
   return (
     <div className="flex flex-col items-start gap-1">
@@ -76,19 +91,21 @@ export function AgentChatMessage({ message }: { message: ChatMessage }) {
           <Bot className="size-4" />
         </span>
         <div className="min-w-0 flex-1 space-y-1.5">
-          {/* escalate: the amber handoff note ABOVE the bubble */}
-          {isEscalate ? (
+          {/* escalate: kind-aware handoff note ABOVE the bubble */}
+          {handoffNote ? (
             <div className="rounded-lg border-l-2 border-amber-400 bg-amber-50 px-2.5 py-1.5 text-[11px] leading-relaxed text-amber-800 dark:border-amber-500 dark:bg-amber-950/40 dark:text-amber-300">
-              <span className="font-medium">Human handoff</span> — policy
-              fired:{" "}
-              <span className="font-mono text-[10px]">
-                {reasons.length > 0
-                  ? reasons
+              <span className="font-medium">{handoffNote}</span>
+              {reasons.length > 0 ? (
+                <span className="ml-1 opacity-80">
+                  (policy{" "}
+                  <span className="font-mono text-[10px]">
+                    {reasons
                       .map((reason) => reason.rule ?? "?")
-                      .join(" · ")
-                  : "—"}
-              </span>
-              . Suggested acknowledgment (never auto-sent):
+                      .join(" · ")}
+                  </span>
+                  )
+                </span>
+              ) : null}
             </div>
           ) : null}
 
@@ -155,7 +172,12 @@ function TurnMetadataStrip({ message }: { message: ChatMessage }) {
             className="gap-1 border-amber-200 bg-amber-50 px-1.5 text-[10px] font-medium text-amber-800 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-300"
             title={meta.reply_status ?? "handoff_acknowledgment"}
           >
-            Escalated to human · no auto-reply
+            {meta.handoff?.ack_kind === "greeting" ||
+            meta.handoff?.ack_kind === "clarify"
+              ? "Gathering details · reply sent"
+              : meta.handoff?.ack_kind === "self_service"
+                ? "Human handoff · self-service reply sent"
+                : "Human handoff · secure reply sent"}
           </Badge>
         ) : (
           <Badge

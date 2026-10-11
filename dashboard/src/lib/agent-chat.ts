@@ -125,6 +125,8 @@ export interface ChatScores {
 export interface ChatHandoff {
   next_step?: string;
   reasons?: ChatPolicyReason[];
+  /** how the auto-sent escalation reply was chosen */
+  ack_kind?: "greeting" | "self_service" | "clarify" | "secure_continue";
   suggested_public_acknowledgment?: string;
   note_for_agent?: string;
   evidence_for_review?: ChatEvidenceItem[];
