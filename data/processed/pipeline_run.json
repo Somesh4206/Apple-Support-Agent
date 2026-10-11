@@ -1,0 +1,242 @@
+{
+  "generated_at": "2026-10-11 07:19:15 UTC",
+  "phase": 1,
+  "mode": "full",
+  "input": {
+    "file": "twcs.csv",
+    "path": "data/raw/twcs.csv",
+    "size_bytes": 516508641,
+    "synthetic": false
+  },
+  "apple_support_author_id": "AppleSupport",
+  "settings": {
+    "random_seed": 42,
+    "chunk_size": 200000,
+    "closure_max_passes": 12,
+    "note": "Phase 2+ thresholds (confidence/retrieval/top_k) are documented in .env.example but not consumed yet."
+  },
+  "scan_stats": {
+    "total_rows": 2811774,
+    "unique_tweet_ids": 2811774,
+    "duplicate_tweet_ids": 0,
+    "inbound_rows": 1537843,
+    "outbound_rows": 1273931,
+    "malformed_inbound": 0,
+    "conversation_starters": 794335,
+    "missing_by_column": {},
+    "top_outbound_authors": [
+      {
+        "author_id": "AmazonHelp",
+        "tweets": 169840
+      },
+      {
+        "author_id": "AppleSupport",
+        "tweets": 106860
+      },
+      {
+        "author_id": "Uber_Support",
+        "tweets": 56270
+      },
+      {
+        "author_id": "SpotifyCares",
+        "tweets": 43265
+      },
+      {
+        "author_id": "Delta",
+        "tweets": 42253
+      },
+      {
+        "author_id": "Tesco",
+        "tweets": 38573
+      },
+      {
+        "author_id": "AmericanAir",
+        "tweets": 36764
+      },
+      {
+        "author_id": "TMobileHelp",
+        "tweets": 34317
+      },
+      {
+        "author_id": "comcastcares",
+        "tweets": 33031
+      },
+      {
+        "author_id": "British_Airways",
+        "tweets": 29361
+      },
+      {
+        "author_id": "SouthwestAir",
+        "tweets": 28977
+      },
+      {
+        "author_id": "VirginTrains",
+        "tweets": 27817
+      },
+      {
+        "author_id": "Ask_Spectrum",
+        "tweets": 25860
+      },
+      {
+        "author_id": "XboxSupport",
+        "tweets": 24557
+      },
+      {
+        "author_id": "sprintcare",
+        "tweets": 22381
+      },
+      {
+        "author_id": "hulu_support",
+        "tweets": 21872
+      },
+      {
+        "author_id": "sainsburys",
+        "tweets": 19466
+      },
+      {
+        "author_id": "GWRHelp",
+        "tweets": 19364
+      },
+      {
+        "author_id": "AskPlayStation",
+        "tweets": 19098
+      },
+      {
+        "author_id": "ChipotleTweets",
+        "tweets": 18749
+      },
+      {
+        "author_id": "VerizonSupport",
+        "tweets": 17966
+      },
+      {
+        "author_id": "UPSHelp",
+        "tweets": 17817
+      },
+      {
+        "author_id": "ATVIAssist",
+        "tweets": 17650
+      },
+      {
+        "author_id": "O2",
+        "tweets": 16212
+      },
+      {
+        "author_id": "Safaricom_Care",
+        "tweets": 16077
+      }
+    ],
+    "file_size_bytes": 516508641
+  },
+  "cleaning_report": {
+    "rows_in": 238754,
+    "rows_out": 237967,
+    "dropped_missing_tweet_id": 0,
+    "dropped_missing_author_id": 0,
+    "dropped_empty_text": 787,
+    "dropped_duplicate_tweet_id": 0,
+    "decoded_html_entities": 10426,
+    "removed_rt_prefix": 2,
+    "removed_urls": 99269,
+    "removed_leading_mention": 187230,
+    "collapsed_whitespace": 19765
+  },
+  "reconstruction_stats": {
+    "tweets_in": 237967,
+    "conversations": 81156,
+    "tweets_in_conversations": 237967,
+    "partial_roots": 913,
+    "cyclic_tweets_skipped": 0,
+    "parent_link_mismatches": 0,
+    "dangling_child_links": 14005
+  },
+  "outputs": {
+    "applesupport_tweets.csv": {
+      "rows": 237745,
+      "path": "/home/z/my-project/hiver-support-agent/data/processed/applesupport_tweets.csv"
+    },
+    "conversations.csv": {
+      "rows": 80966,
+      "path": "/home/z/my-project/hiver-support-agent/data/processed/conversations.csv"
+    },
+    "conversation_pairs.csv": {
+      "rows": 106137,
+      "path": "/home/z/my-project/hiver-support-agent/data/processed/conversation_pairs.csv"
+    }
+  },
+  "stages": [
+    {
+      "name": "Load raw dataset",
+      "status": "OK",
+      "detail": "2,811,774 tweets scanned from twcs.csv (517 MB, full mode)"
+    },
+    {
+      "name": "Validate schema",
+      "status": "OK",
+      "detail": "all 7 expected columns present"
+    },
+    {
+      "name": "Clean & deduplicate",
+      "status": "OK",
+      "detail": "787 rows dropped (empty text: 787, missing ids: 0, duplicate tweet ids: 0); URLs / RT prefixes / leading @mentions removed, natural language preserved"
+    },
+    {
+      "name": "Reconstruct conversations",
+      "status": "OK",
+      "detail": "81,156 conversations rebuilt from reply links (913 partial roots, 0 cyclic tweets skipped, 0 noisy links reported)"
+    },
+    {
+      "name": "Filter AppleSupport",
+      "status": "OK",
+      "detail": "80,966 of 81,156 conversations include 'AppleSupport' (237,745 tweets kept)"
+    },
+    {
+      "name": "Extract support pairs",
+      "status": "OK",
+      "detail": "106,137 customer↔support pairs extracted (conversation-level ids preserved)"
+    },
+    {
+      "name": "Validate outputs",
+      "status": "OK",
+      "detail": "7/7 structural checks passed"
+    }
+  ],
+  "validations": [
+    {
+      "name": "pair_ids_exist_in_tweets",
+      "passed": true,
+      "detail": "106137 pair endpoint ids resolved against the tweet frame"
+    },
+    {
+      "name": "pair_conversations_exist",
+      "passed": true,
+      "detail": "every pair maps to a reconstructed conversation"
+    },
+    {
+      "name": "pair_messages_non_empty",
+      "passed": true,
+      "detail": "no empty customer messages or support responses in pairs"
+    },
+    {
+      "name": "pair_response_ids_unique",
+      "passed": true,
+      "detail": "each support reply is used in at most one pair"
+    },
+    {
+      "name": "pair_responses_by_support_author",
+      "passed": true,
+      "detail": "all pair responses authored by 'AppleSupport'"
+    },
+    {
+      "name": "conversation_ids_unique",
+      "passed": true,
+      "detail": "80966 unique conversation ids"
+    },
+    {
+      "name": "tweets_have_conversation_id",
+      "passed": true,
+      "detail": "every output tweet is attached to a conversation"
+    }
+  ],
+  "duration_seconds": 184.6
+}

@@ -1,0 +1,384 @@
+{
+  "generated_at": "2026-10-11 07:19:15 UTC",
+  "source": {
+    "file": "twcs.csv",
+    "path": "data/raw/twcs.csv",
+    "synthetic": false,
+    "apple_support_author_id": "AppleSupport"
+  },
+  "dataset": {
+    "total_tweets": 2811774,
+    "total_conversations": 794335,
+    "apple_conversations": 80966,
+    "apple_tweets": 237745,
+    "apple_inbound": 130612,
+    "apple_outbound": 107133,
+    "support_pairs": 106137,
+    "avg_conversation_turns": 2.94,
+    "median_conversation_turns": 2.0,
+    "max_conversation_turns": 282,
+    "avg_message_chars": 100.8,
+    "avg_message_words": 19.1,
+    "date_start": "Sat May 04 22:04:43 +0000 2013",
+    "date_end": "Sun Dec 03 23:12:28 +0000 2017"
+  },
+  "inbound_distribution": {
+    "inbound": 130612,
+    "outbound": 107133
+  },
+  "conversation_length_histogram": [
+    {
+      "turns": 1,
+      "count": 346
+    },
+    {
+      "turns": 2,
+      "count": 52673
+    },
+    {
+      "turns": 3,
+      "count": 8031
+    },
+    {
+      "turns": 4,
+      "count": 10540
+    },
+    {
+      "turns": 5,
+      "count": 2937
+    },
+    {
+      "turns": 6,
+      "count": 3035
+    },
+    {
+      "turns": 7,
+      "count": 1142
+    },
+    {
+      "turns": 8,
+      "count": 988
+    },
+    {
+      "turns": 9,
+      "count": 396
+    },
+    {
+      "turns": 10,
+      "count": 330
+    },
+    {
+      "turns": 11,
+      "count": 174
+    },
+    {
+      "turns": 12,
+      "count": 122
+    },
+    {
+      "turns": 13,
+      "count": 51
+    },
+    {
+      "turns": 14,
+      "count": 33
+    },
+    {
+      "turns": 15,
+      "count": 18
+    },
+    {
+      "turns": 16,
+      "count": 28
+    },
+    {
+      "turns": 17,
+      "count": 10
+    },
+    {
+      "turns": 18,
+      "count": 10
+    },
+    {
+      "turns": 19,
+      "count": 7
+    },
+    {
+      "turns": 20,
+      "count": 95
+    }
+  ],
+  "message_length_histogram": [
+    {
+      "bucket": "1-25",
+      "count": 12416
+    },
+    {
+      "bucket": "26-50",
+      "count": 20056
+    },
+    {
+      "bucket": "51-75",
+      "count": 35986
+    },
+    {
+      "bucket": "76-100",
+      "count": 57646
+    },
+    {
+      "bucket": "101-150",
+      "count": 85627
+    },
+    {
+      "bucket": "151-200",
+      "count": 14669
+    },
+    {
+      "bucket": "201+",
+      "count": 11345
+    }
+  ],
+  "top_terms": [
+    {
+      "term": "phone",
+      "count": 21635
+    },
+    {
+      "term": "iphone",
+      "count": 19092
+    },
+    {
+      "term": "ios",
+      "count": 15585
+    },
+    {
+      "term": "update",
+      "count": 15523
+    },
+    {
+      "term": "fix",
+      "count": 14399
+    },
+    {
+      "term": "new",
+      "count": 8998
+    },
+    {
+      "term": "battery",
+      "count": 8320
+    },
+    {
+      "term": "apple",
+      "count": 7886
+    },
+    {
+      "term": "since",
+      "count": 5954
+    },
+    {
+      "term": "app",
+      "count": 5032
+    },
+    {
+      "term": "out",
+      "count": 4964
+    },
+    {
+      "term": "time",
+      "count": 4855
+    },
+    {
+      "term": "updated",
+      "count": 4826
+    },
+    {
+      "term": "off",
+      "count": 4453
+    },
+    {
+      "term": "screen",
+      "count": 4425
+    }
+  ],
+  "top_bigrams": [
+    {
+      "term": "ios update",
+      "count": 2113
+    },
+    {
+      "term": "new update",
+      "count": 1910
+    },
+    {
+      "term": "battery life",
+      "count": 1702
+    },
+    {
+      "term": "iphone plus",
+      "count": 1535
+    },
+    {
+      "term": "every time",
+      "count": 1526
+    },
+    {
+      "term": "question mark",
+      "count": 1473
+    },
+    {
+      "term": "new ios",
+      "count": 1343
+    },
+    {
+      "term": "new iphone",
+      "count": 1191
+    },
+    {
+      "term": "updated phone",
+      "count": 1149
+    },
+    {
+      "term": "apple music",
+      "count": 1084
+    }
+  ],
+  "provisional_topics": [
+    {
+      "topic": "Software / Apps",
+      "matched": 30740,
+      "share": 0.2896
+    },
+    {
+      "topic": "Device / Hardware",
+      "matched": 15015,
+      "share": 0.1415
+    },
+    {
+      "topic": "Connectivity",
+      "matched": 2975,
+      "share": 0.028
+    },
+    {
+      "topic": "Billing / Payments",
+      "matched": 2582,
+      "share": 0.0243
+    },
+    {
+      "topic": "Account / Apple ID",
+      "matched": 2335,
+      "share": 0.022
+    },
+    {
+      "topic": "Repair / Warranty",
+      "matched": 1974,
+      "share": 0.0186
+    },
+    {
+      "topic": "iCloud / Backup",
+      "matched": 1750,
+      "share": 0.0165
+    },
+    {
+      "topic": "Refunds / Purchases",
+      "matched": 1568,
+      "share": 0.0148
+    },
+    {
+      "topic": "Order / Delivery",
+      "matched": 1044,
+      "share": 0.0098
+    },
+    {
+      "topic": "Security / Privacy",
+      "matched": 631,
+      "share": 0.0059
+    },
+    {
+      "topic": "Subscriptions",
+      "matched": 470,
+      "share": 0.0044
+    }
+  ],
+  "multi_topic_share": 0.0993,
+  "pipeline_stages": [
+    {
+      "name": "Load raw dataset",
+      "status": "OK",
+      "detail": "2,811,774 tweets scanned from twcs.csv (517 MB, full mode)"
+    },
+    {
+      "name": "Validate schema",
+      "status": "OK",
+      "detail": "all 7 expected columns present"
+    },
+    {
+      "name": "Clean & deduplicate",
+      "status": "OK",
+      "detail": "787 rows dropped (empty text: 787, missing ids: 0, duplicate tweet ids: 0); URLs / RT prefixes / leading @mentions removed, natural language preserved"
+    },
+    {
+      "name": "Reconstruct conversations",
+      "status": "OK",
+      "detail": "81,156 conversations rebuilt from reply links (913 partial roots, 0 cyclic tweets skipped, 0 noisy links reported)"
+    },
+    {
+      "name": "Filter AppleSupport",
+      "status": "OK",
+      "detail": "80,966 of 81,156 conversations include 'AppleSupport' (237,745 tweets kept)"
+    },
+    {
+      "name": "Extract support pairs",
+      "status": "OK",
+      "detail": "106,137 customer↔support pairs extracted (conversation-level ids preserved)"
+    },
+    {
+      "name": "Validate outputs",
+      "status": "OK",
+      "detail": "7/7 structural checks passed"
+    }
+  ],
+  "sample_conversations": [
+    {
+      "conversation_id": "641999",
+      "turns": 2,
+      "created_at": "Wed Nov 22 20:13:10 +0000 2017",
+      "customer_message": "My phone has been charging for 2 hours...it’s at 37%. @115858 might be about to lose me as a 10 year customer.",
+      "support_response": "We understand how vital it is to keep your iPhone powered and we want to help. Please take a look at this:"
+    },
+    {
+      "conversation_id": "2312385",
+      "turns": 2,
+      "created_at": "Sun Nov 12 21:23:29 +0000 2017",
+      "customer_message": "So many reasons why i cant stand ITunes, spent the past 2 days trying to sort everything out on my new phone, itunes enjoys putting videos/pictures on my phone that i cant delete from my phone @AppleSupport help before i break something out of anger",
+      "support_response": "We'll be happy to look into this. DM us and we'll go from there."
+    },
+    {
+      "conversation_id": "2278022",
+      "turns": 5,
+      "created_at": "Sun Nov 12 03:38:42 +0000 2017",
+      "customer_message": "Over wifi",
+      "support_response": "Got it. Thanks for clarifying. Let's meet up in DM to continue. Give us a few more details when you meet us there on exactly what's happening, and we'll work together from there."
+    },
+    {
+      "conversation_id": "361074",
+      "turns": 4,
+      "created_at": "Sun Oct 08 14:05:58 +0000 2017",
+      "customer_message": "can I get rid of @139798 from my news feed please? It makes me feel dirty seeing it there",
+      "support_response": "We'd like to help. Are you referring to the screen with your widgets? This may help:"
+    },
+    {
+      "conversation_id": "9152",
+      "turns": 9,
+      "created_at": "Wed Nov 01 20:42:22 +0000 2017",
+      "customer_message": "@AppleSupport Having the same issue",
+      "support_response": "DM us if you're having issues with your keyboard changing characters. We'll be happy to look into this with you."
+    },
+    {
+      "conversation_id": "37656",
+      "turns": 10,
+      "created_at": "Wed Nov 01 14:10:37 +0000 2017",
+      "customer_message": "Why can we not type the letter “i” without it turning into a question mark? 🙃 @AppleSupport",
+      "support_response": "Let's work together to sort this out. Which iOS version is this happening with?"
+    }
+  ]
+}

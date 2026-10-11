@@ -1,0 +1,132 @@
+{
+  "phase": 7,
+  "generated_at": "2026-09-16T12:06:12.150227+00:00",
+  "random_seed": 42,
+  "config": {
+    "top_k": 5,
+    "intent_confidence_threshold": 0.6,
+    "retrieval_threshold": 0.65,
+    "endpoint": "http://localhost:3030/api/phase7/agent",
+    "llm": "glm-4-plus via z-ai-web-dev-sdk (backend-only)"
+  },
+  "agent_steps": [
+    "Phase 3 logreg head → predicted intent + confidence for the message",
+    "Phase 4 FAISS index → top-K most similar historical evidence pairs",
+    "Phase 6 escalation policy → auto_handle / escalate (rule-based, explainable) — decided BEFORE any LLM call",
+    "auto_handle ⇒ Phase 5 grounded generation (six safety rules) → reply ready to send + heuristic scores",
+    "escalate ⇒ structured human handoff: reasons, top-3 evidence, optional acknowledgment template — no LLM call spent"
+  ],
+  "policy": {
+    "type": "rule-based, explainable (no learned component)",
+    "decision": "escalate if ANY rule fires; auto_handle only when all rules pass",
+    "safety_asymmetry": "a false auto-handle is far costlier than a false escalation — the policy is deliberately conservative",
+    "rules": [
+      {
+        "id": "E2",
+        "name": "private_state_domain",
+        "fires_when": "predicted intent ∈ {account_icloud, billing_purchases, repair_warranty, security_privacy, support_process}",
+        "why": "the correct next step depends on private state the system cannot see (order, quote, account, identity, official channels); public generic advice risks harm",
+        "provenance": "Phase 2 taxonomy typically_escalated hints (4 of 5) + documented Phase 6 account_icloud refinement (decision log D25)"
+      },
+      {
+        "id": "E3",
+        "name": "unmatched_intent",
+        "fires_when": "predicted intent == 'other'",
+        "why": "no groundable issue class; an evidence draft would rest on irrelevant historical cases",
+        "provenance": "Phase 2 taxonomy (the unmatched pool)"
+      },
+      {
+        "id": "E4",
+        "name": "sensitive_content",
+        "fires_when": "message matches one of ['order_or_payment_language', 'email_address', 'phone_number', 'card_like_number']",
+        "why": "payment/order language or private data (email, phone, card-like number) in the message must not be answered — or echoed — by a public auto-reply",
+        "provenance": "Phase 5 safety rule 4, applied at the decision layer as defense-in-depth against intent misclassification"
+      },
+      {
+        "id": "G1",
+        "name": "intent_confidence_gate",
+        "fires_when": "intent_confidence < 0.60",
+        "why": "Phase 3 measured 0.780 mean confidence on correct vs 0.508 on wrong test predictions; below the threshold the routing itself is unreliable",
+        "provenance": "INTENT_CONFIDENCE_THRESHOLD fixed since Phase 3 (.env, single source of truth)"
+      },
+      {
+        "id": "G2",
+        "name": "retrieval_evidence_gate",
+        "fires_when": "top1_score < 0.65",
+        "why": "Phase 4 measured Recall@5 0.826 above vs 0.586 below the threshold; weak evidence produces clarifying questions, which a human should own",
+        "provenance": "RETRIEVAL_THRESHOLD fixed since Phase 4 (.env, single source of truth)"
+      }
+    ],
+    "inputs": [
+      "predicted intent (Phase 3 logreg head)",
+      "intent confidence (Phase 3)",
+      "top-1 retrieval score (Phase 4 FAISS)",
+      "raw message text (E4 patterns)"
+    ]
+  },
+  "evaluation": {
+    "n_test": 29,
+    "n_success": 29,
+    "failures": [],
+    "consistency": {
+      "description": "the service's TypeScript policy mirror vs the Python policy applied to the same runtime signals (predicted intent, confidence, top-1 score) — must agree on every message",
+      "agreed_n": 29,
+      "total_n": 29,
+      "all_agree": true,
+      "mismatches": []
+    },
+    "structure_ok_n": 29,
+    "decisions": {
+      "auto_handle_n": 15,
+      "escalate_n": 14,
+      "auto_rate": 0.5172
+    },
+    "end_to_end_quality": {
+      "confusion": {
+        "true_escalate": 10,
+        "over_escalation": 4,
+        "false_auto": 0,
+        "true_auto": 15
+      },
+      "false_auto_rate": 0.0,
+      "precision_escalate": 0.7143,
+      "recall_escalate": 1.0,
+      "note": "fresh live decisions on rebuilt artifacts — may differ marginally from the Phase 6 offline evaluation if intent confidences / retrieval scores shifted across rebuilds; both runs are reported, neither is hidden"
+    },
+    "cost": {
+      "llm_calls_made": 15,
+      "llm_calls_skipped_by_policy": 14,
+      "llm_call_saving_rate": 0.4828,
+      "mean_llm_ms_auto": 705.2,
+      "phase5_mean_llm_ms_per_reply": 599.8966,
+      "estimated_llm_ms_saved": 8398.6
+    },
+    "latency": {
+      "mean_total_ms_auto": 734.8667,
+      "mean_total_ms_escalate": 28.1429,
+      "note": "escalations skip the LLM entirely — their end-to-end time is embedding + FAISS + policy only"
+    },
+    "auto_reply_quality": {
+      "n": 15,
+      "mean_grounding_overlap": 0.5157,
+      "note": "same transparent Phase 5 heuristics, computed by the service for the replies it did generate"
+    },
+    "honest_caveats": [
+      "LLM outputs are nondeterministic: the auto-path replies and their scores describe the recorded run (see generated_at).",
+      "n=29 (golden test split); the end-to-end decision rates inherit the Phase 6 confidence-interval caveat.",
+      "Latency is measured on a shared sandbox VM and varies with load; relative auto-vs-escalate gap is the meaningful signal.",
+      "The consistency assertion checks the DECISION and rule ids; reason prose may differ in wording between implementations."
+    ]
+  },
+  "wall_clock_seconds": 11.5,
+  "artifacts": {
+    "results": "evaluation/results/agent_results.json",
+    "summary": "evaluation/results/phase7_summary.json"
+  },
+  "live_service": {
+    "port": 3030,
+    "agent_endpoint": "/api/phase7/agent",
+    "health_endpoint": "/api/phase4/health",
+    "note": "mini-services/retrieval-service (Bun + Python worker + z-ai LLM); the dashboard agent console calls it through the gateway via XTransformPort=3030"
+  }
+}

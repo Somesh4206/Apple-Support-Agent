@@ -1,0 +1,381 @@
+{
+  "phase": 5,
+  "generated_at": "2026-09-12T09:07:58+00:00",
+  "random_seed": 42,
+  "config": {
+    "top_k": 5,
+    "intent_confidence_threshold": 0.6,
+    "retrieval_threshold": 0.65,
+    "llm": "glm-4-plus",
+    "max_input_chars": 500,
+    "max_reply_chars": 280
+  },
+  "pipeline": [
+    "Phase 3 logreg head → predicted intent + confidence for the message",
+    "Phase 4 FAISS index → top-K most similar historical evidence pairs",
+    "Grounded prompt: customer message + intent/confidence + evidence quality + the K historical pairs, under six non-negotiable safety rules",
+    "LLM draft (z-ai-web-dev-sdk, backend-only) → one Twitter-length reply",
+    "Transparent heuristic scoring: grounding overlap, unsupported specifics, safety framing, escalation consistency"
+  ],
+  "safety_rules": [
+    "1. Use only facts, troubleshooting steps and phrasing present in the evidence cases. Never invent prices, dates, software versions, policies, phone numbers or links.",
+    "2. Include a brief grounding phrase making clear the suggestion comes from how similar issues were handled historically — e.g. \"Based on similar cases we've seen, …\" — and never imply it is current company policy.",
+    "3. If the evidence does not clearly address the customer's issue, do not guess: say you'd like to look into it with them and ask ONE short clarifying question.",
+    "4. For account, payment or security matters, never ask for or repeat personal details in public — invite the customer to continue in Direct Messages, exactly as the historical support team did.",
+    "5. Style: warm, concise, professional; match the evidence replies. No hashtags, no emoji, no signatures, no quotation marks around the reply.",
+    "6. Length: at most 280 characters, one short paragraph (or two sentences)."
+  ],
+  "prompt_design": {
+    "system_prompt_words": 198,
+    "user_prompt_template": "customer message · predicted intent (Phase 3 head confidence, runner-up) · evidence quality (top-1 cosine vs threshold) · the top-5 historical pairs (customer + support text, intent) · instruction to follow every safety rule",
+    "exemplar": {
+      "message": "my App Store is not working!!!!",
+      "system_prompt": "You are the draft-reply engine of a customer-support prototype (\"Apple Support AI\"), built for a machine-learning assignment. You write ONE public reply to a customer, grounded STRICTLY in numbered historical support cases given as evidence.\n\nSafety rules — non-negotiable:\n1. Use only facts, troubleshooting steps and phrasing present in the evidence cases. Never invent prices, dates, software versions, policies, phone numbers or links.\n2. Include a brief grounding phrase making clear the suggestion comes from how similar issues were handled historically — e.g. \"Based on similar cases we've seen, …\" — and never imply it is current company policy.\n3. If the evidence does not clearly address the customer's issue, do not guess: say you'd like to look into it with them and ask ONE short clarifying question.\n4. For account, payment or security matters, never ask for or repeat personal details in public — invite the customer to continue in Direct Messages, exactly as the historical support team did.\n5. Style: warm, concise, professional; match the evidence replies. No hashtags, no emoji, no signatures, no quotation marks around the reply.\n6. Length: at most 280 characters, one short paragraph (or two sentences).\n\nOutput ONLY the reply text.",
+      "user_prompt": "Customer message: \"my App Store is not working!!!!\"\n\nPredicted issue: device_hardware (confidence 0.37; runner-up: software_bug 0.20)\nEvidence quality: top similarity 0.91 — strong grounding — the evidence directly addresses similar issues (threshold 0.65).\n\nHistorical support cases, most similar first:\n[1] similarity 0.91 · issue device_hardware\n    Customer: \"my app store’s not working :(\"\n    Support: \"Can you please provide more details so that we have a better understanding of what's going on? What steps have you tried?\"\n[2] similarity 0.90 · issue device_hardware\n    Customer: \"App Store not working for me either\"\n    Support: \"We can help. What happens when you try using your App Store?\"\n[3] similarity 0.89 · issue device_hardware\n    Customer: \"your App Store isn't working! What the hell!?\"\n    Support: \"We can help. Tell us more about the issue you're encountering with the App Store. What device are you using?\"\n[4] similarity 0.88 · issue software_bug\n    Customer: \"is there a reason my App Store isn’t working at all ? Help please\"\n    Support: \"Thanks Rigo. We've received your DM and we'll continue there in just a moment.\"\n[5] similarity 0.88 · issue software_bug\n    Customer: \"why isn’t App Store working for me?!?!?! 😩😩😩 I cant download anything but my internet is working perfectly\"\n    Support: \"We want you to be able to use your App Store. Have you tried on a Wi-Fi connection? Let us know in DM.\"\n\nDraft the reply now, following every safety rule."
+    }
+  },
+  "evaluation": {
+    "test": {
+      "n_total": 29,
+      "n_success": 29,
+      "success_rate": 1.0,
+      "grounding_overlap": {
+        "mean": 0.4745,
+        "median": 0.5,
+        "min": 0.1818,
+        "max": 0.7,
+        "definition": "share of the reply's content tokens (len>=3, stopword-filtered) that appear in the top-K evidence pairs' text"
+      },
+      "unsupported_specifics": {
+        "replies_clean": 29,
+        "clean_rate": 1.0,
+        "total_violations": 0,
+        "definition": "numbers / version-like tokens / prices / URLs in the reply that appear nowhere in the evidence"
+      },
+      "framing_compliance_rate": 1.0,
+      "clarifying_rate": 0.5862,
+      "dm_redirect_rate": 0.5172,
+      "personal_data_solicited_count": 0,
+      "escalation_consistency": {
+        "gated_n": 13,
+        "consistent_n": 13,
+        "rate": 1.0,
+        "definition": "among replies whose Phase 6 gates fail (intent confidence < threshold OR top similarity < threshold): the reply asks a clarifying question or redirects to DMs instead of asserting specific advice"
+      },
+      "gates": {
+        "intent_pass_n": 19,
+        "retrieval_pass_n": 23,
+        "auto_eligible_n": 16,
+        "auto_eligible_rate": 0.5517
+      },
+      "length": {
+        "mean_chars": 126.9655,
+        "mean_words": 23.4138,
+        "corpus_avg_chars": 100.8,
+        "corpus_avg_words": 19.1,
+        "within_280_rate": 1.0
+      },
+      "latency": {
+        "mean_llm_ms": 599.8966,
+        "mean_total_ms": 642.6552,
+        "max_total_ms": 998
+      },
+      "failures": []
+    }
+  },
+  "qualitative_examples": [
+    {
+      "message": "Jesus fucking Christ my phone keeps dying at like 90% y'all ain't shot prolly gon get a samsung @AppleSupport",
+      "golden_label": "device_hardware",
+      "predicted_intent": "general_complaint",
+      "intent_confidence": 0.4879,
+      "top1_score": 0.7355,
+      "gates": {
+        "intent_confidence": 0.4879,
+        "top1_score": 0.7355,
+        "intent_pass": false,
+        "retrieval_pass": true,
+        "auto_handle_eligible": false
+      },
+      "reply": "Based on similar cases we've seen, we're sorry to hear about your battery concern. Could you let us know which iPhone model you have?",
+      "scores": {
+        "grounding_overlap": 0.1818,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": true,
+        "dm_redirect": false,
+        "personal_data_solicited": false,
+        "length_chars": 133,
+        "length_words": 24
+      },
+      "evidence_top3": [
+        {
+          "rank": 1,
+          "score": 0.7355,
+          "pair_id": "455018",
+          "conversation_id": "455020",
+          "predicted_intent": "general_complaint",
+          "customer_message": "I’m so tired of my phone dying at 93% @AppleSupport",
+          "support_response": "This is not the experience we want you to have. Which iPhone model do you own?"
+        },
+        {
+          "rank": 2,
+          "score": 0.7266,
+          "pair_id": "1699908",
+          "conversation_id": "1699909",
+          "predicted_intent": "software_bug",
+          "customer_message": "My phone dies in literally 0.5 seconds wtf I haven’t even had it for a year this is ridiculous @AppleSupport",
+          "support_response": "Hi. We are here to help. Send us a DM, and we'll help from there. Thanks"
+        },
+        {
+          "rank": 3,
+          "score": 0.7231,
+          "pair_id": "2288050",
+          "conversation_id": "2288051",
+          "predicted_intent": "general_complaint",
+          "customer_message": "Fix your shit @AppleSupport, I’m sick of my phone dying at 20%",
+          "support_response": "We'd like to work together on that. Let's get a bit of information and meet up in DM. What iOS version is installed? You'll find that in Settings > General > About."
+        }
+      ],
+      "grounding_overlap": 0.1818
+    },
+    {
+      "message": "Have you ever wanted to punch someone in the face? Like I️ have SUCH a desire to punch this one person in the face as hard as I️ can",
+      "golden_label": "other",
+      "predicted_intent": "other",
+      "intent_confidence": 0.9193,
+      "top1_score": 0.3671,
+      "gates": {
+        "intent_confidence": 0.9193,
+        "top1_score": 0.3671,
+        "intent_pass": true,
+        "retrieval_pass": false,
+        "auto_handle_eligible": false
+      },
+      "reply": "Based on similar cases we've seen, we'd like to take a closer look in DM. Could you tell us which device you're using?",
+      "scores": {
+        "grounding_overlap": 0.3846,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": true,
+        "dm_redirect": true,
+        "personal_data_solicited": false,
+        "length_chars": 118,
+        "length_words": 23
+      },
+      "evidence_top3": [
+        {
+          "rank": 1,
+          "score": 0.3671,
+          "pair_id": "1586327",
+          "conversation_id": "1586326",
+          "predicted_intent": "software_bug",
+          "customer_message": "Yes I’ve done that numerous times.",
+          "support_response": "Thanks. Let’s try force closing the App Store."
+        },
+        {
+          "rank": 2,
+          "score": 0.3633,
+          "pair_id": "1396717",
+          "conversation_id": "1396719",
+          "predicted_intent": "other",
+          "customer_message": "@AppleSupport I have anger issues you don’t mess with me like this I’ll fucking dent them with my teeth",
+          "support_response": "We'd like to take a closer look via DM. Have the AirPods ever worked properly? When did this issue begin?"
+        },
+        {
+          "rank": 3,
+          "score": 0.3526,
+          "pair_id": "2680909",
+          "conversation_id": "2680913",
+          "predicted_intent": "other",
+          "customer_message": "Of course I have.",
+          "support_response": "We’d love to help further. To start, send us a DM letting us know which device you’re using."
+        }
+      ],
+      "grounding_overlap": 0.3846
+    },
+    {
+      "message": "So I️ have 280 so I’m going use this time to thank everyone following me even though I️ get annoying. Y’all are the real ones. Now that I️ have 280 it’s gonna get worse... so thank you!! So stick around. Also @123765, you fucked up with thi",
+      "golden_label": "general_complaint",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.6446,
+      "top1_score": 0.6478,
+      "gates": {
+        "intent_confidence": 0.6446,
+        "top1_score": 0.6478,
+        "intent_pass": true,
+        "retrieval_pass": false,
+        "auto_handle_eligible": false
+      },
+      "reply": "Based on similar cases we'd like to help with your issue. Could you join us in DM and let us know which device and software version you're using?",
+      "scores": {
+        "grounding_overlap": 0.5,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": true,
+        "dm_redirect": true,
+        "personal_data_solicited": false,
+        "length_chars": 145,
+        "length_words": 28
+      },
+      "evidence_top3": [
+        {
+          "rank": 1,
+          "score": 0.6478,
+          "pair_id": "1773384",
+          "conversation_id": "1773385",
+          "predicted_intent": "software_bug",
+          "customer_message": "have now discovered that everyone got said 280 update. i am now stepping down from my high horse. i shall also try to lengthen every tweet to 280 characters until this newness wears off and i become annoyed with typing. also can @115858 plz",
+          "support_response": "Here’s what you can do to work around the issue until it’s fixed in a future software update:"
+        },
+        {
+          "rank": 2,
+          "score": 0.6449,
+          "pair_id": "1776339",
+          "conversation_id": "1776340",
+          "predicted_intent": "software_bug",
+          "customer_message": "your update.....sucks !!! Wish I’d stayed with @138021 geez especially since I’ve had nothing but issues with this refurb.",
+          "support_response": "Let's see what we can figure out together. Please join us in DM and let us know what symptoms you're experiencing."
+        },
+        {
+          "rank": 3,
+          "score": 0.6419,
+          "pair_id": "1966856",
+          "conversation_id": "1966858",
+          "predicted_intent": "software_bug",
+          "customer_message": "@115858 Dude me too I️ was so annoyed I️ think it’s because of the update",
+          "support_response": "We are here to help whenever possible. DM which iPhone and specific iOS version you are using so we can help."
+        }
+      ],
+      "grounding_overlap": 0.5
+    },
+    {
+      "message": "Dear @115858, you’re really rude for ruining the battery life on our phones with that last update.",
+      "golden_label": "software_bug",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.8259,
+      "top1_score": 0.822,
+      "gates": {
+        "intent_confidence": 0.8259,
+        "top1_score": 0.822,
+        "intent_pass": true,
+        "retrieval_pass": true,
+        "auto_handle_eligible": true
+      },
+      "reply": "Based on similar cases we've seen, we can help with your battery. Which iOS version are you currently running?",
+      "scores": {
+        "grounding_overlap": 0.5455,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": true,
+        "dm_redirect": false,
+        "personal_data_solicited": false,
+        "length_chars": 110,
+        "length_words": 19
+      },
+      "evidence_top3": [
+        {
+          "rank": 1,
+          "score": 0.822,
+          "pair_id": "2590423",
+          "conversation_id": "2590424",
+          "predicted_intent": "software_bug",
+          "customer_message": ".@115858 hey wtf. Thanks for the update that ruined my phone's battery. I'm mad. But moreso I'm disappointed.",
+          "support_response": "We can help with your battery. Which iOS version and iPhone model do you have? Send us a DM and let us know."
+        },
+        {
+          "rank": 2,
+          "score": 0.8104,
+          "pair_id": "937480",
+          "conversation_id": "937482",
+          "predicted_intent": "software_bug",
+          "customer_message": "Dear @115858, this new update has made my battery life shit.",
+          "support_response": "We're happy to assist. Which iOS version are you currently running? Go to Settings > General > About for the version."
+        },
+        {
+          "rank": 3,
+          "score": 0.8061,
+          "pair_id": "215363",
+          "conversation_id": "215364",
+          "predicted_intent": "software_bug",
+          "customer_message": "Hey @115858 your new update has killed my phone if it’s battery life. Come on.",
+          "support_response": "We want to help. Which iOS version is your device currently running? You can locate this under Settings > General > About."
+        }
+      ],
+      "grounding_overlap": 0.5455
+    },
+    {
+      "message": "Can you make your iCal app stop deleting my saved date events, oh and stop doubling other's that would be great.",
+      "golden_label": "software_bug",
+      "predicted_intent": "account_icloud",
+      "intent_confidence": 0.3189,
+      "top1_score": 0.5708,
+      "gates": {
+        "intent_confidence": 0.3189,
+        "top1_score": 0.5708,
+        "intent_pass": false,
+        "retrieval_pass": false,
+        "auto_handle_eligible": false
+      },
+      "reply": "Based on similar cases we'd like to gather more details - which device and software version are you using?",
+      "scores": {
+        "grounding_overlap": 0.7,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": true,
+        "dm_redirect": false,
+        "personal_data_solicited": false,
+        "length_chars": 106,
+        "length_words": 19
+      },
+      "evidence_top3": [
+        {
+          "rank": 1,
+          "score": 0.5708,
+          "pair_id": "97068",
+          "conversation_id": "97067",
+          "predicted_intent": "other",
+          "customer_message": "Thanks! Yes- specifically iCal, and usually not doing anything other than viewing my days meetings/items.",
+          "support_response": "OK, thanks. Which device are you using and which software version is installed?"
+        },
+        {
+          "rank": 2,
+          "score": 0.5702,
+          "pair_id": "2143243",
+          "conversation_id": "2143245",
+          "predicted_intent": "account_icloud",
+          "customer_message": "Hey @AppleSupport why did my calendar just delete all events ???",
+          "support_response": "We'd be happy to help. Have you tried restarting the device? If not, let's try that."
+        },
+        {
+          "rank": 3,
+          "score": 0.5628,
+          "pair_id": "994479",
+          "conversation_id": "994478",
+          "predicted_intent": "account_icloud",
+          "customer_message": "Yes. I also do not sync my calendars between my devices b/c iTunes wanted to delete ALL events from my computer.",
+          "support_response": "Which model do you have and is iOS 11.0.3 the version installed? Have you tried any steps and if yes, which ones?"
+        }
+      ],
+      "grounding_overlap": 0.7
+    }
+  ],
+  "honest_caveats": [
+    "Token-overlap grounding is a lexical proxy: a reply can be faithful while using fresh wording, or unfaithful while reusing evidence words. No semantic entailment verification was performed.",
+    "LLM outputs are nondeterministic; the metrics below describe the recorded run (see generated_at), not a stable property of the pipeline.",
+    "No human annotation or preference test was performed — no claim is made that the replies are subjectively 'good', only that the measured grounding and safety proxies hold.",
+    "The unsupported-specifics check covers numbers, version-like tokens, prices and URLs; fabricated prose claims would not be caught by it.",
+    "Escalation consistency is a preview of the Phase 6 policy; the policy itself is not implemented yet."
+  ],
+  "wall_clock_seconds": 18.7,
+  "artifacts": {
+    "results": "evaluation/results/generation_results.json",
+    "summary": "evaluation/results/phase5_summary.json"
+  },
+  "live_service": {
+    "port": 3030,
+    "generate_endpoint": "/api/phase5/generate",
+    "health_endpoint": "/api/phase4/health",
+    "note": "mini-services/retrieval-service (Bun + Python worker + z-ai LLM) generates evidence-grounded drafts live; the dashboard demo calls it through the gateway via XTransformPort=3030."
+  }
+}

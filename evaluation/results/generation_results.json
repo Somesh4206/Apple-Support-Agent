@@ -1,0 +1,2626 @@
+{
+  "phase": 5,
+  "generated_at": "2026-09-12T09:07:58+00:00",
+  "service_health": {
+    "ok": true,
+    "service": "retrieval-service",
+    "worker": "ready",
+    "corpus_size": 105871,
+    "model": "sentence-transformers/all-MiniLM-L6-v2",
+    "index": "faiss.IndexFlatIP (exact cosine)",
+    "uptime_s": 26
+  },
+  "records": [
+    {
+      "index": 1,
+      "conversation_id": "1020302",
+      "message": "my App Store is not working!!!!",
+      "golden_label": "software_bug",
+      "predicted_intent": "device_hardware",
+      "intent_confidence": 0.367,
+      "runner_up": "software_bug",
+      "runner_up_confidence": 0.1961,
+      "gates": {
+        "intent_confidence": 0.367,
+        "top1_score": 0.9143,
+        "intent_pass": false,
+        "retrieval_pass": true,
+        "auto_handle_eligible": false
+      },
+      "reply": "Based on similar cases we've seen, we'd like to help with your App Store issue. Could you tell us what happens when you try using it?",
+      "scores": {
+        "grounding_overlap": 0.5714,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": true,
+        "dm_redirect": false,
+        "personal_data_solicited": false,
+        "length_chars": 133,
+        "length_words": 26
+      },
+      "evidence": [
+        {
+          "rank": 1,
+          "score": 0.9143,
+          "pair_id": "852950",
+          "conversation_id": "852952",
+          "predicted_intent": "device_hardware",
+          "customer_message": "my app store’s not working :(",
+          "support_response": "Can you please provide more details so that we have a better understanding of what's going on? What steps have you tried?"
+        },
+        {
+          "rank": 2,
+          "score": 0.8994,
+          "pair_id": "686565",
+          "conversation_id": "686566",
+          "predicted_intent": "device_hardware",
+          "customer_message": "App Store not working for me either",
+          "support_response": "We can help. What happens when you try using your App Store?"
+        },
+        {
+          "rank": 3,
+          "score": 0.8939,
+          "pair_id": "1007648",
+          "conversation_id": "1007651",
+          "predicted_intent": "device_hardware",
+          "customer_message": "your App Store isn't working! What the hell!?",
+          "support_response": "We can help. Tell us more about the issue you're encountering with the App Store. What device are you using?"
+        },
+        {
+          "rank": 4,
+          "score": 0.8803,
+          "pair_id": "1697377",
+          "conversation_id": "1697378",
+          "predicted_intent": "software_bug",
+          "customer_message": "is there a reason my App Store isn’t working at all ? Help please",
+          "support_response": "Thanks Rigo. We've received your DM and we'll continue there in just a moment."
+        },
+        {
+          "rank": 5,
+          "score": 0.8786,
+          "pair_id": "1417359",
+          "conversation_id": "1417360",
+          "predicted_intent": "software_bug",
+          "customer_message": "why isn’t App Store working for me?!?!?! 😩😩😩 I cant download anything but my internet is working perfectly",
+          "support_response": "We want you to be able to use your App Store. Have you tried on a Wi-Fi connection? Let us know in DM."
+        }
+      ],
+      "timings": {
+        "embed_ms": 123.3,
+        "faiss_search_ms": 15.9,
+        "llm_ms": 685,
+        "total_ms": 831
+      },
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "prompt": {
+        "system": "You are the draft-reply engine of a customer-support prototype (\"Apple Support AI\"), built for a machine-learning assignment. You write ONE public reply to a customer, grounded STRICTLY in numbered historical support cases given as evidence.\n\nSafety rules — non-negotiable:\n1. Use only facts, troubleshooting steps and phrasing present in the evidence cases. Never invent prices, dates, software versions, policies, phone numbers or links.\n2. Include a brief grounding phrase making clear the suggestion comes from how similar issues were handled historically — e.g. \"Based on similar cases we've seen, …\" — and never imply it is current company policy.\n3. If the evidence does not clearly address the customer's issue, do not guess: say you'd like to look into it with them and ask ONE short clarifying question.\n4. For account, payment or security matters, never ask for or repeat personal details in public — invite the customer to continue in Direct Messages, exactly as the historical support team did.\n5. Style: warm, concise, professional; match the evidence replies. No hashtags, no emoji, no signatures, no quotation marks around the reply.\n6. Length: at most 280 characters, one short paragraph (or two sentences).\n\nOutput ONLY the reply text.",
+        "user": "Customer message: \"my App Store is not working!!!!\"\n\nPredicted issue: device_hardware (confidence 0.37; runner-up: software_bug 0.20)\nEvidence quality: top similarity 0.91 — strong grounding — the evidence directly addresses similar issues (threshold 0.65).\n\nHistorical support cases, most similar first:\n[1] similarity 0.91 · issue device_hardware\n    Customer: \"my app store’s not working :(\"\n    Support: \"Can you please provide more details so that we have a better understanding of what's going on? What steps have you tried?\"\n[2] similarity 0.90 · issue device_hardware\n    Customer: \"App Store not working for me either\"\n    Support: \"We can help. What happens when you try using your App Store?\"\n[3] similarity 0.89 · issue device_hardware\n    Customer: \"your App Store isn't working! What the hell!?\"\n    Support: \"We can help. Tell us more about the issue you're encountering with the App Store. What device are you using?\"\n[4] similarity 0.88 · issue software_bug\n    Customer: \"is there a reason my App Store isn’t working at all ? Help please\"\n    Support: \"Thanks Rigo. We've received your DM and we'll continue there in just a moment.\"\n[5] similarity 0.88 · issue software_bug\n    Customer: \"why isn’t App Store working for me?!?!?! 😩😩😩 I cant download anything but my internet is working perfectly\"\n    Support: \"We want you to be able to use your App Store. Have you tried on a Wi-Fi connection? Let us know in DM.\"\n\nDraft the reply now, following every safety rule."
+      }
+    },
+    {
+      "index": 2,
+      "conversation_id": "11126",
+      "message": ", your new iOS 11.1 not resolve the calendar problem. 😡#iOS11 #iosfail",
+      "golden_label": "software_bug",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.6724,
+      "runner_up": "connectivity",
+      "runner_up_confidence": 0.1721,
+      "gates": {
+        "intent_confidence": 0.6724,
+        "top1_score": 0.8376,
+        "intent_pass": true,
+        "retrieval_pass": true,
+        "auto_handle_eligible": true
+      },
+      "reply": "Based on similar cases we've seen, we'd like to help with your Calendar issue. Could you tell us which device you're using?",
+      "scores": {
+        "grounding_overlap": 0.4615,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": true,
+        "dm_redirect": false,
+        "personal_data_solicited": false,
+        "length_chars": 123,
+        "length_words": 22
+      },
+      "evidence": [
+        {
+          "rank": 1,
+          "score": 0.8376,
+          "pair_id": "974029",
+          "conversation_id": "974030",
+          "predicted_intent": "software_bug",
+          "customer_message": "Hey, @AppleSupport. You fucked the Calendar on iOS11. You tap November and try to return... CRASH! Please fix it (it worked for 10 years!).",
+          "support_response": "We’re here to help. Let’s team up in DM and we’ll do our best to assist you."
+        },
+        {
+          "rank": 2,
+          "score": 0.8216,
+          "pair_id": "2890731",
+          "conversation_id": "2890732",
+          "predicted_intent": "software_bug",
+          "customer_message": "please fix your calendar app @ iOS 11.1.2. It keep crashing",
+          "support_response": "We’d like to help with your Calendar app. When did this start? Which device are you using?"
+        },
+        {
+          "rank": 3,
+          "score": 0.8174,
+          "pair_id": "2752455",
+          "conversation_id": "2752457",
+          "predicted_intent": "software_bug",
+          "customer_message": "I’ve had updated me IPhone 7 to IOS 11.1 and the calendar still doesn’t work.",
+          "support_response": "We're happy to help. What trouble are you experiencing with your Calendar?"
+        },
+        {
+          "rank": 4,
+          "score": 0.8094,
+          "pair_id": "711153",
+          "conversation_id": "711156",
+          "predicted_intent": "software_bug",
+          "customer_message": "Calendar totally bugged after iOS 11.0.2 update. It’s all messed up crashing all the time could you pls fix this @AppleSupport",
+          "support_response": "Thanks for reaching out. Does this issue continue after restarting your iPhone?"
+        },
+        {
+          "rank": 5,
+          "score": 0.802,
+          "pair_id": "1340770",
+          "conversation_id": "1340769",
+          "predicted_intent": "connectivity",
+          "customer_message": "There are several complaint that Calendar is not work after ios 11 in web , like my case !",
+          "support_response": "We'd like to work with you to find a solution to what you're experiencing. DM us and we'll get started."
+        }
+      ],
+      "timings": {
+        "embed_ms": 25.9,
+        "faiss_search_ms": 17.5,
+        "llm_ms": 529,
+        "total_ms": 575
+      },
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "prompt": {
+        "system": "You are the draft-reply engine of a customer-support prototype (\"Apple Support AI\"), built for a machine-learning assignment. You write ONE public reply to a customer, grounded STRICTLY in numbered historical support cases given as evidence.\n\nSafety rules — non-negotiable:\n1. Use only facts, troubleshooting steps and phrasing present in the evidence cases. Never invent prices, dates, software versions, policies, phone numbers or links.\n2. Include a brief grounding phrase making clear the suggestion comes from how similar issues were handled historically — e.g. \"Based on similar cases we've seen, …\" — and never imply it is current company policy.\n3. If the evidence does not clearly address the customer's issue, do not guess: say you'd like to look into it with them and ask ONE short clarifying question.\n4. For account, payment or security matters, never ask for or repeat personal details in public — invite the customer to continue in Direct Messages, exactly as the historical support team did.\n5. Style: warm, concise, professional; match the evidence replies. No hashtags, no emoji, no signatures, no quotation marks around the reply.\n6. Length: at most 280 characters, one short paragraph (or two sentences).\n\nOutput ONLY the reply text.",
+        "user": "Customer message: \", your new iOS 11.1 not resolve the calendar problem. 😡#iOS11 #iosfail\"\n\nPredicted issue: software_bug (confidence 0.67; runner-up: connectivity 0.17)\nEvidence quality: top similarity 0.84 — strong grounding — the evidence directly addresses similar issues (threshold 0.65).\n\nHistorical support cases, most similar first:\n[1] similarity 0.84 · issue software_bug\n    Customer: \"Hey, @AppleSupport. You fucked the Calendar on iOS11. You tap November and try to return... CRASH! Please fix it (it worked for 10 years!).\"\n    Support: \"We’re here to help. Let’s team up in DM and we’ll do our best to assist you.\"\n[2] similarity 0.82 · issue software_bug\n    Customer: \"please fix your calendar app @ iOS 11.1.2. It keep crashing\"\n    Support: \"We’d like to help with your Calendar app. When did this start? Which device are you using?\"\n[3] similarity 0.82 · issue software_bug\n    Customer: \"I’ve had updated me IPhone 7 to IOS 11.1 and the calendar still doesn’t work.\"\n    Support: \"We're happy to help. What trouble are you experiencing with your Calendar?\"\n[4] similarity 0.81 · issue software_bug\n    Customer: \"Calendar totally bugged after iOS 11.0.2 update. It’s all messed up crashing all the time could you pls fix this @AppleSupport\"\n    Support: \"Thanks for reaching out. Does this issue continue after restarting your iPhone?\"\n[5] similarity 0.80 · issue connectivity\n    Customer: \"There are several complaint that Calendar is not work after ios 11 in web , like my case !\"\n    Support: \"We'd like to work with you to find a solution to what you're experiencing. DM us and we'll get started.\"\n\nDraft the reply now, following every safety rule."
+      }
+    },
+    {
+      "index": 3,
+      "conversation_id": "1122780",
+      "message": "can’t download and open epub files to ibooks. whenever i download an epub file it appears for a second and it disappears.",
+      "golden_label": "software_bug",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.7552,
+      "runner_up": "other",
+      "runner_up_confidence": 0.0939,
+      "gates": {
+        "intent_confidence": 0.7552,
+        "top1_score": 0.7267,
+        "intent_pass": true,
+        "retrieval_pass": true,
+        "auto_handle_eligible": true
+      },
+      "reply": "Based on similar cases we've seen, we'd be happy to look into this with you. Could you let us know which iOS version you're using?",
+      "scores": {
+        "grounding_overlap": 0.5833,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": true,
+        "dm_redirect": false,
+        "personal_data_solicited": false,
+        "length_chars": 130,
+        "length_words": 25
+      },
+      "evidence": [
+        {
+          "rank": 1,
+          "score": 0.7267,
+          "pair_id": "850428",
+          "conversation_id": "850435",
+          "predicted_intent": "account_icloud",
+          "customer_message": "all my epub files got deleted from my ibooks",
+          "support_response": "Got it. We'd be happy to look into this with you. Can you provide us which iOS version you're using?"
+        },
+        {
+          "rank": 2,
+          "score": 0.7223,
+          "pair_id": "798838",
+          "conversation_id": "798840",
+          "predicted_intent": "other",
+          "customer_message": "Hello @AppleSupport pls how do I attach an epub file in my ibooks to a mail? It's giving me headache.",
+          "support_response": "We'd be glad to help. To ensure we give you the right steps, which device are you using & what version of OS is installed?"
+        },
+        {
+          "rank": 3,
+          "score": 0.6968,
+          "pair_id": "1615444",
+          "conversation_id": "1615452",
+          "predicted_intent": "software_bug",
+          "customer_message": "iBooks on iOS 11.1/iPhone X won’t show my ePub items, and manually trying to add it again fails. Appears on all other devices.",
+          "support_response": "Congratulations on your new iPhone X. Let’s team up on this. What other devices are you using? Are they also running iOS 11.1?"
+        },
+        {
+          "rank": 4,
+          "score": 0.6728,
+          "pair_id": "1776813",
+          "conversation_id": "1776814",
+          "predicted_intent": "device_hardware",
+          "customer_message": "i can’t open any book from iBooks",
+          "support_response": "We're here to help. Send us a DM with your current iOS version and we'll continue there."
+        },
+        {
+          "rank": 5,
+          "score": 0.6377,
+          "pair_id": "1768814",
+          "conversation_id": "1768815",
+          "predicted_intent": "software_bug",
+          "customer_message": "Bought a book on iBook but it’s not downloading. Still showing as sample. Explain @AppleSupport",
+          "support_response": "We'd be happy to help. Do you see this book in your Purchased section? Our website here has more info:"
+        }
+      ],
+      "timings": {
+        "embed_ms": 21.5,
+        "faiss_search_ms": 14.3,
+        "llm_ms": 622,
+        "total_ms": 661
+      },
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "prompt": {
+        "system": "You are the draft-reply engine of a customer-support prototype (\"Apple Support AI\"), built for a machine-learning assignment. You write ONE public reply to a customer, grounded STRICTLY in numbered historical support cases given as evidence.\n\nSafety rules — non-negotiable:\n1. Use only facts, troubleshooting steps and phrasing present in the evidence cases. Never invent prices, dates, software versions, policies, phone numbers or links.\n2. Include a brief grounding phrase making clear the suggestion comes from how similar issues were handled historically — e.g. \"Based on similar cases we've seen, …\" — and never imply it is current company policy.\n3. If the evidence does not clearly address the customer's issue, do not guess: say you'd like to look into it with them and ask ONE short clarifying question.\n4. For account, payment or security matters, never ask for or repeat personal details in public — invite the customer to continue in Direct Messages, exactly as the historical support team did.\n5. Style: warm, concise, professional; match the evidence replies. No hashtags, no emoji, no signatures, no quotation marks around the reply.\n6. Length: at most 280 characters, one short paragraph (or two sentences).\n\nOutput ONLY the reply text.",
+        "user": "Customer message: \"can’t download and open epub files to ibooks. whenever i download an epub file it appears for a second and it disappears.\"\n\nPredicted issue: software_bug (confidence 0.76; runner-up: other 0.09)\nEvidence quality: top similarity 0.73 — strong grounding — the evidence directly addresses similar issues (threshold 0.65).\n\nHistorical support cases, most similar first:\n[1] similarity 0.73 · issue account_icloud\n    Customer: \"all my epub files got deleted from my ibooks\"\n    Support: \"Got it. We'd be happy to look into this with you. Can you provide us which iOS version you're using?\"\n[2] similarity 0.72 · issue other\n    Customer: \"Hello @AppleSupport pls how do I attach an epub file in my ibooks to a mail? It's giving me headache.\"\n    Support: \"We'd be glad to help. To ensure we give you the right steps, which device are you using & what version of OS is installed?\"\n[3] similarity 0.70 · issue software_bug\n    Customer: \"iBooks on iOS 11.1/iPhone X won’t show my ePub items, and manually trying to add it again fails. Appears on all other devices.\"\n    Support: \"Congratulations on your new iPhone X. Let’s team up on this. What other devices are you using? Are they also running iOS 11.1?\"\n[4] similarity 0.67 · issue device_hardware\n    Customer: \"i can’t open any book from iBooks\"\n    Support: \"We're here to help. Send us a DM with your current iOS version and we'll continue there.\"\n[5] similarity 0.64 · issue software_bug\n    Customer: \"Bought a book on iBook but it’s not downloading. Still showing as sample. Explain @AppleSupport\"\n    Support: \"We'd be happy to help. Do you see this book in your Purchased section? Our website here has more info:\"\n\nDraft the reply now, following every safety rule."
+      }
+    },
+    {
+      "index": 4,
+      "conversation_id": "1201168",
+      "message": "Just upgraded to #HighSierra & now Mail will not open. Only 1 bounce& then not responding.",
+      "golden_label": "software_bug",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.7128,
+      "runner_up": "support_process",
+      "runner_up_confidence": 0.0679,
+      "gates": {
+        "intent_confidence": 0.7128,
+        "top1_score": 0.6791,
+        "intent_pass": true,
+        "retrieval_pass": true,
+        "auto_handle_eligible": true
+      },
+      "reply": "Based on similar cases we've seen, be sure you've installed all available updates in the Mac App Store.",
+      "scores": {
+        "grounding_overlap": 0.6154,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": false,
+        "dm_redirect": false,
+        "personal_data_solicited": false,
+        "length_chars": 103,
+        "length_words": 18
+      },
+      "evidence": [
+        {
+          "rank": 1,
+          "score": 0.6791,
+          "pair_id": "1342797",
+          "conversation_id": "1342798",
+          "predicted_intent": "software_bug",
+          "customer_message": "Hey @AppleSupport, Mail on #HighSierra is a broken mess that crashes whenever I try to compose an email would be appreciated if you fixed it",
+          "support_response": "We can help with that. To get started, be sure you've installed all available updates in the Mac App Store."
+        },
+        {
+          "rank": 2,
+          "score": 0.5811,
+          "pair_id": "712958",
+          "conversation_id": "712959",
+          "predicted_intent": "software_bug",
+          "customer_message": "😑 @AppleSupport listen here. Day 4 of @115769 not working on #HighSierra. I’ve reinstalled, I’ve patched, I’ve checked Read and Write permissions. Like yo.",
+          "support_response": "We’re happy to dive deeper into this with you. Reach us in DM to continue."
+        },
+        {
+          "rank": 3,
+          "score": 0.5808,
+          "pair_id": "14842",
+          "conversation_id": "14838",
+          "predicted_intent": "account_icloud",
+          "customer_message": "So, that got me back in, but now Mail won’t work.",
+          "support_response": "What happens when you try to open or use the Mail app? Let us know more in DM, please."
+        },
+        {
+          "rank": 4,
+          "score": 0.5799,
+          "pair_id": "619402",
+          "conversation_id": "619404",
+          "predicted_intent": "other",
+          "customer_message": "Since upgrading to #HighSierra, my Apple Mail no longer opens hyperlinks in the browser tab when I click them. They only open the browser Home page. Is this a known issue, please? @AppleSupport #help",
+          "support_response": "Thanks for reaching out. Is this happening with links from more than one sender?"
+        },
+        {
+          "rank": 5,
+          "score": 0.5683,
+          "pair_id": "1747406",
+          "conversation_id": "1747408",
+          "predicted_intent": "account_icloud",
+          "customer_message": "I cannot even open my emails",
+          "support_response": "DM us using the link below. We're glad to look into this with you."
+        }
+      ],
+      "timings": {
+        "embed_ms": 19,
+        "faiss_search_ms": 14.9,
+        "llm_ms": 632,
+        "total_ms": 667
+      },
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "prompt": {
+        "system": "You are the draft-reply engine of a customer-support prototype (\"Apple Support AI\"), built for a machine-learning assignment. You write ONE public reply to a customer, grounded STRICTLY in numbered historical support cases given as evidence.\n\nSafety rules — non-negotiable:\n1. Use only facts, troubleshooting steps and phrasing present in the evidence cases. Never invent prices, dates, software versions, policies, phone numbers or links.\n2. Include a brief grounding phrase making clear the suggestion comes from how similar issues were handled historically — e.g. \"Based on similar cases we've seen, …\" — and never imply it is current company policy.\n3. If the evidence does not clearly address the customer's issue, do not guess: say you'd like to look into it with them and ask ONE short clarifying question.\n4. For account, payment or security matters, never ask for or repeat personal details in public — invite the customer to continue in Direct Messages, exactly as the historical support team did.\n5. Style: warm, concise, professional; match the evidence replies. No hashtags, no emoji, no signatures, no quotation marks around the reply.\n6. Length: at most 280 characters, one short paragraph (or two sentences).\n\nOutput ONLY the reply text.",
+        "user": "Customer message: \"Just upgraded to #HighSierra & now Mail will not open. Only 1 bounce& then not responding.\"\n\nPredicted issue: software_bug (confidence 0.71; runner-up: support_process 0.07)\nEvidence quality: top similarity 0.68 — strong grounding — the evidence directly addresses similar issues (threshold 0.65).\n\nHistorical support cases, most similar first:\n[1] similarity 0.68 · issue software_bug\n    Customer: \"Hey @AppleSupport, Mail on #HighSierra is a broken mess that crashes whenever I try to compose an email would be appreciated if you fixed it\"\n    Support: \"We can help with that. To get started, be sure you've installed all available updates in the Mac App Store.\"\n[2] similarity 0.58 · issue software_bug\n    Customer: \"😑 @AppleSupport listen here. Day 4 of @115769 not working on #HighSierra. I’ve reinstalled, I’ve patched, I’ve checked Read and Write permissions. Like yo.\"\n    Support: \"We’re happy to dive deeper into this with you. Reach us in DM to continue.\"\n[3] similarity 0.58 · issue account_icloud\n    Customer: \"So, that got me back in, but now Mail won’t work.\"\n    Support: \"What happens when you try to open or use the Mail app? Let us know more in DM, please.\"\n[4] similarity 0.58 · issue other\n    Customer: \"Since upgrading to #HighSierra, my Apple Mail no longer opens hyperlinks in the browser tab when I click them. They only open the browser Home page. Is this a known issue, please? @AppleSupport #help\"\n    Support: \"Thanks for reaching out. Is this happening with links from more than one sender?\"\n[5] similarity 0.57 · issue account_icloud\n    Customer: \"I cannot even open my emails\"\n    Support: \"DM us using the link below. We're glad to look into this with you.\"\n\nDraft the reply now, following every safety rule."
+      }
+    },
+    {
+      "index": 5,
+      "conversation_id": "1544927",
+      "message": "do you have a price quote on getting a screen fixed for iPhone 7 Plus?",
+      "golden_label": "repair_warranty",
+      "predicted_intent": "other",
+      "intent_confidence": 0.3705,
+      "runner_up": "repair_warranty",
+      "runner_up_confidence": 0.2413,
+      "gates": {
+        "intent_confidence": 0.3705,
+        "top1_score": 0.7659,
+        "intent_pass": false,
+        "retrieval_pass": true,
+        "auto_handle_eligible": false
+      },
+      "reply": "Based on similar cases we've seen, we'd be happy to help with your screen repair. Could you please let us know which country you're located in?",
+      "scores": {
+        "grounding_overlap": 0.4615,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": true,
+        "dm_redirect": false,
+        "personal_data_solicited": false,
+        "length_chars": 143,
+        "length_words": 26
+      },
+      "evidence": [
+        {
+          "rank": 1,
+          "score": 0.7659,
+          "pair_id": "1175543",
+          "conversation_id": "1175545",
+          "predicted_intent": "repair_warranty",
+          "customer_message": "how much is it to fix my screen for iPhone 7",
+          "support_response": "What country or region are you currently located in? This will help us provide the best support options. We can help."
+        },
+        {
+          "rank": 2,
+          "score": 0.7328,
+          "pair_id": "954248",
+          "conversation_id": "954249",
+          "predicted_intent": "repair_warranty",
+          "customer_message": "how much does it cost to get my iPhone 6 Plus screen fixed?",
+          "support_response": "We’d like to see how we can help. Can you give us some more details about the issue you're having?"
+        },
+        {
+          "rank": 3,
+          "score": 0.7059,
+          "pair_id": "694216",
+          "conversation_id": "694217",
+          "predicted_intent": "other",
+          "customer_message": "Hey, what's the price to have an iPhone 6 screen replaced and can it be done in store?",
+          "support_response": "We're happy to find that information for you. DM us and tell us which country you're located in."
+        },
+        {
+          "rank": 4,
+          "score": 0.6911,
+          "pair_id": "152931",
+          "conversation_id": "152932",
+          "predicted_intent": "repair_warranty",
+          "customer_message": "how much would it cost to get an iphone 7 screen fixed after it had been smashed?",
+          "support_response": "Having a broken phone is never fun, but we're here to help check into some options for you. Let's talk in DM."
+        },
+        {
+          "rank": 5,
+          "score": 0.6899,
+          "pair_id": "2592217",
+          "conversation_id": "2592218",
+          "predicted_intent": "other",
+          "customer_message": "how much do you charge to replace an iPhone 7 screen?",
+          "support_response": "Thanks for reaching out about your iPhone 7 screen. We can look into your replacement options. Send us a DM and let us know your country of residence."
+        }
+      ],
+      "timings": {
+        "embed_ms": 16.6,
+        "faiss_search_ms": 14.1,
+        "llm_ms": 627,
+        "total_ms": 660
+      },
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "prompt": {
+        "system": "You are the draft-reply engine of a customer-support prototype (\"Apple Support AI\"), built for a machine-learning assignment. You write ONE public reply to a customer, grounded STRICTLY in numbered historical support cases given as evidence.\n\nSafety rules — non-negotiable:\n1. Use only facts, troubleshooting steps and phrasing present in the evidence cases. Never invent prices, dates, software versions, policies, phone numbers or links.\n2. Include a brief grounding phrase making clear the suggestion comes from how similar issues were handled historically — e.g. \"Based on similar cases we've seen, …\" — and never imply it is current company policy.\n3. If the evidence does not clearly address the customer's issue, do not guess: say you'd like to look into it with them and ask ONE short clarifying question.\n4. For account, payment or security matters, never ask for or repeat personal details in public — invite the customer to continue in Direct Messages, exactly as the historical support team did.\n5. Style: warm, concise, professional; match the evidence replies. No hashtags, no emoji, no signatures, no quotation marks around the reply.\n6. Length: at most 280 characters, one short paragraph (or two sentences).\n\nOutput ONLY the reply text.",
+        "user": "Customer message: \"do you have a price quote on getting a screen fixed for iPhone 7 Plus?\"\n\nPredicted issue: other (confidence 0.37; runner-up: repair_warranty 0.24)\nEvidence quality: top similarity 0.77 — strong grounding — the evidence directly addresses similar issues (threshold 0.65).\n\nHistorical support cases, most similar first:\n[1] similarity 0.77 · issue repair_warranty\n    Customer: \"how much is it to fix my screen for iPhone 7\"\n    Support: \"What country or region are you currently located in? This will help us provide the best support options. We can help.\"\n[2] similarity 0.73 · issue repair_warranty\n    Customer: \"how much does it cost to get my iPhone 6 Plus screen fixed?\"\n    Support: \"We’d like to see how we can help. Can you give us some more details about the issue you're having?\"\n[3] similarity 0.71 · issue other\n    Customer: \"Hey, what's the price to have an iPhone 6 screen replaced and can it be done in store?\"\n    Support: \"We're happy to find that information for you. DM us and tell us which country you're located in.\"\n[4] similarity 0.69 · issue repair_warranty\n    Customer: \"how much would it cost to get an iphone 7 screen fixed after it had been smashed?\"\n    Support: \"Having a broken phone is never fun, but we're here to help check into some options for you. Let's talk in DM.\"\n[5] similarity 0.69 · issue other\n    Customer: \"how much do you charge to replace an iPhone 7 screen?\"\n    Support: \"Thanks for reaching out about your iPhone 7 screen. We can look into your replacement options. Send us a DM and let us know your country of residence.\"\n\nDraft the reply now, following every safety rule."
+      }
+    },
+    {
+      "index": 6,
+      "conversation_id": "1673516",
+      "message": "Have you ever wanted to punch someone in the face? Like I️ have SUCH a desire to punch this one person in the face as hard as I️ can",
+      "golden_label": "other",
+      "predicted_intent": "other",
+      "intent_confidence": 0.9193,
+      "runner_up": "software_bug",
+      "runner_up_confidence": 0.0261,
+      "gates": {
+        "intent_confidence": 0.9193,
+        "top1_score": 0.3671,
+        "intent_pass": true,
+        "retrieval_pass": false,
+        "auto_handle_eligible": false
+      },
+      "reply": "Based on similar cases we've seen, we'd like to take a closer look in DM. Could you tell us which device you're using?",
+      "scores": {
+        "grounding_overlap": 0.3846,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": true,
+        "dm_redirect": true,
+        "personal_data_solicited": false,
+        "length_chars": 118,
+        "length_words": 23
+      },
+      "evidence": [
+        {
+          "rank": 1,
+          "score": 0.3671,
+          "pair_id": "1586327",
+          "conversation_id": "1586326",
+          "predicted_intent": "software_bug",
+          "customer_message": "Yes I’ve done that numerous times.",
+          "support_response": "Thanks. Let’s try force closing the App Store."
+        },
+        {
+          "rank": 2,
+          "score": 0.3633,
+          "pair_id": "1396717",
+          "conversation_id": "1396719",
+          "predicted_intent": "other",
+          "customer_message": "@AppleSupport I have anger issues you don’t mess with me like this I’ll fucking dent them with my teeth",
+          "support_response": "We'd like to take a closer look via DM. Have the AirPods ever worked properly? When did this issue begin?"
+        },
+        {
+          "rank": 3,
+          "score": 0.3526,
+          "pair_id": "2680909",
+          "conversation_id": "2680913",
+          "predicted_intent": "other",
+          "customer_message": "Of course I have.",
+          "support_response": "We’d love to help further. To start, send us a DM letting us know which device you’re using."
+        },
+        {
+          "rank": 4,
+          "score": 0.3504,
+          "pair_id": "1920950",
+          "conversation_id": "1920951",
+          "predicted_intent": "other",
+          "customer_message": "this is legitimately the worst form of cyber bullying. Please stop.",
+          "support_response": "We'd like to make sure your device is running as expected. Let's take a closer look in DM. Send us a message."
+        },
+        {
+          "rank": 5,
+          "score": 0.3455,
+          "pair_id": "1407783",
+          "conversation_id": "1407778",
+          "predicted_intent": "other",
+          "customer_message": "No, just with one friend…",
+          "support_response": "If your friend is having issues with sharing their activity, we'll be happy to help. Just have them reach out to us."
+        }
+      ],
+      "timings": {
+        "embed_ms": 17.4,
+        "faiss_search_ms": 13.5,
+        "llm_ms": 610,
+        "total_ms": 642
+      },
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "prompt": {
+        "system": "You are the draft-reply engine of a customer-support prototype (\"Apple Support AI\"), built for a machine-learning assignment. You write ONE public reply to a customer, grounded STRICTLY in numbered historical support cases given as evidence.\n\nSafety rules — non-negotiable:\n1. Use only facts, troubleshooting steps and phrasing present in the evidence cases. Never invent prices, dates, software versions, policies, phone numbers or links.\n2. Include a brief grounding phrase making clear the suggestion comes from how similar issues were handled historically — e.g. \"Based on similar cases we've seen, …\" — and never imply it is current company policy.\n3. If the evidence does not clearly address the customer's issue, do not guess: say you'd like to look into it with them and ask ONE short clarifying question.\n4. For account, payment or security matters, never ask for or repeat personal details in public — invite the customer to continue in Direct Messages, exactly as the historical support team did.\n5. Style: warm, concise, professional; match the evidence replies. No hashtags, no emoji, no signatures, no quotation marks around the reply.\n6. Length: at most 280 characters, one short paragraph (or two sentences).\n\nOutput ONLY the reply text.",
+        "user": "Customer message: \"Have you ever wanted to punch someone in the face? Like I️ have SUCH a desire to punch this one person in the face as hard as I️ can\"\n\nPredicted issue: other (confidence 0.92; runner-up: software_bug 0.03)\nEvidence quality: top similarity 0.37 — weak grounding — prefer a clarifying question over specific advice (threshold 0.65).\n\nHistorical support cases, most similar first:\n[1] similarity 0.37 · issue software_bug\n    Customer: \"Yes I’ve done that numerous times.\"\n    Support: \"Thanks. Let’s try force closing the App Store.\"\n[2] similarity 0.36 · issue other\n    Customer: \"@AppleSupport I have anger issues you don’t mess with me like this I’ll fucking dent them with my teeth\"\n    Support: \"We'd like to take a closer look via DM. Have the AirPods ever worked properly? When did this issue begin?\"\n[3] similarity 0.35 · issue other\n    Customer: \"Of course I have.\"\n    Support: \"We’d love to help further. To start, send us a DM letting us know which device you’re using.\"\n[4] similarity 0.35 · issue other\n    Customer: \"this is legitimately the worst form of cyber bullying. Please stop.\"\n    Support: \"We'd like to make sure your device is running as expected. Let's take a closer look in DM. Send us a message.\"\n[5] similarity 0.35 · issue other\n    Customer: \"No, just with one friend…\"\n    Support: \"If your friend is having issues with sharing their activity, we'll be happy to help. Just have them reach out to us.\"\n\nDraft the reply now, following every safety rule."
+      }
+    },
+    {
+      "index": 7,
+      "conversation_id": "1733789",
+      "message": "@AppleSupport you gotta fix the I️ like for real",
+      "golden_label": "software_bug",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.6585,
+      "runner_up": "general_complaint",
+      "runner_up_confidence": 0.1653,
+      "gates": {
+        "intent_confidence": 0.6585,
+        "top1_score": 0.8432,
+        "intent_pass": true,
+        "retrieval_pass": true,
+        "auto_handle_eligible": true
+      },
+      "reply": "Based on similar cases we've seen, here's what you can do to work around the issue until it's fixed in a future software update.",
+      "scores": {
+        "grounding_overlap": 0.5,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": false,
+        "dm_redirect": false,
+        "personal_data_solicited": false,
+        "length_chars": 128,
+        "length_words": 24
+      },
+      "evidence": [
+        {
+          "rank": 1,
+          "score": 0.8432,
+          "pair_id": "1673573",
+          "conversation_id": "1673574",
+          "predicted_intent": "software_bug",
+          "customer_message": "@AppleSupport fix your shit with this I️ stuff",
+          "support_response": "Here’s what you can do to work around the issue until it’s fixed in a future software update:"
+        },
+        {
+          "rank": 2,
+          "score": 0.8401,
+          "pair_id": "2000306",
+          "conversation_id": "2000307",
+          "predicted_intent": "software_bug",
+          "customer_message": "FIX MY I’S @AppleSupport",
+          "support_response": "Thanks for reaching out. What device is this occurring on? Let us know in a DM and we'll continue to assist."
+        },
+        {
+          "rank": 3,
+          "score": 0.8364,
+          "pair_id": "1754185",
+          "conversation_id": "1754186",
+          "predicted_intent": "software_bug",
+          "customer_message": "@AppleSupport y’all fixing this I️ thing or nah?",
+          "support_response": "Here’s what you can do to work around the issue until it’s fixed in a future software update:"
+        },
+        {
+          "rank": 4,
+          "score": 0.8302,
+          "pair_id": "2614242",
+          "conversation_id": "2614244",
+          "predicted_intent": "software_bug",
+          "customer_message": "also @AppleSupport fix my i’s",
+          "support_response": "We can help! Have you had a chance to update your iOS yet? If not, go ahead and create a back up first, then update your iOS under Settings > General > Software Update. Let us know if that fixes the letter i autocorrect issue please."
+        },
+        {
+          "rank": 5,
+          "score": 0.8295,
+          "pair_id": "2276290",
+          "conversation_id": "2276291",
+          "predicted_intent": "software_bug",
+          "customer_message": "OH MY GOD I️ CANT WITH THE I️ 🤬🤬🤬🤬🤬🤬🤬🤬 @AppleSupport FIX THIS SHIT",
+          "support_response": "We recently released an iOS update, 11.1.1, that contains a fix for autocorrect issues. Let’s be sure to back up your device prior to updating. How to back up:"
+        }
+      ],
+      "timings": {
+        "embed_ms": 16.7,
+        "faiss_search_ms": 15,
+        "llm_ms": 560,
+        "total_ms": 594
+      },
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "prompt": {
+        "system": "You are the draft-reply engine of a customer-support prototype (\"Apple Support AI\"), built for a machine-learning assignment. You write ONE public reply to a customer, grounded STRICTLY in numbered historical support cases given as evidence.\n\nSafety rules — non-negotiable:\n1. Use only facts, troubleshooting steps and phrasing present in the evidence cases. Never invent prices, dates, software versions, policies, phone numbers or links.\n2. Include a brief grounding phrase making clear the suggestion comes from how similar issues were handled historically — e.g. \"Based on similar cases we've seen, …\" — and never imply it is current company policy.\n3. If the evidence does not clearly address the customer's issue, do not guess: say you'd like to look into it with them and ask ONE short clarifying question.\n4. For account, payment or security matters, never ask for or repeat personal details in public — invite the customer to continue in Direct Messages, exactly as the historical support team did.\n5. Style: warm, concise, professional; match the evidence replies. No hashtags, no emoji, no signatures, no quotation marks around the reply.\n6. Length: at most 280 characters, one short paragraph (or two sentences).\n\nOutput ONLY the reply text.",
+        "user": "Customer message: \"@AppleSupport you gotta fix the I️ like for real\"\n\nPredicted issue: software_bug (confidence 0.66; runner-up: general_complaint 0.17)\nEvidence quality: top similarity 0.84 — strong grounding — the evidence directly addresses similar issues (threshold 0.65).\n\nHistorical support cases, most similar first:\n[1] similarity 0.84 · issue software_bug\n    Customer: \"@AppleSupport fix your shit with this I️ stuff\"\n    Support: \"Here’s what you can do to work around the issue until it’s fixed in a future software update:\"\n[2] similarity 0.84 · issue software_bug\n    Customer: \"FIX MY I’S @AppleSupport\"\n    Support: \"Thanks for reaching out. What device is this occurring on? Let us know in a DM and we'll continue to assist.\"\n[3] similarity 0.84 · issue software_bug\n    Customer: \"@AppleSupport y’all fixing this I️ thing or nah?\"\n    Support: \"Here’s what you can do to work around the issue until it’s fixed in a future software update:\"\n[4] similarity 0.83 · issue software_bug\n    Customer: \"also @AppleSupport fix my i’s\"\n    Support: \"We can help! Have you had a chance to update your iOS yet? If not, go ahead and create a back up first, then update your iOS under Settings > General > Software Update. Let us know if that fixes the letter i autocorrect issue please.\"\n[5] similarity 0.83 · issue software_bug\n    Customer: \"OH MY GOD I️ CANT WITH THE I️ 🤬🤬🤬🤬🤬🤬🤬🤬 @AppleSupport FIX THIS SHIT\"\n    Support: \"We recently released an iOS update, 11.1.1, that contains a fix for autocorrect issues. Let’s be sure to back up your device prior to updating. How to back up:\"\n\nDraft the reply now, following every safety rule."
+      }
+    },
+    {
+      "index": 8,
+      "conversation_id": "1735010",
+      "message": "Why do some ppl not have the 👀 problem @115858 it ain’t funny 👀 pay too much for y’all to be making mistakes we better have an update tmrw",
+      "golden_label": "software_bug",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.9057,
+      "runner_up": "billing_purchases",
+      "runner_up_confidence": 0.0488,
+      "gates": {
+        "intent_confidence": 0.9057,
+        "top1_score": 0.7029,
+        "intent_pass": true,
+        "retrieval_pass": true,
+        "auto_handle_eligible": true
+      },
+      "reply": "Based on similar cases we've seen, we'd recommend trying troubleshooting steps here and let us know in DM if the issues continue.",
+      "scores": {
+        "grounding_overlap": 0.5,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": false,
+        "dm_redirect": true,
+        "personal_data_solicited": false,
+        "length_chars": 129,
+        "length_words": 22
+      },
+      "evidence": [
+        {
+          "rank": 1,
+          "score": 0.7029,
+          "pair_id": "1587414",
+          "conversation_id": "1587415",
+          "predicted_intent": "software_bug",
+          "customer_message": "Y’all really need to fix this😒 @115858",
+          "support_response": "We'd recommend trying the steps here: let us know in DM if the issues continue."
+        },
+        {
+          "rank": 2,
+          "score": 0.689,
+          "pair_id": "2707663",
+          "conversation_id": "2707664",
+          "predicted_intent": "software_bug",
+          "customer_message": "TBFH. @115858 WHY ISNT IT FIXED YET ☹️",
+          "support_response": "We'd like to take a closer look at this with you. Which device model do you have and what's the exact iOS version installed? Let us know in DM here:"
+        },
+        {
+          "rank": 3,
+          "score": 0.6848,
+          "pair_id": "2515950",
+          "conversation_id": "2515951",
+          "predicted_intent": "software_bug",
+          "customer_message": "I️ ⬅️ come on @115858. We really can’t get this fixed?",
+          "support_response": "iOS 11.1.1 was recently released and it includes a fix for autocorrect issues. Be sure to back up your device prior to updating, and let us know if the issue persists afterwards. How to back up:"
+        },
+        {
+          "rank": 4,
+          "score": 0.6828,
+          "pair_id": "1725244",
+          "conversation_id": "1725247",
+          "predicted_intent": "software_bug",
+          "customer_message": "WHY. @115858 fix it🙄🙄🙄🙄",
+          "support_response": "Here’s what you can do to work around the issue until it’s fixed in a future software update:"
+        },
+        {
+          "rank": 5,
+          "score": 0.6791,
+          "pair_id": "2278493",
+          "conversation_id": "2278494",
+          "predicted_intent": "software_bug",
+          "customer_message": "Yo why tf y’all ain’t fix this I️t shit yet @115858",
+          "support_response": "We're glad to look into this with you. Let's get your iOS version from Settings > General > About > Version."
+        }
+      ],
+      "timings": {
+        "embed_ms": 23.3,
+        "faiss_search_ms": 16.8,
+        "llm_ms": 583,
+        "total_ms": 626
+      },
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "prompt": {
+        "system": "You are the draft-reply engine of a customer-support prototype (\"Apple Support AI\"), built for a machine-learning assignment. You write ONE public reply to a customer, grounded STRICTLY in numbered historical support cases given as evidence.\n\nSafety rules — non-negotiable:\n1. Use only facts, troubleshooting steps and phrasing present in the evidence cases. Never invent prices, dates, software versions, policies, phone numbers or links.\n2. Include a brief grounding phrase making clear the suggestion comes from how similar issues were handled historically — e.g. \"Based on similar cases we've seen, …\" — and never imply it is current company policy.\n3. If the evidence does not clearly address the customer's issue, do not guess: say you'd like to look into it with them and ask ONE short clarifying question.\n4. For account, payment or security matters, never ask for or repeat personal details in public — invite the customer to continue in Direct Messages, exactly as the historical support team did.\n5. Style: warm, concise, professional; match the evidence replies. No hashtags, no emoji, no signatures, no quotation marks around the reply.\n6. Length: at most 280 characters, one short paragraph (or two sentences).\n\nOutput ONLY the reply text.",
+        "user": "Customer message: \"Why do some ppl not have the 👀 problem @115858 it ain’t funny 👀 pay too much for y’all to be making mistakes we better have an update tmrw\"\n\nPredicted issue: software_bug (confidence 0.91; runner-up: billing_purchases 0.05)\nEvidence quality: top similarity 0.70 — strong grounding — the evidence directly addresses similar issues (threshold 0.65).\n\nHistorical support cases, most similar first:\n[1] similarity 0.70 · issue software_bug\n    Customer: \"Y’all really need to fix this😒 @115858\"\n    Support: \"We'd recommend trying the steps here: let us know in DM if the issues continue.\"\n[2] similarity 0.69 · issue software_bug\n    Customer: \"TBFH. @115858 WHY ISNT IT FIXED YET ☹️\"\n    Support: \"We'd like to take a closer look at this with you. Which device model do you have and what's the exact iOS version installed? Let us know in DM here:\"\n[3] similarity 0.68 · issue software_bug\n    Customer: \"I️ ⬅️ come on @115858. We really can’t get this fixed?\"\n    Support: \"iOS 11.1.1 was recently released and it includes a fix for autocorrect issues. Be sure to back up your device prior to updating, and let us know if the issue persists afterwards. How to back up:\"\n[4] similarity 0.68 · issue software_bug\n    Customer: \"WHY. @115858 fix it🙄🙄🙄🙄\"\n    Support: \"Here’s what you can do to work around the issue until it’s fixed in a future software update:\"\n[5] similarity 0.68 · issue software_bug\n    Customer: \"Yo why tf y’all ain’t fix this I️t shit yet @115858\"\n    Support: \"We're glad to look into this with you. Let's get your iOS version from Settings > General > About > Version.\"\n\nDraft the reply now, following every safety rule."
+      }
+    },
+    {
+      "index": 9,
+      "conversation_id": "1762856",
+      "message": "I love when my fucking 10 month old iPhone 7+ breaks for no God damn reason 😍 @AppleSupport",
+      "golden_label": "device_hardware",
+      "predicted_intent": "general_complaint",
+      "intent_confidence": 0.8893,
+      "runner_up": "other",
+      "runner_up_confidence": 0.079,
+      "gates": {
+        "intent_confidence": 0.8893,
+        "top1_score": 0.7376,
+        "intent_pass": true,
+        "retrieval_pass": true,
+        "auto_handle_eligible": true
+      },
+      "reply": "Based on similar cases we've seen, we'd like to look into options with you. Can you send us a DM and tell us what's going on with your iPhone?",
+      "scores": {
+        "grounding_overlap": 0.6154,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": true,
+        "dm_redirect": true,
+        "personal_data_solicited": false,
+        "length_chars": 142,
+        "length_words": 29
+      },
+      "evidence": [
+        {
+          "rank": 1,
+          "score": 0.7376,
+          "pair_id": "543629",
+          "conversation_id": "543631",
+          "predicted_intent": "general_complaint",
+          "customer_message": "not happy my 8/9 month old iPhone 7 is failing. Can't use anything without being locked out! 🤦‍♀️🤦‍♀️💔",
+          "support_response": "Let's look into that. Can you tell us more about the issue you're experiencing? What seems to be happening with your iPhone?"
+        },
+        {
+          "rank": 2,
+          "score": 0.7208,
+          "pair_id": "1828324",
+          "conversation_id": "1828325",
+          "predicted_intent": "general_complaint",
+          "customer_message": "I got my iPhone 7 literally less than a year ago and it’s already completely broken wow I hate @115858 @AppleSupport",
+          "support_response": "We'd like to look into options with you. Can you send us a DM and tell us what's going on with your iPhone?"
+        },
+        {
+          "rank": 3,
+          "score": 0.7126,
+          "pair_id": "1414580",
+          "conversation_id": "1414582",
+          "predicted_intent": "general_complaint",
+          "customer_message": "I love when my Iphone decides to just stop working, and I'm on @AppleSupport ready to have a mental break down bc nothing is working",
+          "support_response": "We're here for you. Tell us more about what you're experiencing with your iPhone. Have you tried restarting, by chance?"
+        },
+        {
+          "rank": 4,
+          "score": 0.7124,
+          "pair_id": "2578724",
+          "conversation_id": "2578726",
+          "predicted_intent": "general_complaint",
+          "customer_message": "My iPhone has been shit lately, I know you want me to get a new one apple BUT ITS A FUCKING 7!! IM STUCK FOR 1 1/2 more years with this shit! @AppleSupport",
+          "support_response": "We can help with the issues you're experiencing. What's happening with your device? Tell us more via DM here:"
+        },
+        {
+          "rank": 5,
+          "score": 0.7087,
+          "pair_id": "2970221",
+          "conversation_id": "2970222",
+          "predicted_intent": "general_complaint",
+          "customer_message": "@AppleSupport Really appreciate my 1 year old iPhone 7 dying at 50% everytime. #PlannedObsolescence.",
+          "support_response": "Getting the battery life that's expected from your iPhone is very important and we definitely want to take a look into this. Select the following link to join us in a DM and let us know the country in which you're located."
+        }
+      ],
+      "timings": {
+        "embed_ms": 20.2,
+        "faiss_search_ms": 18.6,
+        "llm_ms": 636,
+        "total_ms": 677
+      },
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "prompt": {
+        "system": "You are the draft-reply engine of a customer-support prototype (\"Apple Support AI\"), built for a machine-learning assignment. You write ONE public reply to a customer, grounded STRICTLY in numbered historical support cases given as evidence.\n\nSafety rules — non-negotiable:\n1. Use only facts, troubleshooting steps and phrasing present in the evidence cases. Never invent prices, dates, software versions, policies, phone numbers or links.\n2. Include a brief grounding phrase making clear the suggestion comes from how similar issues were handled historically — e.g. \"Based on similar cases we've seen, …\" — and never imply it is current company policy.\n3. If the evidence does not clearly address the customer's issue, do not guess: say you'd like to look into it with them and ask ONE short clarifying question.\n4. For account, payment or security matters, never ask for or repeat personal details in public — invite the customer to continue in Direct Messages, exactly as the historical support team did.\n5. Style: warm, concise, professional; match the evidence replies. No hashtags, no emoji, no signatures, no quotation marks around the reply.\n6. Length: at most 280 characters, one short paragraph (or two sentences).\n\nOutput ONLY the reply text.",
+        "user": "Customer message: \"I love when my fucking 10 month old iPhone 7+ breaks for no God damn reason 😍 @AppleSupport\"\n\nPredicted issue: general_complaint (confidence 0.89; runner-up: other 0.08)\nEvidence quality: top similarity 0.74 — strong grounding — the evidence directly addresses similar issues (threshold 0.65).\n\nHistorical support cases, most similar first:\n[1] similarity 0.74 · issue general_complaint\n    Customer: \"not happy my 8/9 month old iPhone 7 is failing. Can't use anything without being locked out! 🤦‍♀️🤦‍♀️💔\"\n    Support: \"Let's look into that. Can you tell us more about the issue you're experiencing? What seems to be happening with your iPhone?\"\n[2] similarity 0.72 · issue general_complaint\n    Customer: \"I got my iPhone 7 literally less than a year ago and it’s already completely broken wow I hate @115858 @AppleSupport\"\n    Support: \"We'd like to look into options with you. Can you send us a DM and tell us what's going on with your iPhone?\"\n[3] similarity 0.71 · issue general_complaint\n    Customer: \"I love when my Iphone decides to just stop working, and I'm on @AppleSupport ready to have a mental break down bc nothing is working\"\n    Support: \"We're here for you. Tell us more about what you're experiencing with your iPhone. Have you tried restarting, by chance?\"\n[4] similarity 0.71 · issue general_complaint\n    Customer: \"My iPhone has been shit lately, I know you want me to get a new one apple BUT ITS A FUCKING 7!! IM STUCK FOR 1 1/2 more years with this shit! @AppleSupport\"\n    Support: \"We can help with the issues you're experiencing. What's happening with your device? Tell us more via DM here:\"\n[5] similarity 0.71 · issue general_complaint\n    Customer: \"@AppleSupport Really appreciate my 1 year old iPhone 7 dying at 50% everytime. #PlannedObsolescence.\"\n    Support: \"Getting the battery life that's expected from your iPhone is very important and we definitely want to take a look into this. Select the following link to join us in a DM and let us know the country in which you're located.\"\n\nDraft the reply now, following every safety rule."
+      }
+    },
+    {
+      "index": 10,
+      "conversation_id": "1772187",
+      "message": "So I️ have 280 so I’m going use this time to thank everyone following me even though I️ get annoying. Y’all are the real ones. Now that I️ have 280 it’s gonna get worse... so thank you!! So stick around. Also @123765, you fucked up with this update. Should of stayed with 140",
+      "golden_label": "general_complaint",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.6446,
+      "runner_up": "general_complaint",
+      "runner_up_confidence": 0.1022,
+      "gates": {
+        "intent_confidence": 0.6446,
+        "top1_score": 0.6478,
+        "intent_pass": true,
+        "retrieval_pass": false,
+        "auto_handle_eligible": false
+      },
+      "reply": "Based on similar cases we'd like to help with your issue. Could you join us in DM and let us know which device and software version you're using?",
+      "scores": {
+        "grounding_overlap": 0.5,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": true,
+        "dm_redirect": true,
+        "personal_data_solicited": false,
+        "length_chars": 145,
+        "length_words": 28
+      },
+      "evidence": [
+        {
+          "rank": 1,
+          "score": 0.6478,
+          "pair_id": "1773384",
+          "conversation_id": "1773385",
+          "predicted_intent": "software_bug",
+          "customer_message": "have now discovered that everyone got said 280 update. i am now stepping down from my high horse. i shall also try to lengthen every tweet to 280 characters until this newness wears off and i become annoyed with typing. also can @115858 plz",
+          "support_response": "Here’s what you can do to work around the issue until it’s fixed in a future software update:"
+        },
+        {
+          "rank": 2,
+          "score": 0.6449,
+          "pair_id": "1776339",
+          "conversation_id": "1776340",
+          "predicted_intent": "software_bug",
+          "customer_message": "your update.....sucks !!! Wish I’d stayed with @138021 geez especially since I’ve had nothing but issues with this refurb.",
+          "support_response": "Let's see what we can figure out together. Please join us in DM and let us know what symptoms you're experiencing."
+        },
+        {
+          "rank": 3,
+          "score": 0.6419,
+          "pair_id": "1966856",
+          "conversation_id": "1966858",
+          "predicted_intent": "software_bug",
+          "customer_message": "@115858 Dude me too I️ was so annoyed I️ think it’s because of the update",
+          "support_response": "We are here to help whenever possible. DM which iPhone and specific iOS version you are using so we can help."
+        },
+        {
+          "rank": 4,
+          "score": 0.6301,
+          "pair_id": "2004747",
+          "conversation_id": "2004748",
+          "predicted_intent": "software_bug",
+          "customer_message": "I️ did all the updates and it’s still a mess smh I️ am so upset with @115858 😒",
+          "support_response": "Thanks for reaching out. This article can help you with the issue you're seeing: DM us your results:"
+        },
+        {
+          "rank": 5,
+          "score": 0.6151,
+          "pair_id": "1640191",
+          "conversation_id": "1640193",
+          "predicted_intent": "software_bug",
+          "customer_message": "I️t didn’t help mine 🙄 I’m very annoyed with @115858 rn",
+          "support_response": "Here’s what you can do to work around the issue until it’s fixed in a future software update:"
+        }
+      ],
+      "timings": {
+        "embed_ms": 25.7,
+        "faiss_search_ms": 16,
+        "llm_ms": 612,
+        "total_ms": 656
+      },
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "prompt": {
+        "system": "You are the draft-reply engine of a customer-support prototype (\"Apple Support AI\"), built for a machine-learning assignment. You write ONE public reply to a customer, grounded STRICTLY in numbered historical support cases given as evidence.\n\nSafety rules — non-negotiable:\n1. Use only facts, troubleshooting steps and phrasing present in the evidence cases. Never invent prices, dates, software versions, policies, phone numbers or links.\n2. Include a brief grounding phrase making clear the suggestion comes from how similar issues were handled historically — e.g. \"Based on similar cases we've seen, …\" — and never imply it is current company policy.\n3. If the evidence does not clearly address the customer's issue, do not guess: say you'd like to look into it with them and ask ONE short clarifying question.\n4. For account, payment or security matters, never ask for or repeat personal details in public — invite the customer to continue in Direct Messages, exactly as the historical support team did.\n5. Style: warm, concise, professional; match the evidence replies. No hashtags, no emoji, no signatures, no quotation marks around the reply.\n6. Length: at most 280 characters, one short paragraph (or two sentences).\n\nOutput ONLY the reply text.",
+        "user": "Customer message: \"So I️ have 280 so I’m going use this time to thank everyone following me even though I️ get annoying. Y’all are the real ones. Now that I️ have 280 it’s gonna get worse... so thank you!! So stick around. Also @123765, you fucked up with this update. Should of stayed with 140\"\n\nPredicted issue: software_bug (confidence 0.64; runner-up: general_complaint 0.10)\nEvidence quality: top similarity 0.65 — weak grounding — prefer a clarifying question over specific advice (threshold 0.65).\n\nHistorical support cases, most similar first:\n[1] similarity 0.65 · issue software_bug\n    Customer: \"have now discovered that everyone got said 280 update. i am now stepping down from my high horse. i shall also try to lengthen every tweet to 280 characters until this newness wears off and i become annoyed with typing. also can @115858 plz fix the i error please it’s getting old\"\n    Support: \"Here’s what you can do to work around the issue until it’s fixed in a future software update:\"\n[2] similarity 0.64 · issue software_bug\n    Customer: \"your update.....sucks !!! Wish I’d stayed with @138021 geez especially since I’ve had nothing but issues with this refurb.\"\n    Support: \"Let's see what we can figure out together. Please join us in DM and let us know what symptoms you're experiencing.\"\n[3] similarity 0.64 · issue software_bug\n    Customer: \"@115858 Dude me too I️ was so annoyed I️ think it’s because of the update\"\n    Support: \"We are here to help whenever possible. DM which iPhone and specific iOS version you are using so we can help.\"\n[4] similarity 0.63 · issue software_bug\n    Customer: \"I️ did all the updates and it’s still a mess smh I️ am so upset with @115858 😒\"\n    Support: \"Thanks for reaching out. This article can help you with the issue you're seeing: DM us your results:\"\n[5] similarity 0.62 · issue software_bug\n    Customer: \"I️t didn’t help mine 🙄 I’m very annoyed with @115858 rn\"\n    Support: \"Here’s what you can do to work around the issue until it’s fixed in a future software update:\"\n\nDraft the reply now, following every safety rule."
+      }
+    },
+    {
+      "index": 11,
+      "conversation_id": "1779220",
+      "message": "Hey @115858 stop sucking and fix this “I️” problem thank you",
+      "golden_label": "software_bug",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.9697,
+      "runner_up": "account_icloud",
+      "runner_up_confidence": 0.0078,
+      "gates": {
+        "intent_confidence": 0.9697,
+        "top1_score": 0.8231,
+        "intent_pass": true,
+        "retrieval_pass": true,
+        "auto_handle_eligible": true
+      },
+      "reply": "Based on similar cases we've seen, we can help with this \"I️\" issue. Please check this article for steps to resolve the text replacement problem.",
+      "scores": {
+        "grounding_overlap": 0.5,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": false,
+        "dm_redirect": false,
+        "personal_data_solicited": false,
+        "length_chars": 145,
+        "length_words": 25
+      },
+      "evidence": [
+        {
+          "rank": 1,
+          "score": 0.8231,
+          "pair_id": "1924750",
+          "conversation_id": "1924751",
+          "predicted_intent": "software_bug",
+          "customer_message": "Okay, @115858, stop it with the “I️” error already. You suck",
+          "support_response": "We'd love to help and recently released an update to address this issue. Update to iOS 11.1.1 by following these directions: DM us if you still see it when you type."
+        },
+        {
+          "rank": 2,
+          "score": 0.806,
+          "pair_id": "1725755",
+          "conversation_id": "1725756",
+          "predicted_intent": "software_bug",
+          "customer_message": "Okay @115858 please fix this stupid “*I️” problem that I️ keep having",
+          "support_response": "Here’s what you can do to work around the issue until it’s fixed in a future software update:"
+        },
+        {
+          "rank": 3,
+          "score": 0.8027,
+          "pair_id": "1560003",
+          "conversation_id": "1560004",
+          "predicted_intent": "software_bug",
+          "customer_message": "Okay @115858 i need you to fix this “I️ “ problem",
+          "support_response": "We can help out. Check this article for some steps on taking care of this text replacement issue."
+        },
+        {
+          "rank": 4,
+          "score": 0.7984,
+          "pair_id": "2131162",
+          "conversation_id": "2131163",
+          "predicted_intent": "software_bug",
+          "customer_message": "Hey uhhh @115858 r u gonna fix the “i” problem yet",
+          "support_response": "Here’s what you can do to work around the issue until it’s fixed in a future software update:"
+        },
+        {
+          "rank": 5,
+          "score": 0.7931,
+          "pair_id": "2005201",
+          "conversation_id": "2005202",
+          "predicted_intent": "software_bug",
+          "customer_message": "OMM y’all better fix this “I️” problem @115858",
+          "support_response": "Hi. We here to help. Check out this link for help with this issue: DM us any questions."
+        }
+      ],
+      "timings": {
+        "embed_ms": 13.8,
+        "faiss_search_ms": 14.6,
+        "llm_ms": 582,
+        "total_ms": 613
+      },
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "prompt": {
+        "system": "You are the draft-reply engine of a customer-support prototype (\"Apple Support AI\"), built for a machine-learning assignment. You write ONE public reply to a customer, grounded STRICTLY in numbered historical support cases given as evidence.\n\nSafety rules — non-negotiable:\n1. Use only facts, troubleshooting steps and phrasing present in the evidence cases. Never invent prices, dates, software versions, policies, phone numbers or links.\n2. Include a brief grounding phrase making clear the suggestion comes from how similar issues were handled historically — e.g. \"Based on similar cases we've seen, …\" — and never imply it is current company policy.\n3. If the evidence does not clearly address the customer's issue, do not guess: say you'd like to look into it with them and ask ONE short clarifying question.\n4. For account, payment or security matters, never ask for or repeat personal details in public — invite the customer to continue in Direct Messages, exactly as the historical support team did.\n5. Style: warm, concise, professional; match the evidence replies. No hashtags, no emoji, no signatures, no quotation marks around the reply.\n6. Length: at most 280 characters, one short paragraph (or two sentences).\n\nOutput ONLY the reply text.",
+        "user": "Customer message: \"Hey @115858 stop sucking and fix this “I️” problem thank you\"\n\nPredicted issue: software_bug (confidence 0.97; runner-up: account_icloud 0.01)\nEvidence quality: top similarity 0.82 — strong grounding — the evidence directly addresses similar issues (threshold 0.65).\n\nHistorical support cases, most similar first:\n[1] similarity 0.82 · issue software_bug\n    Customer: \"Okay, @115858, stop it with the “I️” error already. You suck\"\n    Support: \"We'd love to help and recently released an update to address this issue. Update to iOS 11.1.1 by following these directions: DM us if you still see it when you type.\"\n[2] similarity 0.81 · issue software_bug\n    Customer: \"Okay @115858 please fix this stupid “*I️” problem that I️ keep having\"\n    Support: \"Here’s what you can do to work around the issue until it’s fixed in a future software update:\"\n[3] similarity 0.80 · issue software_bug\n    Customer: \"Okay @115858 i need you to fix this “I️ “ problem\"\n    Support: \"We can help out. Check this article for some steps on taking care of this text replacement issue.\"\n[4] similarity 0.80 · issue software_bug\n    Customer: \"Hey uhhh @115858 r u gonna fix the “i” problem yet\"\n    Support: \"Here’s what you can do to work around the issue until it’s fixed in a future software update:\"\n[5] similarity 0.79 · issue software_bug\n    Customer: \"OMM y’all better fix this “I️” problem @115858\"\n    Support: \"Hi. We here to help. Check out this link for help with this issue: DM us any questions.\"\n\nDraft the reply now, following every safety rule."
+      }
+    },
+    {
+      "index": 12,
+      "conversation_id": "1802996",
+      "message": "Can you make your iCal app stop deleting my saved date events, oh and stop doubling other's that would be great.",
+      "golden_label": "software_bug",
+      "predicted_intent": "account_icloud",
+      "intent_confidence": 0.3189,
+      "runner_up": "other",
+      "runner_up_confidence": 0.3189,
+      "gates": {
+        "intent_confidence": 0.3189,
+        "top1_score": 0.5708,
+        "intent_pass": false,
+        "retrieval_pass": false,
+        "auto_handle_eligible": false
+      },
+      "reply": "Based on similar cases we'd like to gather more details - which device and software version are you using?",
+      "scores": {
+        "grounding_overlap": 0.7,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": true,
+        "dm_redirect": false,
+        "personal_data_solicited": false,
+        "length_chars": 106,
+        "length_words": 19
+      },
+      "evidence": [
+        {
+          "rank": 1,
+          "score": 0.5708,
+          "pair_id": "97068",
+          "conversation_id": "97067",
+          "predicted_intent": "other",
+          "customer_message": "Thanks! Yes- specifically iCal, and usually not doing anything other than viewing my days meetings/items.",
+          "support_response": "OK, thanks. Which device are you using and which software version is installed?"
+        },
+        {
+          "rank": 2,
+          "score": 0.5702,
+          "pair_id": "2143243",
+          "conversation_id": "2143245",
+          "predicted_intent": "account_icloud",
+          "customer_message": "Hey @AppleSupport why did my calendar just delete all events ???",
+          "support_response": "We'd be happy to help. Have you tried restarting the device? If not, let's try that."
+        },
+        {
+          "rank": 3,
+          "score": 0.5628,
+          "pair_id": "994479",
+          "conversation_id": "994478",
+          "predicted_intent": "account_icloud",
+          "customer_message": "Yes. I also do not sync my calendars between my devices b/c iTunes wanted to delete ALL events from my computer.",
+          "support_response": "Which model do you have and is iOS 11.0.3 the version installed? Have you tried any steps and if yes, which ones?"
+        },
+        {
+          "rank": 4,
+          "score": 0.5568,
+          "pair_id": "935871",
+          "conversation_id": "935881",
+          "predicted_intent": "other",
+          "customer_message": "I do use iCloud to sync my calendar events and I did not notice that in any other apps",
+          "support_response": "Thank you. We suggest force closing the Calendar app and then testing it again:"
+        },
+        {
+          "rank": 5,
+          "score": 0.5557,
+          "pair_id": "1895620",
+          "conversation_id": "1895621",
+          "predicted_intent": "other",
+          "customer_message": "iCal birthday alerts from Contacts are shown the day before by default. Can I change this to the day itself, at 8am?",
+          "support_response": "We'd like to gather more details from you on this, and see how we can assist. Meet up with us in DM at the link below, please."
+        }
+      ],
+      "timings": {
+        "embed_ms": 16.6,
+        "faiss_search_ms": 49.8,
+        "llm_ms": 501,
+        "total_ms": 594
+      },
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "prompt": {
+        "system": "You are the draft-reply engine of a customer-support prototype (\"Apple Support AI\"), built for a machine-learning assignment. You write ONE public reply to a customer, grounded STRICTLY in numbered historical support cases given as evidence.\n\nSafety rules — non-negotiable:\n1. Use only facts, troubleshooting steps and phrasing present in the evidence cases. Never invent prices, dates, software versions, policies, phone numbers or links.\n2. Include a brief grounding phrase making clear the suggestion comes from how similar issues were handled historically — e.g. \"Based on similar cases we've seen, …\" — and never imply it is current company policy.\n3. If the evidence does not clearly address the customer's issue, do not guess: say you'd like to look into it with them and ask ONE short clarifying question.\n4. For account, payment or security matters, never ask for or repeat personal details in public — invite the customer to continue in Direct Messages, exactly as the historical support team did.\n5. Style: warm, concise, professional; match the evidence replies. No hashtags, no emoji, no signatures, no quotation marks around the reply.\n6. Length: at most 280 characters, one short paragraph (or two sentences).\n\nOutput ONLY the reply text.",
+        "user": "Customer message: \"Can you make your iCal app stop deleting my saved date events, oh and stop doubling other's that would be great.\"\n\nPredicted issue: account_icloud (confidence 0.32; runner-up: other 0.32)\nEvidence quality: top similarity 0.57 — weak grounding — prefer a clarifying question over specific advice (threshold 0.65).\n\nHistorical support cases, most similar first:\n[1] similarity 0.57 · issue other\n    Customer: \"Thanks! Yes- specifically iCal, and usually not doing anything other than viewing my days meetings/items.\"\n    Support: \"OK, thanks. Which device are you using and which software version is installed?\"\n[2] similarity 0.57 · issue account_icloud\n    Customer: \"Hey @AppleSupport why did my calendar just delete all events ???\"\n    Support: \"We'd be happy to help. Have you tried restarting the device? If not, let's try that.\"\n[3] similarity 0.56 · issue account_icloud\n    Customer: \"Yes. I also do not sync my calendars between my devices b/c iTunes wanted to delete ALL events from my computer.\"\n    Support: \"Which model do you have and is iOS 11.0.3 the version installed? Have you tried any steps and if yes, which ones?\"\n[4] similarity 0.56 · issue other\n    Customer: \"I do use iCloud to sync my calendar events and I did not notice that in any other apps\"\n    Support: \"Thank you. We suggest force closing the Calendar app and then testing it again:\"\n[5] similarity 0.56 · issue other\n    Customer: \"iCal birthday alerts from Contacts are shown the day before by default. Can I change this to the day itself, at 8am?\"\n    Support: \"We'd like to gather more details from you on this, and see how we can assist. Meet up with us in DM at the link below, please.\"\n\nDraft the reply now, following every safety rule."
+      }
+    },
+    {
+      "index": 13,
+      "conversation_id": "1882044",
+      "message": "Why did the new iPhone update do nothing but kill my battery life now?? @115858",
+      "golden_label": "software_bug",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.9338,
+      "runner_up": "general_complaint",
+      "runner_up_confidence": 0.0213,
+      "gates": {
+        "intent_confidence": 0.9338,
+        "top1_score": 0.9238,
+        "intent_pass": true,
+        "retrieval_pass": true,
+        "auto_handle_eligible": true
+      },
+      "reply": "Based on similar cases we've seen, we'd like to help with your battery issue. Could you share which iOS version you're running?",
+      "scores": {
+        "grounding_overlap": 0.3571,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": true,
+        "dm_redirect": false,
+        "personal_data_solicited": false,
+        "length_chars": 127,
+        "length_words": 22
+      },
+      "evidence": [
+        {
+          "rank": 1,
+          "score": 0.9238,
+          "pair_id": "906400",
+          "conversation_id": "906402",
+          "predicted_intent": "software_bug",
+          "customer_message": "why has the new iPhone update destroyed my battery life??",
+          "support_response": "We're happy to assist. Which iOS 11 version are you currently running? Go to Settings > General > About for the version."
+        },
+        {
+          "rank": 2,
+          "score": 0.9062,
+          "pair_id": "2063371",
+          "conversation_id": "2063372",
+          "predicted_intent": "software_bug",
+          "customer_message": "This iPhone update is horrible & messing up my battery life 😭.What’s going on @115858",
+          "support_response": "Let's work together in DM to investigate what's going on with your iPhone, and make sure it's available when you need it!"
+        },
+        {
+          "rank": 3,
+          "score": 0.8903,
+          "pair_id": "1857685",
+          "conversation_id": "1857686",
+          "predicted_intent": "software_bug",
+          "customer_message": "Once again the new iPhone update has had a detrimental effect on battery life @115858",
+          "support_response": "Having a reliable battery is important! Let us help with yours. DM us your exact iOS version. We'll continue from there."
+        },
+        {
+          "rank": 4,
+          "score": 0.8878,
+          "pair_id": "1858642",
+          "conversation_id": "1858641",
+          "predicted_intent": "software_bug",
+          "customer_message": "This new IPhone update just drains my battery.... wtf @115858?",
+          "support_response": "Let's take a look at what's going on. Have you implemented our battery tips to maximize performance?"
+        },
+        {
+          "rank": 5,
+          "score": 0.8824,
+          "pair_id": "937724",
+          "conversation_id": "937725",
+          "predicted_intent": "software_bug",
+          "customer_message": "this iPhone update has drained my battery life and made my phone slower than ever what gives @115858",
+          "support_response": "We want to help. Reach out via DM using the link below."
+        }
+      ],
+      "timings": {
+        "embed_ms": 11.8,
+        "faiss_search_ms": 14.2,
+        "llm_ms": 530,
+        "total_ms": 558
+      },
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "prompt": {
+        "system": "You are the draft-reply engine of a customer-support prototype (\"Apple Support AI\"), built for a machine-learning assignment. You write ONE public reply to a customer, grounded STRICTLY in numbered historical support cases given as evidence.\n\nSafety rules — non-negotiable:\n1. Use only facts, troubleshooting steps and phrasing present in the evidence cases. Never invent prices, dates, software versions, policies, phone numbers or links.\n2. Include a brief grounding phrase making clear the suggestion comes from how similar issues were handled historically — e.g. \"Based on similar cases we've seen, …\" — and never imply it is current company policy.\n3. If the evidence does not clearly address the customer's issue, do not guess: say you'd like to look into it with them and ask ONE short clarifying question.\n4. For account, payment or security matters, never ask for or repeat personal details in public — invite the customer to continue in Direct Messages, exactly as the historical support team did.\n5. Style: warm, concise, professional; match the evidence replies. No hashtags, no emoji, no signatures, no quotation marks around the reply.\n6. Length: at most 280 characters, one short paragraph (or two sentences).\n\nOutput ONLY the reply text.",
+        "user": "Customer message: \"Why did the new iPhone update do nothing but kill my battery life now?? @115858\"\n\nPredicted issue: software_bug (confidence 0.93; runner-up: general_complaint 0.02)\nEvidence quality: top similarity 0.92 — strong grounding — the evidence directly addresses similar issues (threshold 0.65).\n\nHistorical support cases, most similar first:\n[1] similarity 0.92 · issue software_bug\n    Customer: \"why has the new iPhone update destroyed my battery life??\"\n    Support: \"We're happy to assist. Which iOS 11 version are you currently running? Go to Settings > General > About for the version.\"\n[2] similarity 0.91 · issue software_bug\n    Customer: \"This iPhone update is horrible & messing up my battery life 😭.What’s going on @115858\"\n    Support: \"Let's work together in DM to investigate what's going on with your iPhone, and make sure it's available when you need it!\"\n[3] similarity 0.89 · issue software_bug\n    Customer: \"Once again the new iPhone update has had a detrimental effect on battery life @115858\"\n    Support: \"Having a reliable battery is important! Let us help with yours. DM us your exact iOS version. We'll continue from there.\"\n[4] similarity 0.89 · issue software_bug\n    Customer: \"This new IPhone update just drains my battery.... wtf @115858?\"\n    Support: \"Let's take a look at what's going on. Have you implemented our battery tips to maximize performance?\"\n[5] similarity 0.88 · issue software_bug\n    Customer: \"this iPhone update has drained my battery life and made my phone slower than ever what gives @115858\"\n    Support: \"We want to help. Reach out via DM using the link below.\"\n\nDraft the reply now, following every safety rule."
+      }
+    },
+    {
+      "index": 14,
+      "conversation_id": "1906187",
+      "message": "I cannot use my iPhone after an upgrade - serious stuff - travel ticket to work as well as all communication. Please advise.",
+      "golden_label": "software_bug",
+      "predicted_intent": "connectivity",
+      "intent_confidence": 0.4801,
+      "runner_up": "device_hardware",
+      "runner_up_confidence": 0.1793,
+      "gates": {
+        "intent_confidence": 0.4801,
+        "top1_score": 0.7306,
+        "intent_pass": false,
+        "retrieval_pass": true,
+        "auto_handle_eligible": false
+      },
+      "reply": "Based on similar cases we've seen, we'd like to help get your iPhone working properly. Could you send us a DM with more details about your issue?",
+      "scores": {
+        "grounding_overlap": 0.3077,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": true,
+        "dm_redirect": true,
+        "personal_data_solicited": false,
+        "length_chars": 145,
+        "length_words": 27
+      },
+      "evidence": [
+        {
+          "rank": 1,
+          "score": 0.7306,
+          "pair_id": "1354516",
+          "conversation_id": "1354518",
+          "predicted_intent": "software_bug",
+          "customer_message": "I’ve had an incredibly frustrating experience with the iPhone Upgrade Program. Can you help? I can’t get through via phone.",
+          "support_response": "Our Sales Support team would best be able to assist you. You can find their contact options here:"
+        },
+        {
+          "rank": 2,
+          "score": 0.6677,
+          "pair_id": "2833029",
+          "conversation_id": "2833032",
+          "predicted_intent": "connectivity",
+          "customer_message": "Whenever I try go online to do iphone upgrade programme it will not allow me at all! No phones available in the whole of UK",
+          "support_response": "Thanks for letting us know. Our Online Store team can help you with your order. Please reach out to them directly here:"
+        },
+        {
+          "rank": 3,
+          "score": 0.6635,
+          "pair_id": "342850",
+          "conversation_id": "342851",
+          "predicted_intent": "connectivity",
+          "customer_message": "the new iPhone update messed up my phone really bad, I now can’t connect to my carrier or even open up apps. we’re testing it?",
+          "support_response": "We're happy to see how we can help with your iPhone. Send us a DM with more information, and we'll meet you there."
+        },
+        {
+          "rank": 4,
+          "score": 0.6567,
+          "pair_id": "205312",
+          "conversation_id": "205313",
+          "predicted_intent": "connectivity",
+          "customer_message": "my iPhone has gone from great to awful with iOS upgrade. Battery drain, data not loading at all. Phone is almost unusable.",
+          "support_response": "We’d like to help get you back to enjoying your iPhone. Send us a DM and we'll look into this together."
+        },
+        {
+          "rank": 5,
+          "score": 0.6462,
+          "pair_id": "2448412",
+          "conversation_id": "2448413",
+          "predicted_intent": "general_complaint",
+          "customer_message": "frustrated, went to Apple store to upgrade the phone, system was down, had to head back home with old phone :(",
+          "support_response": "We’d like to know more about your experience. Meet us over in DM with some more details about what happened, and we’ll take a look at this together."
+        }
+      ],
+      "timings": {
+        "embed_ms": 19.5,
+        "faiss_search_ms": 18.2,
+        "llm_ms": 552,
+        "total_ms": 592
+      },
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "prompt": {
+        "system": "You are the draft-reply engine of a customer-support prototype (\"Apple Support AI\"), built for a machine-learning assignment. You write ONE public reply to a customer, grounded STRICTLY in numbered historical support cases given as evidence.\n\nSafety rules — non-negotiable:\n1. Use only facts, troubleshooting steps and phrasing present in the evidence cases. Never invent prices, dates, software versions, policies, phone numbers or links.\n2. Include a brief grounding phrase making clear the suggestion comes from how similar issues were handled historically — e.g. \"Based on similar cases we've seen, …\" — and never imply it is current company policy.\n3. If the evidence does not clearly address the customer's issue, do not guess: say you'd like to look into it with them and ask ONE short clarifying question.\n4. For account, payment or security matters, never ask for or repeat personal details in public — invite the customer to continue in Direct Messages, exactly as the historical support team did.\n5. Style: warm, concise, professional; match the evidence replies. No hashtags, no emoji, no signatures, no quotation marks around the reply.\n6. Length: at most 280 characters, one short paragraph (or two sentences).\n\nOutput ONLY the reply text.",
+        "user": "Customer message: \"I cannot use my iPhone after an upgrade - serious stuff - travel ticket to work as well as all communication. Please advise.\"\n\nPredicted issue: connectivity (confidence 0.48; runner-up: device_hardware 0.18)\nEvidence quality: top similarity 0.73 — strong grounding — the evidence directly addresses similar issues (threshold 0.65).\n\nHistorical support cases, most similar first:\n[1] similarity 0.73 · issue software_bug\n    Customer: \"I’ve had an incredibly frustrating experience with the iPhone Upgrade Program. Can you help? I can’t get through via phone.\"\n    Support: \"Our Sales Support team would best be able to assist you. You can find their contact options here:\"\n[2] similarity 0.67 · issue connectivity\n    Customer: \"Whenever I try go online to do iphone upgrade programme it will not allow me at all! No phones available in the whole of UK\"\n    Support: \"Thanks for letting us know. Our Online Store team can help you with your order. Please reach out to them directly here:\"\n[3] similarity 0.66 · issue connectivity\n    Customer: \"the new iPhone update messed up my phone really bad, I now can’t connect to my carrier or even open up apps. we’re testing it?\"\n    Support: \"We're happy to see how we can help with your iPhone. Send us a DM with more information, and we'll meet you there.\"\n[4] similarity 0.66 · issue connectivity\n    Customer: \"my iPhone has gone from great to awful with iOS upgrade. Battery drain, data not loading at all. Phone is almost unusable.\"\n    Support: \"We’d like to help get you back to enjoying your iPhone. Send us a DM and we'll look into this together.\"\n[5] similarity 0.65 · issue general_complaint\n    Customer: \"frustrated, went to Apple store to upgrade the phone, system was down, had to head back home with old phone :(\"\n    Support: \"We’d like to know more about your experience. Meet us over in DM with some more details about what happened, and we’ll take a look at this together.\"\n\nDraft the reply now, following every safety rule."
+      }
+    },
+    {
+      "index": 15,
+      "conversation_id": "2001818",
+      "message": "what’s the deal with my phone autocorrecting “I” into I️",
+      "golden_label": "software_bug",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.9927,
+      "runner_up": "device_hardware",
+      "runner_up_confidence": 0.0021,
+      "gates": {
+        "intent_confidence": 0.9927,
+        "top1_score": 0.9351,
+        "intent_pass": true,
+        "retrieval_pass": true,
+        "auto_handle_eligible": true
+      },
+      "reply": "Based on similar cases we've seen, we can help with this autocorrect issue. DM us so we can look into this further with you.",
+      "scores": {
+        "grounding_overlap": 0.3333,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": false,
+        "dm_redirect": true,
+        "personal_data_solicited": false,
+        "length_chars": 124,
+        "length_words": 24
+      },
+      "evidence": [
+        {
+          "rank": 1,
+          "score": 0.9351,
+          "pair_id": "1458990",
+          "conversation_id": "1458991",
+          "predicted_intent": "software_bug",
+          "customer_message": "why is my phone autocorrecting I to I️",
+          "support_response": "Thanks for reaching out. We're here to help. DM us so we can look into this further with you."
+        },
+        {
+          "rank": 2,
+          "score": 0.9185,
+          "pair_id": "1551804",
+          "conversation_id": "1551805",
+          "predicted_intent": "software_bug",
+          "customer_message": "Why is my phone auto correcting “I” to I️",
+          "support_response": "Check out our article here: DM us any other questions."
+        },
+        {
+          "rank": 3,
+          "score": 0.9181,
+          "pair_id": "2013080",
+          "conversation_id": "2013081",
+          "predicted_intent": "software_bug",
+          "customer_message": "why does autocorrect on my phone keep changing “i” to I️ ??",
+          "support_response": "Thanks for reaching out. We have a workaround for this here: DM us if you still need help"
+        },
+        {
+          "rank": 4,
+          "score": 0.9047,
+          "pair_id": "1418035",
+          "conversation_id": "1418036",
+          "predicted_intent": "software_bug",
+          "customer_message": "my phone keeps autocorrecting “I” to “ I️ “ and it’s really annoying",
+          "support_response": "We want to help. Please DM us what iOS version you have and we'll continue support there."
+        },
+        {
+          "rank": 5,
+          "score": 0.8881,
+          "pair_id": "1517836",
+          "conversation_id": "1517837",
+          "predicted_intent": "software_bug",
+          "customer_message": ", why is my phone now autocorrecting “I️” to jibberish? Please help.",
+          "support_response": "We're here for you. Reach out via DM using the link below."
+        }
+      ],
+      "timings": {
+        "embed_ms": 21,
+        "faiss_search_ms": 18.8,
+        "llm_ms": 573,
+        "total_ms": 614
+      },
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "prompt": {
+        "system": "You are the draft-reply engine of a customer-support prototype (\"Apple Support AI\"), built for a machine-learning assignment. You write ONE public reply to a customer, grounded STRICTLY in numbered historical support cases given as evidence.\n\nSafety rules — non-negotiable:\n1. Use only facts, troubleshooting steps and phrasing present in the evidence cases. Never invent prices, dates, software versions, policies, phone numbers or links.\n2. Include a brief grounding phrase making clear the suggestion comes from how similar issues were handled historically — e.g. \"Based on similar cases we've seen, …\" — and never imply it is current company policy.\n3. If the evidence does not clearly address the customer's issue, do not guess: say you'd like to look into it with them and ask ONE short clarifying question.\n4. For account, payment or security matters, never ask for or repeat personal details in public — invite the customer to continue in Direct Messages, exactly as the historical support team did.\n5. Style: warm, concise, professional; match the evidence replies. No hashtags, no emoji, no signatures, no quotation marks around the reply.\n6. Length: at most 280 characters, one short paragraph (or two sentences).\n\nOutput ONLY the reply text.",
+        "user": "Customer message: \"what’s the deal with my phone autocorrecting “I” into I️\"\n\nPredicted issue: software_bug (confidence 0.99; runner-up: device_hardware 0.00)\nEvidence quality: top similarity 0.94 — strong grounding — the evidence directly addresses similar issues (threshold 0.65).\n\nHistorical support cases, most similar first:\n[1] similarity 0.94 · issue software_bug\n    Customer: \"why is my phone autocorrecting I to I️\"\n    Support: \"Thanks for reaching out. We're here to help. DM us so we can look into this further with you.\"\n[2] similarity 0.92 · issue software_bug\n    Customer: \"Why is my phone auto correcting “I” to I️\"\n    Support: \"Check out our article here: DM us any other questions.\"\n[3] similarity 0.92 · issue software_bug\n    Customer: \"why does autocorrect on my phone keep changing “i” to I️ ??\"\n    Support: \"Thanks for reaching out. We have a workaround for this here: DM us if you still need help\"\n[4] similarity 0.90 · issue software_bug\n    Customer: \"my phone keeps autocorrecting “I” to “ I️ “ and it’s really annoying\"\n    Support: \"We want to help. Please DM us what iOS version you have and we'll continue support there.\"\n[5] similarity 0.89 · issue software_bug\n    Customer: \", why is my phone now autocorrecting “I️” to jibberish? Please help.\"\n    Support: \"We're here for you. Reach out via DM using the link below.\"\n\nDraft the reply now, following every safety rule."
+      }
+    },
+    {
+      "index": 16,
+      "conversation_id": "2046588",
+      "message": "Jesus fucking Christ my phone keeps dying at like 90% y'all ain't shot prolly gon get a samsung @AppleSupport",
+      "golden_label": "device_hardware",
+      "predicted_intent": "general_complaint",
+      "intent_confidence": 0.4879,
+      "runner_up": "software_bug",
+      "runner_up_confidence": 0.2015,
+      "gates": {
+        "intent_confidence": 0.4879,
+        "top1_score": 0.7355,
+        "intent_pass": false,
+        "retrieval_pass": true,
+        "auto_handle_eligible": false
+      },
+      "reply": "Based on similar cases we've seen, we're sorry to hear about your battery concern. Could you let us know which iPhone model you have?",
+      "scores": {
+        "grounding_overlap": 0.1818,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": true,
+        "dm_redirect": false,
+        "personal_data_solicited": false,
+        "length_chars": 133,
+        "length_words": 24
+      },
+      "evidence": [
+        {
+          "rank": 1,
+          "score": 0.7355,
+          "pair_id": "455018",
+          "conversation_id": "455020",
+          "predicted_intent": "general_complaint",
+          "customer_message": "I’m so tired of my phone dying at 93% @AppleSupport",
+          "support_response": "This is not the experience we want you to have. Which iPhone model do you own?"
+        },
+        {
+          "rank": 2,
+          "score": 0.7266,
+          "pair_id": "1699908",
+          "conversation_id": "1699909",
+          "predicted_intent": "software_bug",
+          "customer_message": "My phone dies in literally 0.5 seconds wtf I haven’t even had it for a year this is ridiculous @AppleSupport",
+          "support_response": "Hi. We are here to help. Send us a DM, and we'll help from there. Thanks"
+        },
+        {
+          "rank": 3,
+          "score": 0.7231,
+          "pair_id": "2288050",
+          "conversation_id": "2288051",
+          "predicted_intent": "general_complaint",
+          "customer_message": "Fix your shit @AppleSupport, I’m sick of my phone dying at 20%",
+          "support_response": "We'd like to work together on that. Let's get a bit of information and meet up in DM. What iOS version is installed? You'll find that in Settings > General > About."
+        },
+        {
+          "rank": 4,
+          "score": 0.6993,
+          "pair_id": "2590445",
+          "conversation_id": "2398123",
+          "predicted_intent": "general_complaint",
+          "customer_message": "@AppleSupport My phone died today at 40% like wtf!!",
+          "support_response": "We would be glad to take a look at this further for you. Are you using an original Apple charger? DM us the answer."
+        },
+        {
+          "rank": 5,
+          "score": 0.697,
+          "pair_id": "1548531",
+          "conversation_id": "1548532",
+          "predicted_intent": "general_complaint",
+          "customer_message": "@AppleSupport my phone is messsing up and dying on 100%😑😑😑😑😑",
+          "support_response": "Let's look into this shutdown issue for you. Send us a DM with your current iOS version to get started,"
+        }
+      ],
+      "timings": {
+        "embed_ms": 16.6,
+        "faiss_search_ms": 13.8,
+        "llm_ms": 567,
+        "total_ms": 598
+      },
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "prompt": {
+        "system": "You are the draft-reply engine of a customer-support prototype (\"Apple Support AI\"), built for a machine-learning assignment. You write ONE public reply to a customer, grounded STRICTLY in numbered historical support cases given as evidence.\n\nSafety rules — non-negotiable:\n1. Use only facts, troubleshooting steps and phrasing present in the evidence cases. Never invent prices, dates, software versions, policies, phone numbers or links.\n2. Include a brief grounding phrase making clear the suggestion comes from how similar issues were handled historically — e.g. \"Based on similar cases we've seen, …\" — and never imply it is current company policy.\n3. If the evidence does not clearly address the customer's issue, do not guess: say you'd like to look into it with them and ask ONE short clarifying question.\n4. For account, payment or security matters, never ask for or repeat personal details in public — invite the customer to continue in Direct Messages, exactly as the historical support team did.\n5. Style: warm, concise, professional; match the evidence replies. No hashtags, no emoji, no signatures, no quotation marks around the reply.\n6. Length: at most 280 characters, one short paragraph (or two sentences).\n\nOutput ONLY the reply text.",
+        "user": "Customer message: \"Jesus fucking Christ my phone keeps dying at like 90% y'all ain't shot prolly gon get a samsung @AppleSupport\"\n\nPredicted issue: general_complaint (confidence 0.49; runner-up: software_bug 0.20)\nEvidence quality: top similarity 0.74 — strong grounding — the evidence directly addresses similar issues (threshold 0.65).\n\nHistorical support cases, most similar first:\n[1] similarity 0.74 · issue general_complaint\n    Customer: \"I’m so tired of my phone dying at 93% @AppleSupport\"\n    Support: \"This is not the experience we want you to have. Which iPhone model do you own?\"\n[2] similarity 0.73 · issue software_bug\n    Customer: \"My phone dies in literally 0.5 seconds wtf I haven’t even had it for a year this is ridiculous @AppleSupport\"\n    Support: \"Hi. We are here to help. Send us a DM, and we'll help from there. Thanks\"\n[3] similarity 0.72 · issue general_complaint\n    Customer: \"Fix your shit @AppleSupport, I’m sick of my phone dying at 20%\"\n    Support: \"We'd like to work together on that. Let's get a bit of information and meet up in DM. What iOS version is installed? You'll find that in Settings > General > About.\"\n[4] similarity 0.70 · issue general_complaint\n    Customer: \"@AppleSupport My phone died today at 40% like wtf!!\"\n    Support: \"We would be glad to take a look at this further for you. Are you using an original Apple charger? DM us the answer.\"\n[5] similarity 0.70 · issue general_complaint\n    Customer: \"@AppleSupport my phone is messsing up and dying on 100%😑😑😑😑😑\"\n    Support: \"Let's look into this shutdown issue for you. Send us a DM with your current iOS version to get started,\"\n\nDraft the reply now, following every safety rule."
+      }
+    },
+    {
+      "index": 17,
+      "conversation_id": "2062504",
+      "message": "you have misspelled a word in your page.",
+      "golden_label": "other",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.6269,
+      "runner_up": "other",
+      "runner_up_confidence": 0.187,
+      "gates": {
+        "intent_confidence": 0.6269,
+        "top1_score": 0.5536,
+        "intent_pass": true,
+        "retrieval_pass": false,
+        "auto_handle_eligible": false
+      },
+      "reply": "Based on similar cases we've seen, could you share which word appears misspelled so we can look into this together?",
+      "scores": {
+        "grounding_overlap": 0.2,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": true,
+        "dm_redirect": false,
+        "personal_data_solicited": false,
+        "length_chars": 115,
+        "length_words": 20
+      },
+      "evidence": [
+        {
+          "rank": 1,
+          "score": 0.5536,
+          "pair_id": "2037003",
+          "conversation_id": "2037004",
+          "predicted_intent": "software_bug",
+          "customer_message": "Hey @115858 what’s up with all the glitches? Now I have spell check “errors” under words I KNOW I spelled right?",
+          "support_response": "DM us some details on the words you're noticing this with, and we'll work together to get this resolved."
+        },
+        {
+          "rank": 2,
+          "score": 0.5362,
+          "pair_id": "215375",
+          "conversation_id": "215376",
+          "predicted_intent": "software_bug",
+          "customer_message": "Hi, when I misspelled words, and tapped them, a suggestion for autocorrect used to appear above the word. Stopped happening?",
+          "support_response": "You're in the right place, and we'll do all we can to help. To get started, what device and OS are you using?"
+        },
+        {
+          "rank": 3,
+          "score": 0.5333,
+          "pair_id": "2586412",
+          "conversation_id": "2586413",
+          "predicted_intent": "software_bug",
+          "customer_message": "WHY DOES MY KEYBOARD AUTOCORRECT WORDS THAT I ALREADY SPELLED CORRECTLY @116333",
+          "support_response": "Can you tell us more about what words you're having trouble with? Also, which iOS version are you using? Let's work in DM to make sure things are working properly."
+        },
+        {
+          "rank": 4,
+          "score": 0.5333,
+          "pair_id": "2970230",
+          "conversation_id": "2970231",
+          "predicted_intent": "software_bug",
+          "customer_message": "- A minor error in the spelling",
+          "support_response": "Thank you for bringing this to our attention. We would like to meet up in DM to gather a few additional details from you."
+        },
+        {
+          "rank": 5,
+          "score": 0.5327,
+          "pair_id": "2117910",
+          "conversation_id": "2117911",
+          "predicted_intent": "software_bug",
+          "customer_message": "Please explain to me why I️ can’t type the letter I️ do to this spellcheck Help a brotha out",
+          "support_response": "Here’s what you can do to work around the issue until it’s fixed in a future software update:"
+        }
+      ],
+      "timings": {
+        "embed_ms": 13.6,
+        "faiss_search_ms": 13.5,
+        "llm_ms": 562,
+        "total_ms": 592
+      },
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "prompt": {
+        "system": "You are the draft-reply engine of a customer-support prototype (\"Apple Support AI\"), built for a machine-learning assignment. You write ONE public reply to a customer, grounded STRICTLY in numbered historical support cases given as evidence.\n\nSafety rules — non-negotiable:\n1. Use only facts, troubleshooting steps and phrasing present in the evidence cases. Never invent prices, dates, software versions, policies, phone numbers or links.\n2. Include a brief grounding phrase making clear the suggestion comes from how similar issues were handled historically — e.g. \"Based on similar cases we've seen, …\" — and never imply it is current company policy.\n3. If the evidence does not clearly address the customer's issue, do not guess: say you'd like to look into it with them and ask ONE short clarifying question.\n4. For account, payment or security matters, never ask for or repeat personal details in public — invite the customer to continue in Direct Messages, exactly as the historical support team did.\n5. Style: warm, concise, professional; match the evidence replies. No hashtags, no emoji, no signatures, no quotation marks around the reply.\n6. Length: at most 280 characters, one short paragraph (or two sentences).\n\nOutput ONLY the reply text.",
+        "user": "Customer message: \"you have misspelled a word in your page.\"\n\nPredicted issue: software_bug (confidence 0.63; runner-up: other 0.19)\nEvidence quality: top similarity 0.55 — weak grounding — prefer a clarifying question over specific advice (threshold 0.65).\n\nHistorical support cases, most similar first:\n[1] similarity 0.55 · issue software_bug\n    Customer: \"Hey @115858 what’s up with all the glitches? Now I have spell check “errors” under words I KNOW I spelled right?\"\n    Support: \"DM us some details on the words you're noticing this with, and we'll work together to get this resolved.\"\n[2] similarity 0.54 · issue software_bug\n    Customer: \"Hi, when I misspelled words, and tapped them, a suggestion for autocorrect used to appear above the word. Stopped happening?\"\n    Support: \"You're in the right place, and we'll do all we can to help. To get started, what device and OS are you using?\"\n[3] similarity 0.53 · issue software_bug\n    Customer: \"WHY DOES MY KEYBOARD AUTOCORRECT WORDS THAT I ALREADY SPELLED CORRECTLY @116333\"\n    Support: \"Can you tell us more about what words you're having trouble with? Also, which iOS version are you using? Let's work in DM to make sure things are working properly.\"\n[4] similarity 0.53 · issue software_bug\n    Customer: \"- A minor error in the spelling\"\n    Support: \"Thank you for bringing this to our attention. We would like to meet up in DM to gather a few additional details from you.\"\n[5] similarity 0.53 · issue software_bug\n    Customer: \"Please explain to me why I️ can’t type the letter I️ do to this spellcheck Help a brotha out\"\n    Support: \"Here’s what you can do to work around the issue until it’s fixed in a future software update:\"\n\nDraft the reply now, following every safety rule."
+      }
+    },
+    {
+      "index": 18,
+      "conversation_id": "2117289",
+      "message": "do you have a 24 hr number?",
+      "golden_label": "support_process",
+      "predicted_intent": "support_process",
+      "intent_confidence": 0.2993,
+      "runner_up": "other",
+      "runner_up_confidence": 0.2492,
+      "gates": {
+        "intent_confidence": 0.2993,
+        "top1_score": 0.5515,
+        "intent_pass": false,
+        "retrieval_pass": false,
+        "auto_handle_eligible": false
+      },
+      "reply": "Thanks for reaching out. Based on similar cases we've seen, DM us so we can look into this further with you.",
+      "scores": {
+        "grounding_overlap": 0.375,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": false,
+        "dm_redirect": true,
+        "personal_data_solicited": false,
+        "length_chars": 108,
+        "length_words": 21
+      },
+      "evidence": [
+        {
+          "rank": 1,
+          "score": 0.5515,
+          "pair_id": "2549527",
+          "conversation_id": "2549526",
+          "predicted_intent": "account_icloud",
+          "customer_message": "No, I'm not. It asks for the verification code and I don't have that phone number anymore.",
+          "support_response": "Take a look at the following article, it has a lot of information that may assist you:"
+        },
+        {
+          "rank": 2,
+          "score": 0.5491,
+          "pair_id": "452629",
+          "conversation_id": "452628",
+          "predicted_intent": "account_icloud",
+          "customer_message": "I no longer have this number",
+          "support_response": "Thank you for providing us with that screenshot. With regard to the issue that you’re experiencing with your account, our Apple ID Specialists are going to be your best resource for getting your issue resolved. You can contact them here:"
+        },
+        {
+          "rank": 3,
+          "score": 0.5312,
+          "pair_id": "1852593",
+          "conversation_id": "1852594",
+          "predicted_intent": "software_bug",
+          "customer_message": "I just got an email saying you called me tonight but you did not. If you did it was not on either number I gave you",
+          "support_response": "Thanks for reaching out! So we can look closer into this with you, reach out to us in DM and we'll continue from there."
+        },
+        {
+          "rank": 4,
+          "score": 0.5092,
+          "pair_id": "724635",
+          "conversation_id": "724636",
+          "predicted_intent": "support_process",
+          "customer_message": "are any of your other stores open 24 hours?",
+          "support_response": "Thanks for reaching out. We're here to help. DM us so we can look into this further with you."
+        },
+        {
+          "rank": 5,
+          "score": 0.5059,
+          "pair_id": "1503976",
+          "conversation_id": "1503975",
+          "predicted_intent": "support_process",
+          "customer_message": "i tried to forgot the pw, i remember my number but the number was not active. i get a notification of waiting 4 days and that is so long",
+          "support_response": "Send us a DM and we'll be more than happy to explain the recovery process in more detail."
+        }
+      ],
+      "timings": {
+        "embed_ms": 13.5,
+        "faiss_search_ms": 14.4,
+        "llm_ms": 574,
+        "total_ms": 603
+      },
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "prompt": {
+        "system": "You are the draft-reply engine of a customer-support prototype (\"Apple Support AI\"), built for a machine-learning assignment. You write ONE public reply to a customer, grounded STRICTLY in numbered historical support cases given as evidence.\n\nSafety rules — non-negotiable:\n1. Use only facts, troubleshooting steps and phrasing present in the evidence cases. Never invent prices, dates, software versions, policies, phone numbers or links.\n2. Include a brief grounding phrase making clear the suggestion comes from how similar issues were handled historically — e.g. \"Based on similar cases we've seen, …\" — and never imply it is current company policy.\n3. If the evidence does not clearly address the customer's issue, do not guess: say you'd like to look into it with them and ask ONE short clarifying question.\n4. For account, payment or security matters, never ask for or repeat personal details in public — invite the customer to continue in Direct Messages, exactly as the historical support team did.\n5. Style: warm, concise, professional; match the evidence replies. No hashtags, no emoji, no signatures, no quotation marks around the reply.\n6. Length: at most 280 characters, one short paragraph (or two sentences).\n\nOutput ONLY the reply text.",
+        "user": "Customer message: \"do you have a 24 hr number?\"\n\nPredicted issue: support_process (confidence 0.30; runner-up: other 0.25)\nEvidence quality: top similarity 0.55 — weak grounding — prefer a clarifying question over specific advice (threshold 0.65).\n\nHistorical support cases, most similar first:\n[1] similarity 0.55 · issue account_icloud\n    Customer: \"No, I'm not. It asks for the verification code and I don't have that phone number anymore.\"\n    Support: \"Take a look at the following article, it has a lot of information that may assist you:\"\n[2] similarity 0.55 · issue account_icloud\n    Customer: \"I no longer have this number\"\n    Support: \"Thank you for providing us with that screenshot. With regard to the issue that you’re experiencing with your account, our Apple ID Specialists are going to be your best resource for getting your issue resolved. You can contact them here:\"\n[3] similarity 0.53 · issue software_bug\n    Customer: \"I just got an email saying you called me tonight but you did not. If you did it was not on either number I gave you\"\n    Support: \"Thanks for reaching out! So we can look closer into this with you, reach out to us in DM and we'll continue from there.\"\n[4] similarity 0.51 · issue support_process\n    Customer: \"are any of your other stores open 24 hours?\"\n    Support: \"Thanks for reaching out. We're here to help. DM us so we can look into this further with you.\"\n[5] similarity 0.51 · issue support_process\n    Customer: \"i tried to forgot the pw, i remember my number but the number was not active. i get a notification of waiting 4 days and that is so long\"\n    Support: \"Send us a DM and we'll be more than happy to explain the recovery process in more detail.\"\n\nDraft the reply now, following every safety rule."
+      }
+    },
+    {
+      "index": 19,
+      "conversation_id": "2140945",
+      "message": "La última actualización de software del #iphone a 11.1 me tiene el cel demasiado lento y se bloquean las aplicaciones @AppleSupport",
+      "golden_label": "software_bug",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.9286,
+      "runner_up": "other",
+      "runner_up_confidence": 0.0261,
+      "gates": {
+        "intent_confidence": 0.9286,
+        "top1_score": 0.8153,
+        "intent_pass": true,
+        "retrieval_pass": true,
+        "auto_handle_eligible": true
+      },
+      "reply": "Based on similar cases we've seen, we offer support via Twitter in English. Get help in Spanish here: or join",
+      "scores": {
+        "grounding_overlap": 0.6154,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": false,
+        "dm_redirect": false,
+        "personal_data_solicited": false,
+        "length_chars": 109,
+        "length_words": 20
+      },
+      "evidence": [
+        {
+          "rank": 1,
+          "score": 0.8153,
+          "pair_id": "121550",
+          "conversation_id": "121552",
+          "predicted_intent": "software_bug",
+          "customer_message": "Estoy teniendo demasiados problemas con la nueva actualización del iOS 11.1.2 de @115858 , es extremadamente mala esta actualización @AppleSupport necesito solución 😡",
+          "support_response": "Thanks for reaching out. We offer support via Twitter in English. Get help in Spanish here: or join:"
+        },
+        {
+          "rank": 2,
+          "score": 0.8019,
+          "pair_id": "2647377",
+          "conversation_id": "2647378",
+          "predicted_intent": "software_bug",
+          "customer_message": "La actualización de iPhone 11.01 es para que nos compremos el X o para que dejemos de usar @115858 ? @AppleSupport desde actualización el móvil tarda segundos solo en cambiar de pantalla o App",
+          "support_response": "We offer support via Twitter in English. Get help in Spanish here: or join"
+        },
+        {
+          "rank": 3,
+          "score": 0.7974,
+          "pair_id": "764867",
+          "conversation_id": "764873",
+          "predicted_intent": "software_bug",
+          "customer_message": "Acabo de actualizar al 11.0.3 y sigue igual el sistema ralentizado. Una mierda todo esto de #iOS11 @AppleSupport quiero el iOS10 ya.",
+          "support_response": "We offer support via Twitter in English. Get help in Spanish here: or join"
+        },
+        {
+          "rank": 4,
+          "score": 0.7917,
+          "pair_id": "1744882",
+          "conversation_id": "1744884",
+          "predicted_intent": "software_bug",
+          "customer_message": "Actualización de iOS 11.1 sucks. @AppleSupport, Traba Llamadas, Se bloque seguido. Hay que reiniciar para que vuelva a funcionar😡😡😡",
+          "support_response": "We offer support via Twitter in English. Get help in Spanish here: or join"
+        },
+        {
+          "rank": 5,
+          "score": 0.7893,
+          "pair_id": "794094",
+          "conversation_id": "794096",
+          "predicted_intent": "software_bug",
+          "customer_message": "Con iOS 11.02 ya no se están generando las notificaciones de las apps. Sólo después de abrirlas manualmente @AppleSupport",
+          "support_response": "We offer support via Twitter in English. Get help in Spanish here: or join"
+        }
+      ],
+      "timings": {
+        "embed_ms": 20.7,
+        "faiss_search_ms": 13.9,
+        "llm_ms": 568,
+        "total_ms": 604
+      },
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "prompt": {
+        "system": "You are the draft-reply engine of a customer-support prototype (\"Apple Support AI\"), built for a machine-learning assignment. You write ONE public reply to a customer, grounded STRICTLY in numbered historical support cases given as evidence.\n\nSafety rules — non-negotiable:\n1. Use only facts, troubleshooting steps and phrasing present in the evidence cases. Never invent prices, dates, software versions, policies, phone numbers or links.\n2. Include a brief grounding phrase making clear the suggestion comes from how similar issues were handled historically — e.g. \"Based on similar cases we've seen, …\" — and never imply it is current company policy.\n3. If the evidence does not clearly address the customer's issue, do not guess: say you'd like to look into it with them and ask ONE short clarifying question.\n4. For account, payment or security matters, never ask for or repeat personal details in public — invite the customer to continue in Direct Messages, exactly as the historical support team did.\n5. Style: warm, concise, professional; match the evidence replies. No hashtags, no emoji, no signatures, no quotation marks around the reply.\n6. Length: at most 280 characters, one short paragraph (or two sentences).\n\nOutput ONLY the reply text.",
+        "user": "Customer message: \"La última actualización de software del #iphone a 11.1 me tiene el cel demasiado lento y se bloquean las aplicaciones @AppleSupport\"\n\nPredicted issue: software_bug (confidence 0.93; runner-up: other 0.03)\nEvidence quality: top similarity 0.82 — strong grounding — the evidence directly addresses similar issues (threshold 0.65).\n\nHistorical support cases, most similar first:\n[1] similarity 0.82 · issue software_bug\n    Customer: \"Estoy teniendo demasiados problemas con la nueva actualización del iOS 11.1.2 de @115858 , es extremadamente mala esta actualización @AppleSupport necesito solución 😡\"\n    Support: \"Thanks for reaching out. We offer support via Twitter in English. Get help in Spanish here: or join:\"\n[2] similarity 0.80 · issue software_bug\n    Customer: \"La actualización de iPhone 11.01 es para que nos compremos el X o para que dejemos de usar @115858 ? @AppleSupport desde actualización el móvil tarda segundos solo en cambiar de pantalla o App\"\n    Support: \"We offer support via Twitter in English. Get help in Spanish here: or join\"\n[3] similarity 0.80 · issue software_bug\n    Customer: \"Acabo de actualizar al 11.0.3 y sigue igual el sistema ralentizado. Una mierda todo esto de #iOS11 @AppleSupport quiero el iOS10 ya.\"\n    Support: \"We offer support via Twitter in English. Get help in Spanish here: or join\"\n[4] similarity 0.79 · issue software_bug\n    Customer: \"Actualización de iOS 11.1 sucks. @AppleSupport, Traba Llamadas, Se bloque seguido. Hay que reiniciar para que vuelva a funcionar😡😡😡\"\n    Support: \"We offer support via Twitter in English. Get help in Spanish here: or join\"\n[5] similarity 0.79 · issue software_bug\n    Customer: \"Con iOS 11.02 ya no se están generando las notificaciones de las apps. Sólo después de abrirlas manualmente @AppleSupport\"\n    Support: \"We offer support via Twitter in English. Get help in Spanish here: or join\"\n\nDraft the reply now, following every safety rule."
+      }
+    },
+    {
+      "index": 20,
+      "conversation_id": "222974",
+      "message": "just updated to latest update now I can’t access I tunes or download podcast please help",
+      "golden_label": "software_bug",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.9181,
+      "runner_up": "account_icloud",
+      "runner_up_confidence": 0.0205,
+      "gates": {
+        "intent_confidence": 0.9181,
+        "top1_score": 0.7283,
+        "intent_pass": true,
+        "retrieval_pass": true,
+        "auto_handle_eligible": true
+      },
+      "reply": "Based on similar cases we've seen, could you let us know which software version you're using and what happens when you try to access these apps?",
+      "scores": {
+        "grounding_overlap": 0.5385,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": true,
+        "dm_redirect": false,
+        "personal_data_solicited": false,
+        "length_chars": 144,
+        "length_words": 26
+      },
+      "evidence": [
+        {
+          "rank": 1,
+          "score": 0.7283,
+          "pair_id": "40559",
+          "conversation_id": "40560",
+          "predicted_intent": "software_bug",
+          "customer_message": "Hey @AppleSupport why can’t I download podcasts from @1922 ? New update is terrible",
+          "support_response": "Thank you for reaching out to us. Which software version are you using? Does this happen when downloading all episodes?"
+        },
+        {
+          "rank": 2,
+          "score": 0.7239,
+          "pair_id": "1809626",
+          "conversation_id": "1809628",
+          "predicted_intent": "software_bug",
+          "customer_message": "Why? You have stopped updating podcasts and the iTunes update won't update. Technology and Apple FAIL.",
+          "support_response": "We're here to help with iTunes and Podcasts. Click the DM link and let us know what happens when trying to update these."
+        },
+        {
+          "rank": 3,
+          "score": 0.7197,
+          "pair_id": "1586250",
+          "conversation_id": "1586252",
+          "predicted_intent": "software_bug",
+          "customer_message": "since this new update I can’t access podcasts, music, or the App Store. This is ridiculous. Every updated makes it worse.",
+          "support_response": "We'll help out. What happens when you try to access those apps? Are you getting a specific error message?"
+        },
+        {
+          "rank": 4,
+          "score": 0.6873,
+          "pair_id": "2123219",
+          "conversation_id": "2123220",
+          "predicted_intent": "account_icloud",
+          "customer_message": "can no longer access ANY of my itunes music after upgrade, 'item not available' HELP!",
+          "support_response": "Thank you. We’ve received your DM and will continue working with you there."
+        },
+        {
+          "rank": 5,
+          "score": 0.6823,
+          "pair_id": "1313970",
+          "conversation_id": "1313971",
+          "predicted_intent": "software_bug",
+          "customer_message": "The updated #Podcasts app is hard to navigate and won’t download my episodes?! Urgh!! @115858 @AppleSupport #ios11",
+          "support_response": "We want to help! What model of iOS device are you using? Do you have the most recent version of iOS 11.0.3 downloaded?"
+        }
+      ],
+      "timings": {
+        "embed_ms": 13.9,
+        "faiss_search_ms": 14.6,
+        "llm_ms": 635,
+        "total_ms": 665
+      },
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "prompt": {
+        "system": "You are the draft-reply engine of a customer-support prototype (\"Apple Support AI\"), built for a machine-learning assignment. You write ONE public reply to a customer, grounded STRICTLY in numbered historical support cases given as evidence.\n\nSafety rules — non-negotiable:\n1. Use only facts, troubleshooting steps and phrasing present in the evidence cases. Never invent prices, dates, software versions, policies, phone numbers or links.\n2. Include a brief grounding phrase making clear the suggestion comes from how similar issues were handled historically — e.g. \"Based on similar cases we've seen, …\" — and never imply it is current company policy.\n3. If the evidence does not clearly address the customer's issue, do not guess: say you'd like to look into it with them and ask ONE short clarifying question.\n4. For account, payment or security matters, never ask for or repeat personal details in public — invite the customer to continue in Direct Messages, exactly as the historical support team did.\n5. Style: warm, concise, professional; match the evidence replies. No hashtags, no emoji, no signatures, no quotation marks around the reply.\n6. Length: at most 280 characters, one short paragraph (or two sentences).\n\nOutput ONLY the reply text.",
+        "user": "Customer message: \"just updated to latest update now I can’t access I tunes or download podcast please help\"\n\nPredicted issue: software_bug (confidence 0.92; runner-up: account_icloud 0.02)\nEvidence quality: top similarity 0.73 — strong grounding — the evidence directly addresses similar issues (threshold 0.65).\n\nHistorical support cases, most similar first:\n[1] similarity 0.73 · issue software_bug\n    Customer: \"Hey @AppleSupport why can’t I download podcasts from @1922 ? New update is terrible\"\n    Support: \"Thank you for reaching out to us. Which software version are you using? Does this happen when downloading all episodes?\"\n[2] similarity 0.72 · issue software_bug\n    Customer: \"Why? You have stopped updating podcasts and the iTunes update won't update. Technology and Apple FAIL.\"\n    Support: \"We're here to help with iTunes and Podcasts. Click the DM link and let us know what happens when trying to update these.\"\n[3] similarity 0.72 · issue software_bug\n    Customer: \"since this new update I can’t access podcasts, music, or the App Store. This is ridiculous. Every updated makes it worse.\"\n    Support: \"We'll help out. What happens when you try to access those apps? Are you getting a specific error message?\"\n[4] similarity 0.69 · issue account_icloud\n    Customer: \"can no longer access ANY of my itunes music after upgrade, 'item not available' HELP!\"\n    Support: \"Thank you. We’ve received your DM and will continue working with you there.\"\n[5] similarity 0.68 · issue software_bug\n    Customer: \"The updated #Podcasts app is hard to navigate and won’t download my episodes?! Urgh!! @115858 @AppleSupport #ios11\"\n    Support: \"We want to help! What model of iOS device are you using? Do you have the most recent version of iOS 11.0.3 downloaded?\"\n\nDraft the reply now, following every safety rule."
+      }
+    },
+    {
+      "index": 21,
+      "conversation_id": "23130",
+      "message": "Dear @115858, you’re really rude for ruining the battery life on our phones with that last update.",
+      "golden_label": "software_bug",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.8259,
+      "runner_up": "general_complaint",
+      "runner_up_confidence": 0.1286,
+      "gates": {
+        "intent_confidence": 0.8259,
+        "top1_score": 0.822,
+        "intent_pass": true,
+        "retrieval_pass": true,
+        "auto_handle_eligible": true
+      },
+      "reply": "Based on similar cases we've seen, we can help with your battery. Which iOS version are you currently running?",
+      "scores": {
+        "grounding_overlap": 0.5455,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": true,
+        "dm_redirect": false,
+        "personal_data_solicited": false,
+        "length_chars": 110,
+        "length_words": 19
+      },
+      "evidence": [
+        {
+          "rank": 1,
+          "score": 0.822,
+          "pair_id": "2590423",
+          "conversation_id": "2590424",
+          "predicted_intent": "software_bug",
+          "customer_message": ".@115858 hey wtf. Thanks for the update that ruined my phone's battery. I'm mad. But moreso I'm disappointed.",
+          "support_response": "We can help with your battery. Which iOS version and iPhone model do you have? Send us a DM and let us know."
+        },
+        {
+          "rank": 2,
+          "score": 0.8104,
+          "pair_id": "937480",
+          "conversation_id": "937482",
+          "predicted_intent": "software_bug",
+          "customer_message": "Dear @115858, this new update has made my battery life shit.",
+          "support_response": "We're happy to assist. Which iOS version are you currently running? Go to Settings > General > About for the version."
+        },
+        {
+          "rank": 3,
+          "score": 0.8061,
+          "pair_id": "215363",
+          "conversation_id": "215364",
+          "predicted_intent": "software_bug",
+          "customer_message": "Hey @115858 your new update has killed my phone if it’s battery life. Come on.",
+          "support_response": "We want to help. Which iOS version is your device currently running? You can locate this under Settings > General > About."
+        },
+        {
+          "rank": 4,
+          "score": 0.7891,
+          "pair_id": "1928294",
+          "conversation_id": "1928295",
+          "predicted_intent": "software_bug",
+          "customer_message": "It’s amazing how every time you update your phone, the quicker your battery dies. @115858 you suck.",
+          "support_response": "Check out these great tips on maintaining battery health, and DM us if you have any questions:"
+        },
+        {
+          "rank": 5,
+          "score": 0.7888,
+          "pair_id": "2040362",
+          "conversation_id": "2040363",
+          "predicted_intent": "software_bug",
+          "customer_message": "Don’t care. I want @115858 to sort out my battery life since the new iOS update.",
+          "support_response": "We want to help with your device's battery. DM us details and include which device you're having the issue on. We'll help there."
+        }
+      ],
+      "timings": {
+        "embed_ms": 21,
+        "faiss_search_ms": 14,
+        "llm_ms": 682,
+        "total_ms": 719
+      },
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "prompt": {
+        "system": "You are the draft-reply engine of a customer-support prototype (\"Apple Support AI\"), built for a machine-learning assignment. You write ONE public reply to a customer, grounded STRICTLY in numbered historical support cases given as evidence.\n\nSafety rules — non-negotiable:\n1. Use only facts, troubleshooting steps and phrasing present in the evidence cases. Never invent prices, dates, software versions, policies, phone numbers or links.\n2. Include a brief grounding phrase making clear the suggestion comes from how similar issues were handled historically — e.g. \"Based on similar cases we've seen, …\" — and never imply it is current company policy.\n3. If the evidence does not clearly address the customer's issue, do not guess: say you'd like to look into it with them and ask ONE short clarifying question.\n4. For account, payment or security matters, never ask for or repeat personal details in public — invite the customer to continue in Direct Messages, exactly as the historical support team did.\n5. Style: warm, concise, professional; match the evidence replies. No hashtags, no emoji, no signatures, no quotation marks around the reply.\n6. Length: at most 280 characters, one short paragraph (or two sentences).\n\nOutput ONLY the reply text.",
+        "user": "Customer message: \"Dear @115858, you’re really rude for ruining the battery life on our phones with that last update.\"\n\nPredicted issue: software_bug (confidence 0.83; runner-up: general_complaint 0.13)\nEvidence quality: top similarity 0.82 — strong grounding — the evidence directly addresses similar issues (threshold 0.65).\n\nHistorical support cases, most similar first:\n[1] similarity 0.82 · issue software_bug\n    Customer: \".@115858 hey wtf. Thanks for the update that ruined my phone's battery. I'm mad. But moreso I'm disappointed.\"\n    Support: \"We can help with your battery. Which iOS version and iPhone model do you have? Send us a DM and let us know.\"\n[2] similarity 0.81 · issue software_bug\n    Customer: \"Dear @115858, this new update has made my battery life shit.\"\n    Support: \"We're happy to assist. Which iOS version are you currently running? Go to Settings > General > About for the version.\"\n[3] similarity 0.81 · issue software_bug\n    Customer: \"Hey @115858 your new update has killed my phone if it’s battery life. Come on.\"\n    Support: \"We want to help. Which iOS version is your device currently running? You can locate this under Settings > General > About.\"\n[4] similarity 0.79 · issue software_bug\n    Customer: \"It’s amazing how every time you update your phone, the quicker your battery dies. @115858 you suck.\"\n    Support: \"Check out these great tips on maintaining battery health, and DM us if you have any questions:\"\n[5] similarity 0.79 · issue software_bug\n    Customer: \"Don’t care. I want @115858 to sort out my battery life since the new iOS update.\"\n    Support: \"We want to help with your device's battery. DM us details and include which device you're having the issue on. We'll help there.\"\n\nDraft the reply now, following every safety rule."
+      }
+    },
+    {
+      "index": 22,
+      "conversation_id": "2693953",
+      "message": "@116333 Tim, I wrote you an email Through Apple about MacBook Pro I’ve bought but not gotten. I don’t expect this to help but no one at Apple has helped either. The more I call Apple the more frustrating it becomes. #NoCustomerService",
+      "golden_label": "billing_purchases",
+      "predicted_intent": "device_hardware",
+      "intent_confidence": 0.3164,
+      "runner_up": "support_process",
+      "runner_up_confidence": 0.2509,
+      "gates": {
+        "intent_confidence": 0.3164,
+        "top1_score": 0.7315,
+        "intent_pass": false,
+        "retrieval_pass": true,
+        "auto_handle_eligible": false
+      },
+      "reply": "Based on similar cases we've seen, we'd like to learn more about your experience. Please message us in DM.",
+      "scores": {
+        "grounding_overlap": 0.5,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": false,
+        "dm_redirect": true,
+        "personal_data_solicited": false,
+        "length_chars": 106,
+        "length_words": 19
+      },
+      "evidence": [
+        {
+          "rank": 1,
+          "score": 0.7315,
+          "pair_id": "2352147",
+          "conversation_id": "2352148",
+          "predicted_intent": "repair_warranty",
+          "customer_message": "Due to your support team you may have lost a previous loyal professional customer. Thanks #angry #premiumproduct? #MacBookPro",
+          "support_response": "We're here for you. Tell us more about your experience in DM:"
+        },
+        {
+          "rank": 2,
+          "score": 0.7241,
+          "pair_id": "1809614",
+          "conversation_id": "1809615",
+          "predicted_intent": "support_process",
+          "customer_message": "Just purchased a MacBook Pro @115858 @29645. Need service help. Four hour wait time. Someone needs to disrupt this business.",
+          "support_response": "Congratulations on the purchase of your new MacBook Pro. We may be able to help. Can you please message us in DM?"
+        },
+        {
+          "rank": 3,
+          "score": 0.7227,
+          "pair_id": "1279917",
+          "conversation_id": "1279918",
+          "predicted_intent": "repair_warranty",
+          "customer_message": "Dear @115858 my very expensive MacBook Pro has failed for the third time in a year and your customer service has been dreadful.",
+          "support_response": "We’d like to learn more about your experience. Please meet us in DM."
+        },
+        {
+          "rank": 4,
+          "score": 0.7188,
+          "pair_id": "2285603",
+          "conversation_id": "2285605",
+          "predicted_intent": "software_bug",
+          "customer_message": "@AppleSupport There are many problems on my MacBook Pro. Customer service unable to help. What should I do ? 😑😑😑",
+          "support_response": "We'd like to see how we can help. DM us and we'll continue with you there."
+        },
+        {
+          "rank": 5,
+          "score": 0.6929,
+          "pair_id": "1682426",
+          "conversation_id": "1682428",
+          "predicted_intent": "device_hardware",
+          "customer_message": "i need assistance with my MacBook Pro.",
+          "support_response": "We'd be happy to see how we can help. What's going on?"
+        }
+      ],
+      "timings": {
+        "embed_ms": 26.1,
+        "faiss_search_ms": 14.5,
+        "llm_ms": 522,
+        "total_ms": 564
+      },
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "prompt": {
+        "system": "You are the draft-reply engine of a customer-support prototype (\"Apple Support AI\"), built for a machine-learning assignment. You write ONE public reply to a customer, grounded STRICTLY in numbered historical support cases given as evidence.\n\nSafety rules — non-negotiable:\n1. Use only facts, troubleshooting steps and phrasing present in the evidence cases. Never invent prices, dates, software versions, policies, phone numbers or links.\n2. Include a brief grounding phrase making clear the suggestion comes from how similar issues were handled historically — e.g. \"Based on similar cases we've seen, …\" — and never imply it is current company policy.\n3. If the evidence does not clearly address the customer's issue, do not guess: say you'd like to look into it with them and ask ONE short clarifying question.\n4. For account, payment or security matters, never ask for or repeat personal details in public — invite the customer to continue in Direct Messages, exactly as the historical support team did.\n5. Style: warm, concise, professional; match the evidence replies. No hashtags, no emoji, no signatures, no quotation marks around the reply.\n6. Length: at most 280 characters, one short paragraph (or two sentences).\n\nOutput ONLY the reply text.",
+        "user": "Customer message: \"@116333 Tim, I wrote you an email Through Apple about MacBook Pro I’ve bought but not gotten. I don’t expect this to help but no one at Apple has helped either. The more I call Apple the more frustrating it becomes. #NoCustomerService\"\n\nPredicted issue: device_hardware (confidence 0.32; runner-up: support_process 0.25)\nEvidence quality: top similarity 0.73 — strong grounding — the evidence directly addresses similar issues (threshold 0.65).\n\nHistorical support cases, most similar first:\n[1] similarity 0.73 · issue repair_warranty\n    Customer: \"Due to your support team you may have lost a previous loyal professional customer. Thanks #angry #premiumproduct? #MacBookPro\"\n    Support: \"We're here for you. Tell us more about your experience in DM:\"\n[2] similarity 0.72 · issue support_process\n    Customer: \"Just purchased a MacBook Pro @115858 @29645. Need service help. Four hour wait time. Someone needs to disrupt this business.\"\n    Support: \"Congratulations on the purchase of your new MacBook Pro. We may be able to help. Can you please message us in DM?\"\n[3] similarity 0.72 · issue repair_warranty\n    Customer: \"Dear @115858 my very expensive MacBook Pro has failed for the third time in a year and your customer service has been dreadful.\"\n    Support: \"We’d like to learn more about your experience. Please meet us in DM.\"\n[4] similarity 0.72 · issue software_bug\n    Customer: \"@AppleSupport There are many problems on my MacBook Pro. Customer service unable to help. What should I do ? 😑😑😑\"\n    Support: \"We'd like to see how we can help. DM us and we'll continue with you there.\"\n[5] similarity 0.69 · issue device_hardware\n    Customer: \"i need assistance with my MacBook Pro.\"\n    Support: \"We'd be happy to see how we can help. What's going on?\"\n\nDraft the reply now, following every safety rule."
+      }
+    },
+    {
+      "index": 23,
+      "conversation_id": "2773256",
+      "message": "sorry if i lose our streak!!!!! my phone is dumb and reset itself and locked me out of it @AppleSupport EXPLAIN",
+      "golden_label": "software_bug",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.354,
+      "runner_up": "account_icloud",
+      "runner_up_confidence": 0.1738,
+      "gates": {
+        "intent_confidence": 0.354,
+        "top1_score": 0.6292,
+        "intent_pass": false,
+        "retrieval_pass": false,
+        "auto_handle_eligible": false
+      },
+      "reply": "Based on similar cases we've seen, we'd like to know more. Please DM us with details about when this began and what iOS version you're using.",
+      "scores": {
+        "grounding_overlap": 0.5385,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": false,
+        "dm_redirect": true,
+        "personal_data_solicited": false,
+        "length_chars": 141,
+        "length_words": 26
+      },
+      "evidence": [
+        {
+          "rank": 1,
+          "score": 0.6292,
+          "pair_id": "1895718",
+          "conversation_id": "1895719",
+          "predicted_intent": "general_complaint",
+          "customer_message": "Hey @115858 @AppleSupport I got my phone like a few months ago & now ya glitching it to the max. Please stop.",
+          "support_response": "We'd like to know more. Please DM us with more details about the challenges you're experiencing."
+        },
+        {
+          "rank": 2,
+          "score": 0.6252,
+          "pair_id": "519196",
+          "conversation_id": "519197",
+          "predicted_intent": "device_hardware",
+          "customer_message": "well, my phone keeps randomly resetting/crashing every 60 seconds so sorry if you need to contact me while i’m out!! @AppleSupport thank you for making a very bad and useless phone.",
+          "support_response": "We want to help with your iPhone. To start, can you tell us when this first began and were you using a specific application or feature at that time? Also, what's the iOS version you're using? Meet us in a DM, we'll continue there."
+        },
+        {
+          "rank": 3,
+          "score": 0.6223,
+          "pair_id": "1230354",
+          "conversation_id": "1230356",
+          "predicted_intent": "general_complaint",
+          "customer_message": "What a great way to start the day, sent snaps to all my snap streaks close phone and now it wont come back on..... thanks @115858 😅",
+          "support_response": "We can take a look at that. Is it just that app having the issue?"
+        },
+        {
+          "rank": 4,
+          "score": 0.61,
+          "pair_id": "559186",
+          "conversation_id": "559187",
+          "predicted_intent": "software_bug",
+          "customer_message": "My phone keeps resetting itself as I use it. @AppleSupport explain.",
+          "support_response": "Thanks for reaching out, we'd like to help. If you're currently not running iOS 11.2, we recommend backing up your device and completing the steps here: Let us know the results or if you have any questions about the steps."
+        },
+        {
+          "rank": 5,
+          "score": 0.6017,
+          "pair_id": "938184",
+          "conversation_id": "938181",
+          "predicted_intent": "connectivity",
+          "customer_message": "Both devices show that the Move goal was achieved, but the Streak (as reported the phone) has stopped for some reason...",
+          "support_response": "Let's continue this conversation in DM. Click the link below to send us a message with your WatchOS version to get started."
+        }
+      ],
+      "timings": {
+        "embed_ms": 26,
+        "faiss_search_ms": 14.2,
+        "llm_ms": 614,
+        "total_ms": 657
+      },
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "prompt": {
+        "system": "You are the draft-reply engine of a customer-support prototype (\"Apple Support AI\"), built for a machine-learning assignment. You write ONE public reply to a customer, grounded STRICTLY in numbered historical support cases given as evidence.\n\nSafety rules — non-negotiable:\n1. Use only facts, troubleshooting steps and phrasing present in the evidence cases. Never invent prices, dates, software versions, policies, phone numbers or links.\n2. Include a brief grounding phrase making clear the suggestion comes from how similar issues were handled historically — e.g. \"Based on similar cases we've seen, …\" — and never imply it is current company policy.\n3. If the evidence does not clearly address the customer's issue, do not guess: say you'd like to look into it with them and ask ONE short clarifying question.\n4. For account, payment or security matters, never ask for or repeat personal details in public — invite the customer to continue in Direct Messages, exactly as the historical support team did.\n5. Style: warm, concise, professional; match the evidence replies. No hashtags, no emoji, no signatures, no quotation marks around the reply.\n6. Length: at most 280 characters, one short paragraph (or two sentences).\n\nOutput ONLY the reply text.",
+        "user": "Customer message: \"sorry if i lose our streak!!!!! my phone is dumb and reset itself and locked me out of it @AppleSupport EXPLAIN\"\n\nPredicted issue: software_bug (confidence 0.35; runner-up: account_icloud 0.17)\nEvidence quality: top similarity 0.63 — weak grounding — prefer a clarifying question over specific advice (threshold 0.65).\n\nHistorical support cases, most similar first:\n[1] similarity 0.63 · issue general_complaint\n    Customer: \"Hey @115858 @AppleSupport I got my phone like a few months ago & now ya glitching it to the max. Please stop.\"\n    Support: \"We'd like to know more. Please DM us with more details about the challenges you're experiencing.\"\n[2] similarity 0.63 · issue device_hardware\n    Customer: \"well, my phone keeps randomly resetting/crashing every 60 seconds so sorry if you need to contact me while i’m out!! @AppleSupport thank you for making a very bad and useless phone.\"\n    Support: \"We want to help with your iPhone. To start, can you tell us when this first began and were you using a specific application or feature at that time? Also, what's the iOS version you're using? Meet us in a DM, we'll continue there.\"\n[3] similarity 0.62 · issue general_complaint\n    Customer: \"What a great way to start the day, sent snaps to all my snap streaks close phone and now it wont come back on..... thanks @115858 😅\"\n    Support: \"We can take a look at that. Is it just that app having the issue?\"\n[4] similarity 0.61 · issue software_bug\n    Customer: \"My phone keeps resetting itself as I use it. @AppleSupport explain.\"\n    Support: \"Thanks for reaching out, we'd like to help. If you're currently not running iOS 11.2, we recommend backing up your device and completing the steps here: Let us know the results or if you have any questions about the steps.\"\n[5] similarity 0.60 · issue connectivity\n    Customer: \"Both devices show that the Move goal was achieved, but the Streak (as reported the phone) has stopped for some reason...\"\n    Support: \"Let's continue this conversation in DM. Click the link below to send us a message with your WatchOS version to get started.\"\n\nDraft the reply now, following every safety rule."
+      }
+    },
+    {
+      "index": 24,
+      "conversation_id": "2789816",
+      "message": "my phone is moving really slow, there’s a delay in my keyboard as well....just got this phone 🤔",
+      "golden_label": "software_bug",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.9554,
+      "runner_up": "support_process",
+      "runner_up_confidence": 0.0152,
+      "gates": {
+        "intent_confidence": 0.9554,
+        "top1_score": 0.7653,
+        "intent_pass": true,
+        "retrieval_pass": true,
+        "auto_handle_eligible": true
+      },
+      "reply": "Based on similar cases we've seen, we'd be glad to look into that together. Can you send us a DM confirming what iOS version you're currently using?",
+      "scores": {
+        "grounding_overlap": 0.6667,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": true,
+        "dm_redirect": true,
+        "personal_data_solicited": false,
+        "length_chars": 148,
+        "length_words": 27
+      },
+      "evidence": [
+        {
+          "rank": 1,
+          "score": 0.7653,
+          "pair_id": "1774489",
+          "conversation_id": "1774490",
+          "predicted_intent": "software_bug",
+          "customer_message": "why is my phone lagging so bad? keyboard especially. please hlp.",
+          "support_response": "Thank you for reaching out. DM us your iOS version to get started."
+        },
+        {
+          "rank": 2,
+          "score": 0.7645,
+          "pair_id": "2013176",
+          "conversation_id": "2013177",
+          "predicted_intent": "software_bug",
+          "customer_message": "why is my phone so slow rn? 😡",
+          "support_response": "We’d be glad to look into that together. Can you send us a DM confirming what apps you're using when this happens?"
+        },
+        {
+          "rank": 3,
+          "score": 0.7608,
+          "pair_id": "2647380",
+          "conversation_id": "2647382",
+          "predicted_intent": "software_bug",
+          "customer_message": "why is my phone moving so slow ?",
+          "support_response": "Let's work together to get your iPhone back up and running smoothly. To clarify, does this happen while using any particular apps? Also, can you tell us the exact iOS version currently installed?"
+        },
+        {
+          "rank": 4,
+          "score": 0.7568,
+          "pair_id": "2029392",
+          "conversation_id": "2029393",
+          "predicted_intent": "software_bug",
+          "customer_message": "ever since I updated my phone , it’s been slow af & has a delay when I type. also had to google how to get my “i” button back🙄🤦🏽‍♀️ @115858",
+          "support_response": "We'd love to help. What iPhone model and iOS version are you using? Here's how to find it:"
+        },
+        {
+          "rank": 5,
+          "score": 0.7487,
+          "pair_id": "2804358",
+          "conversation_id": "2804360",
+          "predicted_intent": "software_bug",
+          "customer_message": "Did the update for my phone cuz my friend said it made hers better & quicker! Welp, not me!! My keyboard is still getting stuck when I’m texting & overall phone doesn’t seem any faster 😡 @AppleSupport",
+          "support_response": "We'd like to assist, and understand how a non-responsive device would cause issues. When did you update? Also, do you show any app updates pending?"
+        }
+      ],
+      "timings": {
+        "embed_ms": 15.2,
+        "faiss_search_ms": 13.6,
+        "llm_ms": 646,
+        "total_ms": 677
+      },
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "prompt": {
+        "system": "You are the draft-reply engine of a customer-support prototype (\"Apple Support AI\"), built for a machine-learning assignment. You write ONE public reply to a customer, grounded STRICTLY in numbered historical support cases given as evidence.\n\nSafety rules — non-negotiable:\n1. Use only facts, troubleshooting steps and phrasing present in the evidence cases. Never invent prices, dates, software versions, policies, phone numbers or links.\n2. Include a brief grounding phrase making clear the suggestion comes from how similar issues were handled historically — e.g. \"Based on similar cases we've seen, …\" — and never imply it is current company policy.\n3. If the evidence does not clearly address the customer's issue, do not guess: say you'd like to look into it with them and ask ONE short clarifying question.\n4. For account, payment or security matters, never ask for or repeat personal details in public — invite the customer to continue in Direct Messages, exactly as the historical support team did.\n5. Style: warm, concise, professional; match the evidence replies. No hashtags, no emoji, no signatures, no quotation marks around the reply.\n6. Length: at most 280 characters, one short paragraph (or two sentences).\n\nOutput ONLY the reply text.",
+        "user": "Customer message: \"my phone is moving really slow, there’s a delay in my keyboard as well....just got this phone 🤔\"\n\nPredicted issue: software_bug (confidence 0.96; runner-up: support_process 0.02)\nEvidence quality: top similarity 0.77 — strong grounding — the evidence directly addresses similar issues (threshold 0.65).\n\nHistorical support cases, most similar first:\n[1] similarity 0.77 · issue software_bug\n    Customer: \"why is my phone lagging so bad? keyboard especially. please hlp.\"\n    Support: \"Thank you for reaching out. DM us your iOS version to get started.\"\n[2] similarity 0.76 · issue software_bug\n    Customer: \"why is my phone so slow rn? 😡\"\n    Support: \"We’d be glad to look into that together. Can you send us a DM confirming what apps you're using when this happens?\"\n[3] similarity 0.76 · issue software_bug\n    Customer: \"why is my phone moving so slow ?\"\n    Support: \"Let's work together to get your iPhone back up and running smoothly. To clarify, does this happen while using any particular apps? Also, can you tell us the exact iOS version currently installed?\"\n[4] similarity 0.76 · issue software_bug\n    Customer: \"ever since I updated my phone , it’s been slow af & has a delay when I type. also had to google how to get my “i” button back🙄🤦🏽‍♀️ @115858\"\n    Support: \"We'd love to help. What iPhone model and iOS version are you using? Here's how to find it:\"\n[5] similarity 0.75 · issue software_bug\n    Customer: \"Did the update for my phone cuz my friend said it made hers better & quicker! Welp, not me!! My keyboard is still getting stuck when I’m texting & overall phone doesn’t seem any faster 😡 @AppleSupport\"\n    Support: \"We'd like to assist, and understand how a non-responsive device would cause issues. When did you update? Also, do you show any app updates pending?\"\n\nDraft the reply now, following every safety rule."
+      }
+    },
+    {
+      "index": 25,
+      "conversation_id": "2975695",
+      "message": "Why does my iPad keep asking me to sign into iCloud every 30 seconds but when I put in my NEWLY changed password it tells me it is incorrect!!! WTF...I can't even use it right now!",
+      "golden_label": "account_icloud",
+      "predicted_intent": "account_icloud",
+      "intent_confidence": 0.8248,
+      "runner_up": "software_bug",
+      "runner_up_confidence": 0.0758,
+      "gates": {
+        "intent_confidence": 0.8248,
+        "top1_score": 0.7693,
+        "intent_pass": true,
+        "retrieval_pass": true,
+        "auto_handle_eligible": true
+      },
+      "reply": "Based on similar cases we've seen, we can help with your iCloud sign-in issues. Please DM us with details about what's happening so we can assist you further.",
+      "scores": {
+        "grounding_overlap": 0.2857,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": false,
+        "dm_redirect": true,
+        "personal_data_solicited": false,
+        "length_chars": 158,
+        "length_words": 28
+      },
+      "evidence": [
+        {
+          "rank": 1,
+          "score": 0.7693,
+          "pair_id": "1954028",
+          "conversation_id": "1954030",
+          "predicted_intent": "account_icloud",
+          "customer_message": "WTF is wrong with icloud today, I've entered my password over 100 times on 2 different devices and it won't sync. What are you doing!",
+          "support_response": "We'd like to help with any iCloud issues you're experiencing. Please DM us all about it & any steps you've tried so far to proceed."
+        },
+        {
+          "rank": 2,
+          "score": 0.7315,
+          "pair_id": "1020317",
+          "conversation_id": "1020318",
+          "predicted_intent": "account_icloud",
+          "customer_message": "wtf is going on? iPad Keeps telling me to reset my Apple ID I've done this 2x in the past month already it's getting #annoying af",
+          "support_response": "Let's see what we can do to help. Reach out to our Account Security team here:"
+        },
+        {
+          "rank": 3,
+          "score": 0.7262,
+          "pair_id": "1802391",
+          "conversation_id": "1802392",
+          "predicted_intent": "account_icloud",
+          "customer_message": "had to change password & now having trouble signing into iCloud. Telling me to sign in w/ other device????",
+          "support_response": "We can help you get signed in. Is that asking for a passcode from another device? Let us know in DM to get started."
+        },
+        {
+          "rank": 4,
+          "score": 0.716,
+          "pair_id": "2558660",
+          "conversation_id": "2558661",
+          "predicted_intent": "account_icloud",
+          "customer_message": "the amount of time I’m being asked to repeatedly sign in to my Apple ID/iCloud on my iPhone seems really abnormal. I’ve also had some really bad iCloud bugs lately. Can you help resolve?",
+          "support_response": "Let's take a look into this together. Send us a DM with details of the issues you're noting and when they started. We'll meet you there."
+        },
+        {
+          "rank": 5,
+          "score": 0.7087,
+          "pair_id": "97071",
+          "conversation_id": "97072",
+          "predicted_intent": "account_icloud",
+          "customer_message": "Ever since I got my iPhone X I’ve been prompted to sign in to iCloud every day at the same time. I’ve tried completely signing out then back in, changing the password, nothing has worked so far. Any ideas?",
+          "support_response": "We don't want you having to sign in every day! Meet us in DM with some details about what's going on, and which country you're in, and we'll take a look."
+        }
+      ],
+      "timings": {
+        "embed_ms": 37.5,
+        "faiss_search_ms": 13,
+        "llm_ms": 670,
+        "total_ms": 723
+      },
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "prompt": {
+        "system": "You are the draft-reply engine of a customer-support prototype (\"Apple Support AI\"), built for a machine-learning assignment. You write ONE public reply to a customer, grounded STRICTLY in numbered historical support cases given as evidence.\n\nSafety rules — non-negotiable:\n1. Use only facts, troubleshooting steps and phrasing present in the evidence cases. Never invent prices, dates, software versions, policies, phone numbers or links.\n2. Include a brief grounding phrase making clear the suggestion comes from how similar issues were handled historically — e.g. \"Based on similar cases we've seen, …\" — and never imply it is current company policy.\n3. If the evidence does not clearly address the customer's issue, do not guess: say you'd like to look into it with them and ask ONE short clarifying question.\n4. For account, payment or security matters, never ask for or repeat personal details in public — invite the customer to continue in Direct Messages, exactly as the historical support team did.\n5. Style: warm, concise, professional; match the evidence replies. No hashtags, no emoji, no signatures, no quotation marks around the reply.\n6. Length: at most 280 characters, one short paragraph (or two sentences).\n\nOutput ONLY the reply text.",
+        "user": "Customer message: \"Why does my iPad keep asking me to sign into iCloud every 30 seconds but when I put in my NEWLY changed password it tells me it is incorrect!!! WTF...I can't even use it right now!\"\n\nPredicted issue: account_icloud (confidence 0.82; runner-up: software_bug 0.08)\nEvidence quality: top similarity 0.77 — strong grounding — the evidence directly addresses similar issues (threshold 0.65).\n\nHistorical support cases, most similar first:\n[1] similarity 0.77 · issue account_icloud\n    Customer: \"WTF is wrong with icloud today, I've entered my password over 100 times on 2 different devices and it won't sync. What are you doing!\"\n    Support: \"We'd like to help with any iCloud issues you're experiencing. Please DM us all about it & any steps you've tried so far to proceed.\"\n[2] similarity 0.73 · issue account_icloud\n    Customer: \"wtf is going on? iPad Keeps telling me to reset my Apple ID I've done this 2x in the past month already it's getting #annoying af\"\n    Support: \"Let's see what we can do to help. Reach out to our Account Security team here:\"\n[3] similarity 0.73 · issue account_icloud\n    Customer: \"had to change password & now having trouble signing into iCloud. Telling me to sign in w/ other device????\"\n    Support: \"We can help you get signed in. Is that asking for a passcode from another device? Let us know in DM to get started.\"\n[4] similarity 0.72 · issue account_icloud\n    Customer: \"the amount of time I’m being asked to repeatedly sign in to my Apple ID/iCloud on my iPhone seems really abnormal. I’ve also had some really bad iCloud bugs lately. Can you help resolve?\"\n    Support: \"Let's take a look into this together. Send us a DM with details of the issues you're noting and when they started. We'll meet you there.\"\n[5] similarity 0.71 · issue account_icloud\n    Customer: \"Ever since I got my iPhone X I’ve been prompted to sign in to iCloud every day at the same time. I’ve tried completely signing out then back in, changing the password, nothing has worked so far. Any ideas?\"\n    Support: \"We don't want you having to sign in every day! Meet us in DM with some details about what's going on, and which country you're in, and we'll take a look.\"\n\nDraft the reply now, following every safety rule."
+      }
+    },
+    {
+      "index": 26,
+      "conversation_id": "34614",
+      "message": "Hi @AppleSupport ! #TimeMachine still not working with #HighSierra update",
+      "golden_label": "software_bug",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.9704,
+      "runner_up": "general_complaint",
+      "runner_up_confidence": 0.0125,
+      "gates": {
+        "intent_confidence": 0.9704,
+        "top1_score": 0.8519,
+        "intent_pass": true,
+        "retrieval_pass": true,
+        "auto_handle_eligible": true
+      },
+      "reply": "Based on similar cases we've seen, we'd love to look into this with you. Please send us a DM to continue.",
+      "scores": {
+        "grounding_overlap": 0.5,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": false,
+        "dm_redirect": true,
+        "personal_data_solicited": false,
+        "length_chars": 105,
+        "length_words": 21
+      },
+      "evidence": [
+        {
+          "rank": 1,
+          "score": 0.8519,
+          "pair_id": "2686071",
+          "conversation_id": "2686072",
+          "predicted_intent": "software_bug",
+          "customer_message": "Hi! #TimeMachine doesn't work on #HighSierra . Any ideas, please? No one on the support communities knows what to do.",
+          "support_response": "We want to check this out. Send us a DM and we will go from there."
+        },
+        {
+          "rank": 2,
+          "score": 0.7303,
+          "pair_id": "1779197",
+          "conversation_id": "1779198",
+          "predicted_intent": "software_bug",
+          "customer_message": "OMG! I can't take it anymore... Since the #HighSierra update my #Mac has been screwed up & I can't work 😡 @AppleSupport #apple",
+          "support_response": "We’d love to help with your Mac. To start, send us a DM with more details on the behavior you’re experiencing."
+        },
+        {
+          "rank": 3,
+          "score": 0.7159,
+          "pair_id": "712958",
+          "conversation_id": "712959",
+          "predicted_intent": "software_bug",
+          "customer_message": "😑 @AppleSupport listen here. Day 4 of @115769 not working on #HighSierra. I’ve reinstalled, I’ve patched, I’ve checked Read and Write permissions. Like yo.",
+          "support_response": "We’re happy to dive deeper into this with you. Reach us in DM to continue."
+        },
+        {
+          "rank": 4,
+          "score": 0.7014,
+          "pair_id": "426716",
+          "conversation_id": "426717",
+          "predicted_intent": "software_bug",
+          "customer_message": "Hey @AppleSupport please fix this bug #HighSierra #MacOS",
+          "support_response": "We'd love to look into this. Please click here to join us in DM:"
+        },
+        {
+          "rank": 5,
+          "score": 0.6876,
+          "pair_id": "2957142",
+          "conversation_id": "2957143",
+          "predicted_intent": "software_bug",
+          "customer_message": "So apparently there’s some issue with @AppleSupport #HighSierra that makes your #mac easier to hack. I’m being told to avoid this update like the plague.",
+          "support_response": "Let's look into this for you. Send us a DM and we can go over some options with you."
+        }
+      ],
+      "timings": {
+        "embed_ms": 15.9,
+        "faiss_search_ms": 13.6,
+        "llm_ms": 516,
+        "total_ms": 548
+      },
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "prompt": {
+        "system": "You are the draft-reply engine of a customer-support prototype (\"Apple Support AI\"), built for a machine-learning assignment. You write ONE public reply to a customer, grounded STRICTLY in numbered historical support cases given as evidence.\n\nSafety rules — non-negotiable:\n1. Use only facts, troubleshooting steps and phrasing present in the evidence cases. Never invent prices, dates, software versions, policies, phone numbers or links.\n2. Include a brief grounding phrase making clear the suggestion comes from how similar issues were handled historically — e.g. \"Based on similar cases we've seen, …\" — and never imply it is current company policy.\n3. If the evidence does not clearly address the customer's issue, do not guess: say you'd like to look into it with them and ask ONE short clarifying question.\n4. For account, payment or security matters, never ask for or repeat personal details in public — invite the customer to continue in Direct Messages, exactly as the historical support team did.\n5. Style: warm, concise, professional; match the evidence replies. No hashtags, no emoji, no signatures, no quotation marks around the reply.\n6. Length: at most 280 characters, one short paragraph (or two sentences).\n\nOutput ONLY the reply text.",
+        "user": "Customer message: \"Hi @AppleSupport ! #TimeMachine still not working with #HighSierra update\"\n\nPredicted issue: software_bug (confidence 0.97; runner-up: general_complaint 0.01)\nEvidence quality: top similarity 0.85 — strong grounding — the evidence directly addresses similar issues (threshold 0.65).\n\nHistorical support cases, most similar first:\n[1] similarity 0.85 · issue software_bug\n    Customer: \"Hi! #TimeMachine doesn't work on #HighSierra . Any ideas, please? No one on the support communities knows what to do.\"\n    Support: \"We want to check this out. Send us a DM and we will go from there.\"\n[2] similarity 0.73 · issue software_bug\n    Customer: \"OMG! I can't take it anymore... Since the #HighSierra update my #Mac has been screwed up & I can't work 😡 @AppleSupport #apple\"\n    Support: \"We’d love to help with your Mac. To start, send us a DM with more details on the behavior you’re experiencing.\"\n[3] similarity 0.72 · issue software_bug\n    Customer: \"😑 @AppleSupport listen here. Day 4 of @115769 not working on #HighSierra. I’ve reinstalled, I’ve patched, I’ve checked Read and Write permissions. Like yo.\"\n    Support: \"We’re happy to dive deeper into this with you. Reach us in DM to continue.\"\n[4] similarity 0.70 · issue software_bug\n    Customer: \"Hey @AppleSupport please fix this bug #HighSierra #MacOS\"\n    Support: \"We'd love to look into this. Please click here to join us in DM:\"\n[5] similarity 0.69 · issue software_bug\n    Customer: \"So apparently there’s some issue with @AppleSupport #HighSierra that makes your #mac easier to hack. I’m being told to avoid this update like the plague.\"\n    Support: \"Let's look into this for you. Send us a DM and we can go over some options with you.\"\n\nDraft the reply now, following every safety rule."
+      }
+    },
+    {
+      "index": 27,
+      "conversation_id": "519252",
+      "message": "iPhone 6S going to black screen with loading wheel, then to lock screen on a loop. Phone unusable. Need a fix ASAP",
+      "golden_label": "software_bug",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.3395,
+      "runner_up": "device_hardware",
+      "runner_up_confidence": 0.329,
+      "gates": {
+        "intent_confidence": 0.3395,
+        "top1_score": 0.9679,
+        "intent_pass": false,
+        "retrieval_pass": true,
+        "auto_handle_eligible": false
+      },
+      "reply": "Based on similar cases we've seen, back up your iPhone and follow the steps here: DM us if you have questions.",
+      "scores": {
+        "grounding_overlap": 0.4444,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": false,
+        "dm_redirect": true,
+        "personal_data_solicited": false,
+        "length_chars": 110,
+        "length_words": 21
+      },
+      "evidence": [
+        {
+          "rank": 1,
+          "score": 0.9679,
+          "pair_id": "542389",
+          "conversation_id": "542390",
+          "predicted_intent": "software_bug",
+          "customer_message": "iPhone 6S & iPhone 7 going to black screen with loading wheel, then to lock screen on a loop. Phone unusable. Need a fix",
+          "support_response": "We'd like to help. An update has been released that addresses this issue. If you haven't already, back up your iPhone and follow the steps here: DM us if you have questions."
+        },
+        {
+          "rank": 2,
+          "score": 0.9275,
+          "pair_id": "523850",
+          "conversation_id": "523851",
+          "predicted_intent": "device_hardware",
+          "customer_message": "iPhone 6S & iPhone 7 going to black screen with loading wheel, then to lock screen on a loop. Phone unusable. Need a fix ASAP. #SouthAfrica #Vodacom",
+          "support_response": "We know how important it is to have an iPhone that works. We'd like to help. Send us a DM."
+        },
+        {
+          "rank": 3,
+          "score": 0.8325,
+          "pair_id": "539996",
+          "conversation_id": "539997",
+          "predicted_intent": "device_hardware",
+          "customer_message": "hi, Im having trouble with my iPhone 6s. a black screen with spinning wheel appears every 10 seconds. I did full reset",
+          "support_response": "We understand needing your iPhone to work properly, and we want to help. Take a look here for the steps that will help: If you're still having trouble, please let us know in DM."
+        },
+        {
+          "rank": 4,
+          "score": 0.7882,
+          "pair_id": "514815",
+          "conversation_id": "514817",
+          "predicted_intent": "software_bug",
+          "customer_message": "I'm one of the many people with the black screen>spinning wheel>lockscreen issue ( I have a 6 running the latest iOS. Provide a fix ASAP please as I'm travelling and need my phone to be usable!",
+          "support_response": "Thanks for reaching out. We know how important it is to be able to depend on your iPhone, especially when traveling. Reach out to us in DM and we’ll help."
+        },
+        {
+          "rank": 5,
+          "score": 0.74,
+          "pair_id": "554795",
+          "conversation_id": "554797",
+          "predicted_intent": "device_hardware",
+          "customer_message": "please help. My iPhone 6s keeps going to black screen then log on screen approx every 1.5minutws. I have forced reboot and done a reset no change. What else can I try",
+          "support_response": "We can definitely help with that. To start, we'd like to ask that you give the steps in this article a try: Also, please be sure to backup your iPhone before doing the iOS update:"
+        }
+      ],
+      "timings": {
+        "embed_ms": 14.9,
+        "faiss_search_ms": 14.6,
+        "llm_ms": 579,
+        "total_ms": 613
+      },
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "prompt": {
+        "system": "You are the draft-reply engine of a customer-support prototype (\"Apple Support AI\"), built for a machine-learning assignment. You write ONE public reply to a customer, grounded STRICTLY in numbered historical support cases given as evidence.\n\nSafety rules — non-negotiable:\n1. Use only facts, troubleshooting steps and phrasing present in the evidence cases. Never invent prices, dates, software versions, policies, phone numbers or links.\n2. Include a brief grounding phrase making clear the suggestion comes from how similar issues were handled historically — e.g. \"Based on similar cases we've seen, …\" — and never imply it is current company policy.\n3. If the evidence does not clearly address the customer's issue, do not guess: say you'd like to look into it with them and ask ONE short clarifying question.\n4. For account, payment or security matters, never ask for or repeat personal details in public — invite the customer to continue in Direct Messages, exactly as the historical support team did.\n5. Style: warm, concise, professional; match the evidence replies. No hashtags, no emoji, no signatures, no quotation marks around the reply.\n6. Length: at most 280 characters, one short paragraph (or two sentences).\n\nOutput ONLY the reply text.",
+        "user": "Customer message: \"iPhone 6S going to black screen with loading wheel, then to lock screen on a loop. Phone unusable. Need a fix ASAP\"\n\nPredicted issue: software_bug (confidence 0.34; runner-up: device_hardware 0.33)\nEvidence quality: top similarity 0.97 — strong grounding — the evidence directly addresses similar issues (threshold 0.65).\n\nHistorical support cases, most similar first:\n[1] similarity 0.97 · issue software_bug\n    Customer: \"iPhone 6S & iPhone 7 going to black screen with loading wheel, then to lock screen on a loop. Phone unusable. Need a fix\"\n    Support: \"We'd like to help. An update has been released that addresses this issue. If you haven't already, back up your iPhone and follow the steps here: DM us if you have questions.\"\n[2] similarity 0.93 · issue device_hardware\n    Customer: \"iPhone 6S & iPhone 7 going to black screen with loading wheel, then to lock screen on a loop. Phone unusable. Need a fix ASAP. #SouthAfrica #Vodacom\"\n    Support: \"We know how important it is to have an iPhone that works. We'd like to help. Send us a DM.\"\n[3] similarity 0.83 · issue device_hardware\n    Customer: \"hi, Im having trouble with my iPhone 6s. a black screen with spinning wheel appears every 10 seconds. I did full reset\"\n    Support: \"We understand needing your iPhone to work properly, and we want to help. Take a look here for the steps that will help: If you're still having trouble, please let us know in DM.\"\n[4] similarity 0.79 · issue software_bug\n    Customer: \"I'm one of the many people with the black screen>spinning wheel>lockscreen issue ( I have a 6 running the latest iOS. Provide a fix ASAP please as I'm travelling and need my phone to be usable!\"\n    Support: \"Thanks for reaching out. We know how important it is to be able to depend on your iPhone, especially when traveling. Reach out to us in DM and we’ll help.\"\n[5] similarity 0.74 · issue device_hardware\n    Customer: \"please help. My iPhone 6s keeps going to black screen then log on screen approx every 1.5minutws. I have forced reboot and done a reset no change. What else can I try\"\n    Support: \"We can definitely help with that. To start, we'd like to ask that you give the steps in this article a try: Also, please be sure to backup your iPhone before doing the iOS update:\"\n\nDraft the reply now, following every safety rule."
+      }
+    },
+    {
+      "index": 28,
+      "conversation_id": "718093",
+      "message": "your updates for #iPhone bite. Can't even connect to WiFi at @32366 #ditchiPhoneGoAndroid #iPhone7Horrible #sad #lotsofissues",
+      "golden_label": "connectivity",
+      "predicted_intent": "general_complaint",
+      "intent_confidence": 0.5769,
+      "runner_up": "software_bug",
+      "runner_up_confidence": 0.1795,
+      "gates": {
+        "intent_confidence": 0.5769,
+        "top1_score": 0.7476,
+        "intent_pass": false,
+        "retrieval_pass": true,
+        "auto_handle_eligible": false
+      },
+      "reply": "Based on similar cases we've seen, we'd love to help sort out your WiFi connection issues. Could you DM us with more details about what's happening?",
+      "scores": {
+        "grounding_overlap": 0.5333,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": true,
+        "dm_redirect": true,
+        "personal_data_solicited": false,
+        "length_chars": 148,
+        "length_words": 26
+      },
+      "evidence": [
+        {
+          "rank": 1,
+          "score": 0.7476,
+          "pair_id": "1001177",
+          "conversation_id": "1001178",
+          "predicted_intent": "general_complaint",
+          "customer_message": "So the new #ios update has not been pleasant for me, FFS! ugh!!!! @115858 #iphone7plus #iphone",
+          "support_response": "We've got your back! What kind of issues are you having with the update on your iPhone?"
+        },
+        {
+          "rank": 2,
+          "score": 0.7206,
+          "pair_id": "2803479",
+          "conversation_id": "2803481",
+          "predicted_intent": "general_complaint",
+          "customer_message": "your last update really screwed my phone up! #pissed #iPhone",
+          "support_response": "We certainly want your iPhone to work as expected after an update. Give us some more details on what's happening, and we'd be happy to help."
+        },
+        {
+          "rank": 3,
+          "score": 0.7196,
+          "pair_id": "1950955",
+          "conversation_id": "1950956",
+          "predicted_intent": "general_complaint",
+          "customer_message": "#ios11update ruined my phone and patience. #iphone7 @115858",
+          "support_response": "Let us know all about any issues you're seeing. We'd love to help sort it out. Please DM us to proceed."
+        },
+        {
+          "rank": 4,
+          "score": 0.7121,
+          "pair_id": "865922",
+          "conversation_id": "865924",
+          "predicted_intent": "software_bug",
+          "customer_message": "@115858 please fix my iPhone7 this is beyond a joke! Cant hear anyone when they call me now! Poor update on #iOS11 #Apple #iPhone losing confidence!!",
+          "support_response": "We're here to help. Take a look at this article and let us know if these troubleshooting steps help:"
+        },
+        {
+          "rank": 5,
+          "score": 0.7117,
+          "pair_id": "1808476",
+          "conversation_id": "1808477",
+          "predicted_intent": "software_bug",
+          "customer_message": "worst update ever! Phone freezes, audio goes off whenever, and calls dropped. #iphone7issues",
+          "support_response": "Certainly not the behavior we want you to experience. We want to help. Could you DM us which iOS version you're using?"
+        }
+      ],
+      "timings": {
+        "embed_ms": 25,
+        "faiss_search_ms": 18.1,
+        "llm_ms": 953,
+        "total_ms": 998
+      },
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "prompt": {
+        "system": "You are the draft-reply engine of a customer-support prototype (\"Apple Support AI\"), built for a machine-learning assignment. You write ONE public reply to a customer, grounded STRICTLY in numbered historical support cases given as evidence.\n\nSafety rules — non-negotiable:\n1. Use only facts, troubleshooting steps and phrasing present in the evidence cases. Never invent prices, dates, software versions, policies, phone numbers or links.\n2. Include a brief grounding phrase making clear the suggestion comes from how similar issues were handled historically — e.g. \"Based on similar cases we've seen, …\" — and never imply it is current company policy.\n3. If the evidence does not clearly address the customer's issue, do not guess: say you'd like to look into it with them and ask ONE short clarifying question.\n4. For account, payment or security matters, never ask for or repeat personal details in public — invite the customer to continue in Direct Messages, exactly as the historical support team did.\n5. Style: warm, concise, professional; match the evidence replies. No hashtags, no emoji, no signatures, no quotation marks around the reply.\n6. Length: at most 280 characters, one short paragraph (or two sentences).\n\nOutput ONLY the reply text.",
+        "user": "Customer message: \"your updates for #iPhone bite. Can't even connect to WiFi at @32366 #ditchiPhoneGoAndroid #iPhone7Horrible #sad #lotsofissues\"\n\nPredicted issue: general_complaint (confidence 0.58; runner-up: software_bug 0.18)\nEvidence quality: top similarity 0.75 — strong grounding — the evidence directly addresses similar issues (threshold 0.65).\n\nHistorical support cases, most similar first:\n[1] similarity 0.75 · issue general_complaint\n    Customer: \"So the new #ios update has not been pleasant for me, FFS! ugh!!!! @115858 #iphone7plus #iphone\"\n    Support: \"We've got your back! What kind of issues are you having with the update on your iPhone?\"\n[2] similarity 0.72 · issue general_complaint\n    Customer: \"your last update really screwed my phone up! #pissed #iPhone\"\n    Support: \"We certainly want your iPhone to work as expected after an update. Give us some more details on what's happening, and we'd be happy to help.\"\n[3] similarity 0.72 · issue general_complaint\n    Customer: \"#ios11update ruined my phone and patience. #iphone7 @115858\"\n    Support: \"Let us know all about any issues you're seeing. We'd love to help sort it out. Please DM us to proceed.\"\n[4] similarity 0.71 · issue software_bug\n    Customer: \"@115858 please fix my iPhone7 this is beyond a joke! Cant hear anyone when they call me now! Poor update on #iOS11 #Apple #iPhone losing confidence!!\"\n    Support: \"We're here to help. Take a look at this article and let us know if these troubleshooting steps help:\"\n[5] similarity 0.71 · issue software_bug\n    Customer: \"worst update ever! Phone freezes, audio goes off whenever, and calls dropped. #iphone7issues\"\n    Support: \"Certainly not the behavior we want you to experience. We want to help. Could you DM us which iOS version you're using?\"\n\nDraft the reply now, following every safety rule."
+      }
+    },
+    {
+      "index": 29,
+      "conversation_id": "925370",
+      "message": "Ever since I updated my phone, it’s been sooo slow and keeps crashing! @AppleSupport",
+      "golden_label": "software_bug",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.8866,
+      "runner_up": "general_complaint",
+      "runner_up_confidence": 0.0751,
+      "gates": {
+        "intent_confidence": 0.8866,
+        "top1_score": 0.884,
+        "intent_pass": true,
+        "retrieval_pass": true,
+        "auto_handle_eligible": true
+      },
+      "reply": "Based on similar cases we've seen, we'd like to look into this with you. Could you DM us your iOS version?",
+      "scores": {
+        "grounding_overlap": 0.4444,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": true,
+        "dm_redirect": true,
+        "personal_data_solicited": false,
+        "length_chars": 106,
+        "length_words": 21
+      },
+      "evidence": [
+        {
+          "rank": 1,
+          "score": 0.884,
+          "pair_id": "1973823",
+          "conversation_id": "1973824",
+          "predicted_intent": "software_bug",
+          "customer_message": "@AppleSupport the last few updates have messed my phone up. It’s constantly freezing and crashing. Sort it outttttt 😒😒😒",
+          "support_response": "Thanks for reaching out to us. We are always happy to help. Send us a DM so we can look into this with you together."
+        },
+        {
+          "rank": 2,
+          "score": 0.8634,
+          "pair_id": "2585759",
+          "conversation_id": "2585760",
+          "predicted_intent": "software_bug",
+          "customer_message": "So sick of my phone crashing constantly since the new update. Sort it out 😤😤 @AppleSupport",
+          "support_response": "This isn't expected behavior. Let's figure this out. Send us a DM with more details on what's happening, and your iOS version"
+        },
+        {
+          "rank": 3,
+          "score": 0.855,
+          "pair_id": "365697",
+          "conversation_id": "365698",
+          "predicted_intent": "software_bug",
+          "customer_message": "Hey @AppleSupport thanks for forcing me to update my phone then have it crash every 6 seconds 👍🏻",
+          "support_response": "Thank you for reaching out. DM us what iOS version you're currently on and we'll go from there."
+        },
+        {
+          "rank": 4,
+          "score": 0.8517,
+          "pair_id": "2372213",
+          "conversation_id": "2372215",
+          "predicted_intent": "software_bug",
+          "customer_message": "Ever since I’ve updated my phone all my apps keep crashing ALL the time @AppleSupport 😠",
+          "support_response": "We can help you. Try restarting your device as our article explains, and DM us if this continues:"
+        },
+        {
+          "rank": 5,
+          "score": 0.8493,
+          "pair_id": "1497023",
+          "conversation_id": "1497024",
+          "predicted_intent": "software_bug",
+          "customer_message": "ever since I updated my phone it freezes multiple times a day and it runs soooooo slow now @AppleSupport THIS SHIT IS WHACK!!!",
+          "support_response": "We'd like to look into this. DM us and tell us the exact version of iOS you're running."
+        }
+      ],
+      "timings": {
+        "embed_ms": 19.6,
+        "faiss_search_ms": 18.6,
+        "llm_ms": 475,
+        "total_ms": 516
+      },
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "prompt": {
+        "system": "You are the draft-reply engine of a customer-support prototype (\"Apple Support AI\"), built for a machine-learning assignment. You write ONE public reply to a customer, grounded STRICTLY in numbered historical support cases given as evidence.\n\nSafety rules — non-negotiable:\n1. Use only facts, troubleshooting steps and phrasing present in the evidence cases. Never invent prices, dates, software versions, policies, phone numbers or links.\n2. Include a brief grounding phrase making clear the suggestion comes from how similar issues were handled historically — e.g. \"Based on similar cases we've seen, …\" — and never imply it is current company policy.\n3. If the evidence does not clearly address the customer's issue, do not guess: say you'd like to look into it with them and ask ONE short clarifying question.\n4. For account, payment or security matters, never ask for or repeat personal details in public — invite the customer to continue in Direct Messages, exactly as the historical support team did.\n5. Style: warm, concise, professional; match the evidence replies. No hashtags, no emoji, no signatures, no quotation marks around the reply.\n6. Length: at most 280 characters, one short paragraph (or two sentences).\n\nOutput ONLY the reply text.",
+        "user": "Customer message: \"Ever since I updated my phone, it’s been sooo slow and keeps crashing! @AppleSupport\"\n\nPredicted issue: software_bug (confidence 0.89; runner-up: general_complaint 0.08)\nEvidence quality: top similarity 0.88 — strong grounding — the evidence directly addresses similar issues (threshold 0.65).\n\nHistorical support cases, most similar first:\n[1] similarity 0.88 · issue software_bug\n    Customer: \"@AppleSupport the last few updates have messed my phone up. It’s constantly freezing and crashing. Sort it outttttt 😒😒😒\"\n    Support: \"Thanks for reaching out to us. We are always happy to help. Send us a DM so we can look into this with you together.\"\n[2] similarity 0.86 · issue software_bug\n    Customer: \"So sick of my phone crashing constantly since the new update. Sort it out 😤😤 @AppleSupport\"\n    Support: \"This isn't expected behavior. Let's figure this out. Send us a DM with more details on what's happening, and your iOS version\"\n[3] similarity 0.85 · issue software_bug\n    Customer: \"Hey @AppleSupport thanks for forcing me to update my phone then have it crash every 6 seconds 👍🏻\"\n    Support: \"Thank you for reaching out. DM us what iOS version you're currently on and we'll go from there.\"\n[4] similarity 0.85 · issue software_bug\n    Customer: \"Ever since I’ve updated my phone all my apps keep crashing ALL the time @AppleSupport 😠\"\n    Support: \"We can help you. Try restarting your device as our article explains, and DM us if this continues:\"\n[5] similarity 0.85 · issue software_bug\n    Customer: \"ever since I updated my phone it freezes multiple times a day and it runs soooooo slow now @AppleSupport THIS SHIT IS WHACK!!!\"\n    Support: \"We'd like to look into this. DM us and tell us the exact version of iOS you're running.\"\n\nDraft the reply now, following every safety rule."
+      }
+    }
+  ],
+  "failures": []
+}

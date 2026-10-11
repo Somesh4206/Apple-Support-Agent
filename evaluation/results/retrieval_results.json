@@ -1,0 +1,3163 @@
+{
+  "generated_at": "2026-10-11 07:30:14 UTC",
+  "random_seed": 42,
+  "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+  "protocol": "Golden conversations (200) excluded from the index before any search; frozen encoder over pair customer messages; exact cosine FAISS IndexFlatIP; Recall@K = label-agreement hits by the Phase 3 relevance function; VAL sanity check, TEST reported.",
+  "corpus": {
+    "total_pairs": 106137,
+    "golden_conversations_excluded": 200,
+    "pairs_removed_with_golden": 266,
+    "indexed_pairs": 105871,
+    "embedded_field": "customer_message",
+    "embedding_seconds": 597.39,
+    "embedding_cache_hit": false
+  },
+  "index": {
+    "type": "faiss.IndexFlatIP (exact cosine on L2-normalised float32)",
+    "vectors": 105871,
+    "dim": 384,
+    "size_bytes": 162617901,
+    "build_seconds": 0.44,
+    "self_retrieval_check": {
+      "probe_pair_id": "2473556",
+      "returned_pair_id": "2473556",
+      "score": 1.0,
+      "pass": true
+    }
+  },
+  "relevance_definition": "The corpus is unlabeled, so retrieved pairs are labelled by the Phase 3 logreg_head (test accuracy 0.6552, macro-F1 0.3032). A hit at rank <= k is a retrieved pair whose predicted label equals the opener's golden label. The classifier's noise is part of the measurement and is reported, not hidden; qualitative examples let a reader judge semantic similarity directly.",
+  "corpus_labeling": {
+    "method": "Phase 3 logreg_head over the same corpus embeddings",
+    "distribution": {
+      "account_icloud": 5158,
+      "billing_purchases": 957,
+      "connectivity": 3843,
+      "device_hardware": 6150,
+      "general_complaint": 3564,
+      "other": 10171,
+      "repair_warranty": 1267,
+      "security_privacy": 475,
+      "software_bug": 72958,
+      "support_process": 1328
+    }
+  },
+  "val": {
+    "metrics": {
+      "recall_at_1": 0.7241,
+      "recall_at_3": 0.7931,
+      "recall_at_5": 0.9655,
+      "mrr_at_5": 0.7908,
+      "n": 29,
+      "top1_agreement": 0.7241,
+      "majority_vote_accuracy": 0.7241,
+      "top1_score": {
+        "mean": 0.7982,
+        "median": 0.8106,
+        "min": 0.5736,
+        "max": 0.9306
+      }
+    },
+    "queries": [
+      {
+        "conversation_id": "1058938",
+        "text": "My phone is charging on the charger and my battery percentage is going down....... please explain @115858",
+        "golden_label": "device_hardware",
+        "first_hit_rank": 1,
+        "top1_score": 0.8929,
+        "top1_predicted_label": "device_hardware",
+        "top1_agrees": true,
+        "majority_vote_label": "device_hardware",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.8929,
+            "pair_id": "241460",
+            "predicted_label": "device_hardware",
+            "customer_message": "Hey uh @115858..why is it that my phone is plugged into my charger but my battery percentage is actually going down???",
+            "support_response": "We'd be happy to work with you to get to the bottom of this. Are you using the Apple charger that came with the iPhone? DM us:"
+          },
+          {
+            "rank": 2,
+            "score": 0.874,
+            "pair_id": "2534837",
+            "predicted_label": "device_hardware",
+            "customer_message": "Just seen my phone go from 4% to 2%........ on the charger, @115858 please explain this to me",
+            "support_response": "Having a power discharge while charging is not an expected behavior, and we'd love to get to the bottom of this. Can you let us know the device model and iOS ve"
+          },
+          {
+            "rank": 3,
+            "score": 0.8641,
+            "pair_id": "2771758",
+            "predicted_label": "device_hardware",
+            "customer_message": "HOW IS IT THAT MY PHONE IS CHARGING BUT THE BATTERY PERCENTAGE IS GOING DOWNNNN @115858 WTF IS UPPPP",
+            "support_response": "We know how important it is to be able to charge your iPhone. Does this happen every time you charge? Also, please try the steps listed here: Let us know if you"
+          },
+          {
+            "rank": 4,
+            "score": 0.8551,
+            "pair_id": "556118",
+            "predicted_label": "device_hardware",
+            "customer_message": "How is my battery percentage going down while my phone is charging? @115858 you suck so bad.",
+            "support_response": "Does this happen with all charging cables and power sources? Let us know in a DM."
+          },
+          {
+            "rank": 5,
+            "score": 0.8511,
+            "pair_id": "2007208",
+            "predicted_label": "device_hardware",
+            "customer_message": "My phone is on the charger and the fucking percentage is going down, @AppleSupport EXPLAIN",
+            "support_response": "Thanks for reaching out to us for support. We would love to help you. Please DM us so that we can look into this together."
+          }
+        ]
+      },
+      {
+        "conversation_id": "1411629",
+        "text": "FIX THE PROBLEM WITH MY KEYBOARD",
+        "golden_label": "software_bug",
+        "first_hit_rank": 1,
+        "top1_score": 0.9306,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": true,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.9306,
+            "pair_id": "2273941",
+            "predicted_label": "software_bug",
+            "customer_message": "Fix my KEYBOARD",
+            "support_response": "Thanks for letting us know. Is your keyboard unresponsive? If you type the letter \u201ci\u201d, does it autocorrect to an \u201cA\u201d with a symbol? DM us and let us know."
+          },
+          {
+            "rank": 2,
+            "score": 0.9306,
+            "pair_id": "1657241",
+            "predicted_label": "software_bug",
+            "customer_message": "fix my keyboard",
+            "support_response": "Here\u2019s what you can do to work around the issue until it\u2019s fixed in a future software update:"
+          },
+          {
+            "rank": 3,
+            "score": 0.9306,
+            "pair_id": "999007",
+            "predicted_label": "software_bug",
+            "customer_message": "FIX MY KEYBOARD",
+            "support_response": "Hey there! Thank you for contacting us for support. We want to help. Could you tell us which Apple device you're using?"
+          },
+          {
+            "rank": 4,
+            "score": 0.9065,
+            "pair_id": "1930913",
+            "predicted_label": "software_bug",
+            "customer_message": "how do I fix my keyboard?",
+            "support_response": "Thanks for reaching out to us. Here is a helpful resource: Let us know if you have questions."
+          },
+          {
+            "rank": 5,
+            "score": 0.8735,
+            "pair_id": "2499353",
+            "predicted_label": "software_bug",
+            "customer_message": "FIX your keyboard issues ASAP",
+            "support_response": "Let's work on this together. What kind of issues are you having with the keyboard?"
+          }
+        ]
+      },
+      {
+        "conversation_id": "1413230",
+        "text": "aye fix my phone. this question marks pissing me off",
+        "golden_label": "software_bug",
+        "first_hit_rank": 1,
+        "top1_score": 0.7613,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": true,
+        "majority_vote_label": "general_complaint",
+        "majority_vote_agrees": false,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.7613,
+            "pair_id": "1984096",
+            "predicted_label": "software_bug",
+            "customer_message": "fix my phone yo! I\u2019m tired of these question marks!!",
+            "support_response": "We're here to help. DM us the exact iOS version you're currently running. Find this in Settings > General > About."
+          },
+          {
+            "rank": 2,
+            "score": 0.7517,
+            "pair_id": "1593232",
+            "predicted_label": "general_complaint",
+            "customer_message": "Fix My Damn Phone... This I\ufe0f Shit Is Annoying... Sincerely, An Angry Customer",
+            "support_response": "Hi there! This should help you out:"
+          },
+          {
+            "rank": 3,
+            "score": 0.7466,
+            "pair_id": "2980233",
+            "predicted_label": "general_complaint",
+            "customer_message": "fix my phone I'm irritated",
+            "support_response": "We know it can be irritating if your iPhone isn't working as expected and we'd like to help. To start, please DM us with details about what's happening."
+          },
+          {
+            "rank": 4,
+            "score": 0.7237,
+            "pair_id": "2093816",
+            "predicted_label": "software_bug",
+            "customer_message": "I feel so disrespected with all these question marks as if there\u2019s something wrong with my phone .... unu please to fix this",
+            "support_response": "We can help! Tell us in a DM exactly what behavior you're seeing & what device you're using. We'll go from there."
+          },
+          {
+            "rank": 5,
+            "score": 0.7059,
+            "pair_id": "1469196",
+            "predicted_label": "software_bug",
+            "customer_message": "what the fuck is wrong with my phone that it keeps correcting my i\u2019s to those fucking question marks?!",
+            "support_response": "We\u2019re here to help. Send us a DM and we'll work with you to resolve this issue."
+          }
+        ]
+      },
+      {
+        "conversation_id": "1442380",
+        "text": "I need y\u2019all to fix this weird text bug right now @115858",
+        "golden_label": "software_bug",
+        "first_hit_rank": 1,
+        "top1_score": 0.8475,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": true,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.8475,
+            "pair_id": "1582127",
+            "predicted_label": "software_bug",
+            "customer_message": "I need @115858 to fix this text glitch. #asap",
+            "support_response": "We're here for you! Can you tell us what's going on so we can help?"
+          },
+          {
+            "rank": 2,
+            "score": 0.8328,
+            "pair_id": "1618279",
+            "predicted_label": "software_bug",
+            "customer_message": "How has @115858 not fixed this weird texting problem yet?",
+            "support_response": "We'd be happy to look into this issue with you! Send us a DM, and we'll continue there."
+          },
+          {
+            "rank": 3,
+            "score": 0.8145,
+            "pair_id": "1703946",
+            "predicted_label": "software_bug",
+            "customer_message": "so wtf is going on with this text glitch @115858 ???",
+            "support_response": "We're here for you! Please let us know exactly what's going on with your devices. We'd love to help get is sorted out."
+          },
+          {
+            "rank": 4,
+            "score": 0.797,
+            "pair_id": "2301748",
+            "predicted_label": "software_bug",
+            "customer_message": "Seriously when is @115858 going to fix the text issue",
+            "support_response": "We'd like to take a closer look into this with you. DM us the iOS version you are running and we can get started."
+          },
+          {
+            "rank": 5,
+            "score": 0.7855,
+            "pair_id": "2454587",
+            "predicted_label": "software_bug",
+            "customer_message": "I\ufe0f hate this texting glitch can you pls fix it @115858",
+            "support_response": "iOS 11.1.1 was recently released and it includes a fix for autocorrect issues. Be sure to back up your device prior to updating, and let us know if the issue pe"
+          }
+        ]
+      },
+      {
+        "conversation_id": "1715215",
+        "text": "The \u201cI\ufe0f\u201d problem ? Is there a fix?",
+        "golden_label": "software_bug",
+        "first_hit_rank": 1,
+        "top1_score": 0.9274,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": true,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.9274,
+            "pair_id": "1713043",
+            "predicted_label": "software_bug",
+            "customer_message": "any time frame in sight to fix the \u201cI\ufe0f\u201d issue?",
+            "support_response": "Here\u2019s what you can do to work around the issue until it\u2019s fixed in a future software update:"
+          },
+          {
+            "rank": 2,
+            "score": 0.9186,
+            "pair_id": "1522696",
+            "predicted_label": "software_bug",
+            "customer_message": "fix the \u201cI\ufe0f\u201d problem.",
+            "support_response": "We're happy to help. DM us so we may better assist you:"
+          },
+          {
+            "rank": 3,
+            "score": 0.9144,
+            "pair_id": "1671247",
+            "predicted_label": "software_bug",
+            "customer_message": "can you fix the \u201cI\ufe0f \u201c problem please?",
+            "support_response": "Here\u2019s what you can do to work around the issue until it\u2019s fixed in a future software update:"
+          },
+          {
+            "rank": 4,
+            "score": 0.9123,
+            "pair_id": "2439707",
+            "predicted_label": "software_bug",
+            "customer_message": "can you please fix the \u201c I \u201c problem already?",
+            "support_response": "This issue was recently addressed in a software update, iOS 11.1.1. If you're experiencing this issue on your keyboard, be sure to back up your data, then updat"
+          },
+          {
+            "rank": 5,
+            "score": 0.9115,
+            "pair_id": "2015367",
+            "predicted_label": "software_bug",
+            "customer_message": "can you fix the \u201cI\u201d problem everyone is having? PLEASE",
+            "support_response": "Thanks for reaching out. We have a workaround for this here: DM us if you still need help."
+          }
+        ]
+      },
+      {
+        "conversation_id": "1760346",
+        "text": "iOS11.1 Unable to Verify... No internet connection when clearly there is. iTunes no longer recognises my phone. #HaveYouGotMyBack",
+        "golden_label": "software_bug",
+        "first_hit_rank": 4,
+        "top1_score": 0.779,
+        "top1_predicted_label": "connectivity",
+        "top1_agrees": false,
+        "majority_vote_label": "connectivity",
+        "majority_vote_agrees": false,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.779,
+            "pair_id": "1774217",
+            "predicted_label": "connectivity",
+            "customer_message": "Hi! Keep getting \"iOS 11.1 failed verification because you are no longer connected to the internet.\" I am connected though.",
+            "support_response": "We got your DM and will continue working with you there."
+          },
+          {
+            "rank": 2,
+            "score": 0.779,
+            "pair_id": "1767418",
+            "predicted_label": "connectivity",
+            "customer_message": "Hi! Keep getting \"iOS 11.1 failed verification because you are no longer connected to the internet.\" I am connected though.",
+            "support_response": "Thanks for reaching out. DM which iPhone you are using to get started."
+          },
+          {
+            "rank": 3,
+            "score": 0.7523,
+            "pair_id": "2116277",
+            "predicted_label": "connectivity",
+            "customer_message": "I\u2019m trying to get iOS 11.1 but it says I can\u2019t verify the update because I\u2019m not connected to the internet but nothing is wrong with my connection...I\u2019ve alread",
+            "support_response": "We'd like to help. If you're still having this issue after restarting your device again, DM us below."
+          },
+          {
+            "rank": 4,
+            "score": 0.7157,
+            "pair_id": "2117236",
+            "predicted_label": "software_bug",
+            "customer_message": "iOS 11.1 Headaches. Won\u2019t verify in any of my phones. @AppleSupport #modernproblems",
+            "support_response": "We'd like to give you some guidance with this. Please send us a DM so we can continue."
+          },
+          {
+            "rank": 5,
+            "score": 0.6873,
+            "pair_id": "2451725",
+            "predicted_label": "software_bug",
+            "customer_message": "WHY can i still not download iOS 11?? it fails to verify every time and i'm super annoyed. @AppleSupport",
+            "support_response": "We're here to help. If you haven't yet, try installing the update through iTunes. Follow these steps:"
+          }
+        ]
+      },
+      {
+        "conversation_id": "1786025",
+        "text": "how much does it cost to replace a screen on a series 1 Watch? My AppleCare just ended 2 months ago :\u2019(",
+        "golden_label": "repair_warranty",
+        "first_hit_rank": 1,
+        "top1_score": 0.854,
+        "top1_predicted_label": "repair_warranty",
+        "top1_agrees": true,
+        "majority_vote_label": "repair_warranty",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.854,
+            "pair_id": "1065807",
+            "predicted_label": "repair_warranty",
+            "customer_message": "Hey, how much would it cost for me to get my Apple Watch Series 1 42mm sport a replacement screen?",
+            "support_response": "Thanks for reaching out to us. This article has more information on Apple Watch repairs and cost:"
+          },
+          {
+            "rank": 2,
+            "score": 0.7387,
+            "pair_id": "433053",
+            "predicted_label": "repair_warranty",
+            "customer_message": "any idea how much a screen replacement for an Apple Watch series 2 (38mm) is? As your custoner service don't...",
+            "support_response": "We can help out. Pricing for both in and out of warranty service can be found here:"
+          },
+          {
+            "rank": 3,
+            "score": 0.7142,
+            "pair_id": "617254",
+            "predicted_label": "software_bug",
+            "customer_message": "any1 know how much it is to get an @115858 watch screen fixed!?!?!?",
+            "support_response": "Thanks for reaching out. Since service options vary by location, let us know the country or region where you are currently, and we'll be happy to go over option"
+          },
+          {
+            "rank": 4,
+            "score": 0.7042,
+            "pair_id": "1684314",
+            "predicted_label": "repair_warranty",
+            "customer_message": "\u00a3226 for replacement screen on a \u00a3399 watch - Are you for real?",
+            "support_response": "Hey there! That is the out-of-warranty cost for a screen replacement. This link has more info:"
+          },
+          {
+            "rank": 5,
+            "score": 0.6718,
+            "pair_id": "1828491",
+            "predicted_label": "repair_warranty",
+            "customer_message": "could I ask can I get my battery changed on the series One watch and what\u2019s the cost. It loses charge in four hours now.",
+            "support_response": "Battery life is crucial, and we'd like to take a closer look at your Apple Watch. Send us a DM, and we'll see you there."
+          }
+        ]
+      },
+      {
+        "conversation_id": "1858436",
+        "text": "how do I roll my iPhone SE back to iOS 10?? iOS 11 has fucked up my phone royally. Thanks.",
+        "golden_label": "software_bug",
+        "first_hit_rank": 3,
+        "top1_score": 0.8549,
+        "top1_predicted_label": "general_complaint",
+        "top1_agrees": false,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.8549,
+            "pair_id": "2302098",
+            "predicted_label": "general_complaint",
+            "customer_message": "Does anyone know how to get iOS 10 back on my iPhone? 11 has ruined my phone. @115858 is the worst!!! @AppleSupport",
+            "support_response": "We'd be happy to help in any way we can. Please reach out to us via DM and we'll get started."
+          },
+          {
+            "rank": 2,
+            "score": 0.8546,
+            "pair_id": "2545555",
+            "predicted_label": "connectivity",
+            "customer_message": "is there a way to go back to iOS 10? My iPhone is fucking up with the iOS 11",
+            "support_response": "What kind of issues are you having with the iPhone? We'd be happy to assist."
+          },
+          {
+            "rank": 3,
+            "score": 0.8507,
+            "pair_id": "2048553",
+            "predicted_label": "software_bug",
+            "customer_message": "How do I go back to iOS 10 on my iphone? 11 is terrible! Phone keeps resetting.....",
+            "support_response": "Thanks for reaching out to us. Going back to iOS 10 is not supported. Send us a DM so we can look into your issues together."
+          },
+          {
+            "rank": 4,
+            "score": 0.8432,
+            "pair_id": "718498",
+            "predicted_label": "software_bug",
+            "customer_message": "since upgrading to iOS 11 my iPhone is useless... How do I revert back to iOS 10?",
+            "support_response": "We want to make sure your iPhone works the way you expect it to. Let's get paired up in DM to get started."
+          },
+          {
+            "rank": 5,
+            "score": 0.8274,
+            "pair_id": "1368857",
+            "predicted_label": "software_bug",
+            "customer_message": "Is there any way to roll my iPhone\u2019s iOS back to 10? So many issues, battery life, Bluetooth, display, freezing etc. since 11.",
+            "support_response": "We want to help with the issues you're experiencing. Send us a DM and we'll go from there."
+          }
+        ]
+      },
+      {
+        "conversation_id": "1907054",
+        "text": "marvelous my phone is doing this spectacular trick where it doesn't cut on again... thanks @115858",
+        "golden_label": "device_hardware",
+        "first_hit_rank": 5,
+        "top1_score": 0.6977,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": false,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": false,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.6977,
+            "pair_id": "830502",
+            "predicted_label": "software_bug",
+            "customer_message": "so my phone is frozen and it won't let me cut it off. WTF @115858",
+            "support_response": "We're here to help. Follow the steps in this article and let us know if it works:"
+          },
+          {
+            "rank": 2,
+            "score": 0.6956,
+            "pair_id": "328533",
+            "predicted_label": "software_bug",
+            "customer_message": "Alright @115858 it's time to cut the shit. Why is my phone glitching?",
+            "support_response": "We can help. Give us some details on the iOS version your iPhone is on, & the behavior you're noticing. We'll take it from there."
+          },
+          {
+            "rank": 3,
+            "score": 0.69,
+            "pair_id": "2562383",
+            "predicted_label": "software_bug",
+            "customer_message": "My phone needs to stop glitching I\u2019m too poor to buy a new one @115858 so cut it out",
+            "support_response": "Thanks for contacting us. We'd like to help in any way we can. Could you please tell us what is happening with your device?"
+          },
+          {
+            "rank": 4,
+            "score": 0.6736,
+            "pair_id": "1724415",
+            "predicted_label": "software_bug",
+            "customer_message": "I\ufe0f wish my phone wouldn\u2019t do this, @115858 I\ufe0f wish you would fix it.",
+            "support_response": "Here\u2019s what you can do to work around the issue until it\u2019s fixed in a future software update:"
+          },
+          {
+            "rank": 5,
+            "score": 0.6615,
+            "pair_id": "363012",
+            "predicted_label": "device_hardware",
+            "customer_message": "what do I do if my phone won\u2019t cut on??!",
+            "support_response": "We\u2019ve received your DM. Be on the lookout for our response there shortly."
+          }
+        ]
+      },
+      {
+        "conversation_id": "1999291",
+        "text": "why has my phone stopped recognizing the letter I\ufe0f by itself on my phone?",
+        "golden_label": "software_bug",
+        "first_hit_rank": 1,
+        "top1_score": 0.7812,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": true,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.7812,
+            "pair_id": "1637075",
+            "predicted_label": "software_bug",
+            "customer_message": "so why can\u2019t I\ufe0f see the letter I\ufe0f on my phone when it\u2019s by itself",
+            "support_response": "Here\u2019s what you can do to work around the issue until it\u2019s fixed in a future software update:"
+          },
+          {
+            "rank": 2,
+            "score": 0.7767,
+            "pair_id": "1684484",
+            "predicted_label": "software_bug",
+            "customer_message": "Why does my phone not know the letter I\ufe0f anymore? @AppleSupport",
+            "support_response": "Here\u2019s what you can do to work around the issue until it\u2019s fixed in a future software update:"
+          },
+          {
+            "rank": 3,
+            "score": 0.7732,
+            "pair_id": "1733781",
+            "predicted_label": "software_bug",
+            "customer_message": "Why is my phone not recognizing the letter \u201cI\u201d??? What is going on @AppleSupport ?? \ud83e\udd2c",
+            "support_response": "Here\u2019s what you can do to work around the issue until it\u2019s fixed in a future software update:"
+          },
+          {
+            "rank": 4,
+            "score": 0.7711,
+            "pair_id": "1991427",
+            "predicted_label": "software_bug",
+            "customer_message": "um why can\u2019t my phone display the letter \u201cI\ufe0f\u201d ?",
+            "support_response": "We're here to help. DM us which type of iPhone and version of iOS you're using in Settings>General>About to get started:"
+          },
+          {
+            "rank": 5,
+            "score": 0.77,
+            "pair_id": "2002557",
+            "predicted_label": "software_bug",
+            "customer_message": "what the fuck is going on with my phone why can\u2019t i\ufe0f type the letter i\ufe0f",
+            "support_response": "We'd love to assist you. Click here to connect with us in DM and tell us which device and software version you have:"
+          }
+        ]
+      },
+      {
+        "conversation_id": "2047816",
+        "text": "After updating to #iOS11 my battery draining so faster. I am using 7+ model. Why you did this to me ! \ud83d\ude21\ud83d\ude21\ud83d\ude21",
+        "golden_label": "software_bug",
+        "first_hit_rank": 1,
+        "top1_score": 0.8674,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": true,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.8674,
+            "pair_id": "1028512",
+            "predicted_label": "software_bug",
+            "customer_message": "Thanks for the battery usage tips but that doesn't help.The real issue is why after upgrading to #ios1103 my battery is draining much faster",
+            "support_response": "Thanks for the details. Let's move back to a DM so we can explore this further."
+          },
+          {
+            "rank": 2,
+            "score": 0.8649,
+            "pair_id": "249215",
+            "predicted_label": "software_bug",
+            "customer_message": "Why is my iPhone battery draining so much faster with the new #iOS11? @115858 please fix it! #Apple",
+            "support_response": "Let us look into that for you. Send us a DM and tell us which model of iPhone you're using."
+          },
+          {
+            "rank": 3,
+            "score": 0.8632,
+            "pair_id": "1680840",
+            "predicted_label": "software_bug",
+            "customer_message": "my battery is draining faster then ever on the new iOS11.1 #apple",
+            "support_response": "We can help! Check out this reference to ensure your settings are maximizing the battery life:"
+          },
+          {
+            "rank": 4,
+            "score": 0.8529,
+            "pair_id": "362089",
+            "predicted_label": "software_bug",
+            "customer_message": "#iOS11.0.2 is draining my battery so fast, I was running 11.1 beta and battery life was excellent but has a lot of issues \ud83d\ude30",
+            "support_response": "We're here for you. Did you remove the beta profile from your Settings and reinstall via iTunes? Thanks."
+          },
+          {
+            "rank": 5,
+            "score": 0.8504,
+            "pair_id": "389375",
+            "predicted_label": "software_bug",
+            "customer_message": "care to explain why does my battery drain so fast eversince I upgraded to iOS11, from 100% -54% in just 25 mins \ud83d\ude31\ud83d\ude31\ud83d\ude31",
+            "support_response": "We're here for you. Which device are you using? Let us know in DM and we'll go from there."
+          }
+        ]
+      },
+      {
+        "conversation_id": "2051153",
+        "text": "Thanks @115858 for the worst iPhone update of all time like you can have it back I don want",
+        "golden_label": "general_complaint",
+        "first_hit_rank": 1,
+        "top1_score": 0.8532,
+        "top1_predicted_label": "general_complaint",
+        "top1_agrees": true,
+        "majority_vote_label": "general_complaint",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.8532,
+            "pair_id": "1828556",
+            "predicted_label": "general_complaint",
+            "customer_message": "Hey @115858 any chance of a new iPhone update, this last one has fucked my phone up!!!!!",
+            "support_response": "Hey there. DM us some details about the issue you\u2019re noticing with your iPhone, and we\u2019ll do all we can to help out."
+          },
+          {
+            "rank": 2,
+            "score": 0.8403,
+            "pair_id": "1949743",
+            "predicted_label": "general_complaint",
+            "customer_message": "Hey @115858 thanks for making my iPhone utterly unusable with the new update! Love it.",
+            "support_response": "Thanks for reaching out! We\u2019d like to take a closer look at this. Let us know exactly what is happening in DM to proceed."
+          },
+          {
+            "rank": 3,
+            "score": 0.8386,
+            "pair_id": "1331963",
+            "predicted_label": "general_complaint",
+            "customer_message": "Hey your latest update ruined my iPhone @115858",
+            "support_response": "What happened? We want to help as best as we can. Provide us more details on the issues you are experiencing, please."
+          },
+          {
+            "rank": 4,
+            "score": 0.8377,
+            "pair_id": "1831992",
+            "predicted_label": "general_complaint",
+            "customer_message": "Thanks to the new @115858 iPhone update for completely messing up my phone!",
+            "support_response": "Hi there. We want to help you with your issues. Send us a DM with more details and we'll help you there."
+          },
+          {
+            "rank": 5,
+            "score": 0.8364,
+            "pair_id": "1828168",
+            "predicted_label": "general_complaint",
+            "customer_message": "Thanks @115858 for the new iPhone software update that completely screwed my phone. Love restarting it over and over \ud83d\udc4d\ud83c\udffb\ud83d\udc4d\ud83c\udffb\ud83d\udc4d\ud83c\udffb",
+            "support_response": "We\u2019re happy to help with any complications you\u2019re facing. Could you let us know more details via a DM. We\u2019ll go from there."
+          }
+        ]
+      },
+      {
+        "conversation_id": "2062271",
+        "text": "Is anyone else having any problems with volume since updating the new iOS can\u2019t hear a thing @AppleSupport",
+        "golden_label": "software_bug",
+        "first_hit_rank": 1,
+        "top1_score": 0.8227,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": true,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.8227,
+            "pair_id": "222991",
+            "predicted_label": "software_bug",
+            "customer_message": "Are anyone else\u2019s volume buttons not working after the new iOS update? @115858 @AppleSupport",
+            "support_response": "Let's help get this resolved. DM us what currently happens when you attempt to adjust the volume."
+          },
+          {
+            "rank": 2,
+            "score": 0.801,
+            "pair_id": "2578702",
+            "predicted_label": "software_bug",
+            "customer_message": "Anyone else having problems with their call volume since the update to iOS 11.1? I have tried all of the tricks and nothing has worked \u2639\ufe0f @AppleSupport",
+            "support_response": "Let's look into that. Send us a DM and we'll go from there."
+          },
+          {
+            "rank": 3,
+            "score": 0.7638,
+            "pair_id": "1901155",
+            "predicted_label": "software_bug",
+            "customer_message": "Reasons new iOS update makes me wanna die: Can\u2019t put someone on speaker? Literally just 0 volume control?? Ugly AF. @AppleSupport : fix plz",
+            "support_response": "We certainly want to help work towards a resolution for these issues. Select the following link to join us in a DM."
+          },
+          {
+            "rank": 4,
+            "score": 0.7507,
+            "pair_id": "2255512",
+            "predicted_label": "software_bug",
+            "customer_message": "Has anyone else been reporting issues with iPhone sound since upgrading to iOS 11.1.1? My phone speaker stopped working. Thx",
+            "support_response": "We want to help you make sure your speakers are giving you the rich sound experience you expect from iPhone. Send us a DM and tell us which iPhone you have, and"
+          },
+          {
+            "rank": 5,
+            "score": 0.7497,
+            "pair_id": "2557280",
+            "predicted_label": "software_bug",
+            "customer_message": "My phone is having volume issues ever since the new update. Is that a known problem? It keeps turning itself on mute and won\u2019t allow me to listen to anything",
+            "support_response": "We'd like to check into this with you. Which iPhone are you using? Also, just to confirm, are you updated to iOS 11.1.1? Have you noticed this happening in any "
+          }
+        ]
+      },
+      {
+        "conversation_id": "2114715",
+        "text": "Not sure how to use @115948 on my Samsung Galaxy Note 8, Google Play says it is not compatible with my device. Should I sideload it @AppleSupport @115858",
+        "golden_label": "other",
+        "first_hit_rank": 0,
+        "top1_score": 0.6004,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": false,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": false,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.6004,
+            "pair_id": "1903637",
+            "predicted_label": "software_bug",
+            "customer_message": "How did I just get the 8 and i\u2019m already having problems with my phone \ud83d\ude44\ud83d\ude12 @115858",
+            "support_response": "We are always happy to help. Send us a DM so we can look into this together."
+          },
+          {
+            "rank": 2,
+            "score": 0.5961,
+            "pair_id": "2401265",
+            "predicted_label": "software_bug",
+            "customer_message": "So @115858 your latest update has rendered my phone a pain in the ass to use. Thanks for that",
+            "support_response": "Thanks for reaching out to us. We are always happy to help. Send us a DM so we can look into this together."
+          },
+          {
+            "rank": 3,
+            "score": 0.5887,
+            "pair_id": "2412422",
+            "predicted_label": "software_bug",
+            "customer_message": "@115858 I\ufe0f did buy it!! It won\u2019t download on my phone, computer worked fine. So irritating.",
+            "support_response": "May we take a look? If so, feel free to let us know what happens when you try to download the music. For example, do you receive an error message?"
+          },
+          {
+            "rank": 4,
+            "score": 0.582,
+            "pair_id": "800387",
+            "predicted_label": "software_bug",
+            "customer_message": "@115858 #iOS11.0 \u00bfQu\u00e9 sucede con el software?Realmente se ha vuelto nefasto tener #iPhone #apesta mejor#samsung #GalaxyNote8",
+            "support_response": "We offer support via Twitter in English. Get help in Spanish here: or join"
+          },
+          {
+            "rank": 5,
+            "score": 0.5809,
+            "pair_id": "1725743",
+            "predicted_label": "software_bug",
+            "customer_message": "@115858 I\ufe0f did this ! And updated to iOS 11. I\u2019m just going back to galaxy \ud83e\udd23",
+            "support_response": "Let us check that out with you. Send us a DM, we'll continue on from there."
+          }
+        ]
+      },
+      {
+        "conversation_id": "2179626",
+        "text": "Photo edit never gets past downloading - images are on iPhone X #iphonex @AppleSupport",
+        "golden_label": "software_bug",
+        "first_hit_rank": 1,
+        "top1_score": 0.722,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": true,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.722,
+            "pair_id": "694458",
+            "predicted_label": "software_bug",
+            "customer_message": "trying to edit picture on my iPhone6 and it\u2019s saying they won\u2019t download from iCloud? It\u2019s been like it all day?",
+            "support_response": "We'd be happy to point you in the right direction. Our Apps team can help you resolve this issue. To reach them, look here:"
+          },
+          {
+            "rank": 2,
+            "score": 0.7196,
+            "pair_id": "1628510",
+            "predicted_label": "software_bug",
+            "customer_message": "it was happening on my iPhone 6, and still is on my new iPhone X on every version of iOS 11. The photos take way too long to re-download",
+            "support_response": "If you go to Settings > Photos, do you have iCloud Photo Library enabled?"
+          },
+          {
+            "rank": 3,
+            "score": 0.6939,
+            "pair_id": "1746796",
+            "predicted_label": "software_bug",
+            "customer_message": "@AppleSupport can you please help / explain why I can\u2019t edit my photos and save them",
+            "support_response": "Our Photos team will be happy to look into this issue with you. You can reach them here:"
+          },
+          {
+            "rank": 4,
+            "score": 0.6915,
+            "pair_id": "320673",
+            "predicted_label": "software_bug",
+            "customer_message": "Just installed iOS 11.0.2 on my iPhone 6 and the photo app still refuses to edit the photos immediately. PLEASE FIX THIS BUG!!",
+            "support_response": "We've received your DM. Please look for our reply there."
+          },
+          {
+            "rank": 5,
+            "score": 0.6899,
+            "pair_id": "2453285",
+            "predicted_label": "software_bug",
+            "customer_message": "Dear @AppleSupport Why does my Photos app always kick me out when I want to edit??",
+            "support_response": "Thanks for reaching out! For this issue reach out to our Photos experts using this link here:"
+          }
+        ]
+      },
+      {
+        "conversation_id": "2241140",
+        "text": "Just upgraded to High Sierra and now my iMessage won't work on my Macbook Air. I tried signing out and it won't sign in. Times out. iCloud is still connected. What else can I do?",
+        "golden_label": "account_icloud",
+        "first_hit_rank": 1,
+        "top1_score": 0.8106,
+        "top1_predicted_label": "account_icloud",
+        "top1_agrees": true,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": false,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.8106,
+            "pair_id": "2867259",
+            "predicted_label": "account_icloud",
+            "customer_message": "my Apple ID won\u2019t sign in to iCloud and iMessage ever since I updated to Mac High Sierra pls help :(",
+            "support_response": "We'd like to help you get signed in to your software. What happens when you attempt to sign in now? Are you receiving an error message?"
+          },
+          {
+            "rank": 2,
+            "score": 0.7735,
+            "pair_id": "1025580",
+            "predicted_label": "software_bug",
+            "customer_message": "Hey @115858 @AppleSupport ...iMessage is broken since High Sierra upgrade #imessageSUCKS #GetItRight #SMH #techcompanyfail",
+            "support_response": "We're here to help find the best solution. What is going on with your iMessage?"
+          },
+          {
+            "rank": 3,
+            "score": 0.723,
+            "pair_id": "909071",
+            "predicted_label": "account_icloud",
+            "customer_message": "Hi! I got a message on my phone that I needed to do something w/ my iCloud. Now I can't access my iMessages on my MacBook.",
+            "support_response": "Let us help you get this sorted out. DM us here so we may better assist you:"
+          },
+          {
+            "rank": 4,
+            "score": 0.7201,
+            "pair_id": "308222",
+            "predicted_label": "account_icloud",
+            "customer_message": "If you use on iMessage on a daily basis, avoid macOS High Sierra. The new iCloud sync sucks. I keep missing texts. @115858 @AppleSupport",
+            "support_response": "We'd like to help. DM us what country or region you're located in."
+          },
+          {
+            "rank": 5,
+            "score": 0.7097,
+            "pair_id": "321767",
+            "predicted_label": "software_bug",
+            "customer_message": "iMessages have not been appearing on my Mac since upgrading to iOS 11/High Sierra\u2026 what\u2019s going on?",
+            "support_response": "We can help with iMessages. Are you using any other devices with the Mac for iMessage?"
+          }
+        ]
+      },
+      {
+        "conversation_id": "225132",
+        "text": "your latest update sucks. Half my texts don\u2019t go through and my battery dies in 15 min",
+        "golden_label": "software_bug",
+        "first_hit_rank": 1,
+        "top1_score": 0.7855,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": true,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.7855,
+            "pair_id": "2524468",
+            "predicted_label": "software_bug",
+            "customer_message": "Love when I update my phone and internet and text don\u2019t work and my battery dies within an hour after being fully charged.",
+            "support_response": "Let's help take a closer look and get this resolved. Please DM us the version of iOS you're using and we can go from there together."
+          },
+          {
+            "rank": 2,
+            "score": 0.773,
+            "pair_id": "1909448",
+            "predicted_label": "software_bug",
+            "customer_message": "since the newest update my husband\u2019s phone and my phone have trouble sending text messages -our battery life sucks-not happy",
+            "support_response": "We can look into these issues for you. Send us a DM with more details about what happens when you send a text message."
+          },
+          {
+            "rank": 3,
+            "score": 0.7413,
+            "pair_id": "942239",
+            "predicted_label": "software_bug",
+            "customer_message": "updated to 11.03 and battery drains within 2 hours and half my calls and texts won't go through, what's going on?",
+            "support_response": "Let's work through this together. How long has it been since updating? Also, have you tried restarting since noticing this?"
+          },
+          {
+            "rank": 4,
+            "score": 0.7272,
+            "pair_id": "708634",
+            "predicted_label": "software_bug",
+            "customer_message": "New update didn't work. Literally - took an hour and then got an error message. Just deleted all of my texts in hope it would work. Sigh",
+            "support_response": "We'd like to help. You've done great so far to try to get it fixed up. Let's meet in DM and see what else we can work through:"
+          },
+          {
+            "rank": 5,
+            "score": 0.7142,
+            "pair_id": "1888380",
+            "predicted_label": "software_bug",
+            "customer_message": "this is literally the worst update ever my phone is so glitchy and my battery doesn\u2019t even last a few hours. Fix your shit.",
+            "support_response": "We'd like to help with any issues you're experiencing. Please DM us and let us know all about these issues you're seeing."
+          }
+        ]
+      },
+      {
+        "conversation_id": "2279172",
+        "text": "Recent IOS updates are killing my battery. Used to go all day now I only have a few hours.",
+        "golden_label": "software_bug",
+        "first_hit_rank": 1,
+        "top1_score": 0.8452,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": true,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.8452,
+            "pair_id": "2078961",
+            "predicted_label": "software_bug",
+            "customer_message": "The new iOS update seems to be crushing my battery life. What gives\ud83e\udd37\ud83c\udffd\u200d\u2640\ufe0f",
+            "support_response": "Battery life is important, and we'd like to help! What kind of device do you have? Let's sort this out together in DM:"
+          },
+          {
+            "rank": 2,
+            "score": 0.8334,
+            "pair_id": "2739526",
+            "predicted_label": "software_bug",
+            "customer_message": "Hello. I\u2019m having serious battery life issues since the iOS update. Please advise.",
+            "support_response": "We can help! Which device are you seeing this on? Reply in DM to get started."
+          },
+          {
+            "rank": 3,
+            "score": 0.826,
+            "pair_id": "1141647",
+            "predicted_label": "software_bug",
+            "customer_message": "My battery life has decreased tremendously. Also I just did the most recent IOS update (this morning)",
+            "support_response": "Let's take a closer look into this in DM."
+          },
+          {
+            "rank": 4,
+            "score": 0.8184,
+            "pair_id": "2028215",
+            "predicted_label": "software_bug",
+            "customer_message": "what is up wth your new IOS update? It is KILLING my battery \ud83d\ude2b",
+            "support_response": "Having reliable battery life is important! Let us help with yours. DM us your exact iOS version. We\u2019ll continue from there."
+          },
+          {
+            "rank": 5,
+            "score": 0.8177,
+            "pair_id": "2061397",
+            "predicted_label": "software_bug",
+            "customer_message": "Recently updated to iOS 11.0.3 and it's KILLING my battery life.",
+            "support_response": "We'll be happy to take a look so you can rely on your iPhone again. How long will the battery last on a full charge?"
+          }
+        ]
+      },
+      {
+        "conversation_id": "2282652",
+        "text": "When is @115858 fixing this DAMN GLITCH every time I\ufe0f type \u201ci\u201d I\ufe0f get I\ufe0f",
+        "golden_label": "software_bug",
+        "first_hit_rank": 1,
+        "top1_score": 0.9108,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": true,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.9108,
+            "pair_id": "1605065",
+            "predicted_label": "software_bug",
+            "customer_message": "When is @115858 gonna fix this weird \u201cI\ufe0f\u201d glitch? Please let me know.",
+            "support_response": "Check out this article and DM us if you have questions:"
+          },
+          {
+            "rank": 2,
+            "score": 0.9023,
+            "pair_id": "2918903",
+            "predicted_label": "software_bug",
+            "customer_message": "So when is @115858 gonna fix that \u201cI\u201d glitch? Cause...",
+            "support_response": "Thanks for contacting us, this issue was resolved with one of our latest software update. Please visit:"
+          },
+          {
+            "rank": 3,
+            "score": 0.8907,
+            "pair_id": "1628498",
+            "predicted_label": "software_bug",
+            "customer_message": "Can @115858 please fix the glitch that happens everytime you type an I??? Like what is this I\ufe0f",
+            "support_response": "We'd like to help! Let's try the steps outlined in this article:"
+          },
+          {
+            "rank": 4,
+            "score": 0.8874,
+            "pair_id": "2193311",
+            "predicted_label": "software_bug",
+            "customer_message": "Seriously how has @115858 not fixed the \u201cI\ufe0f\u201d glitch yet. This is getting annoying!",
+            "support_response": "An update has been released to assist with this issue. If you haven\u2019t yet, please back up your device and update it to the latest version iOS 11.1.1. For more i"
+          },
+          {
+            "rank": 5,
+            "score": 0.8849,
+            "pair_id": "2456171",
+            "predicted_label": "software_bug",
+            "customer_message": "@115858 y\u2019all need to fix this \u201cI\ufe0f\u201d glitch shit ASAP.",
+            "support_response": "We've released an update, iOS 11.1.1, which should fix this issue. To install this version, make sure to create a backup and update using the steps here: DM us "
+          }
+        ]
+      },
+      {
+        "conversation_id": "2288628",
+        "text": "still ain\u2019t fixed this whole i situation",
+        "golden_label": "software_bug",
+        "first_hit_rank": 1,
+        "top1_score": 0.7292,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": true,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.7292,
+            "pair_id": "1748663",
+            "predicted_label": "software_bug",
+            "customer_message": "fix this whole I\ufe0f situation please",
+            "support_response": "Here\u2019s what you can do to work around the issue until it\u2019s fixed in a future software update:"
+          },
+          {
+            "rank": 2,
+            "score": 0.7027,
+            "pair_id": "1681536",
+            "predicted_label": "software_bug",
+            "customer_message": "bruh y\u2019all gotta fix this I situation",
+            "support_response": "Here\u2019s what you can do to work around the issue until it\u2019s fixed in a future software update:"
+          },
+          {
+            "rank": 3,
+            "score": 0.6697,
+            "pair_id": "1751481",
+            "predicted_label": "software_bug",
+            "customer_message": "can y\u2019all fix you\u2019re \u201cI\ufe0f\u201d situation.",
+            "support_response": "Here\u2019s what you can do to work around the issue until it\u2019s fixed in a future software update:"
+          },
+          {
+            "rank": 4,
+            "score": 0.667,
+            "pair_id": "2010438",
+            "predicted_label": "software_bug",
+            "customer_message": "so this \u201cI\ufe0f\u201d situation...y\u2019all fixing that or......",
+            "support_response": "Thanks for reaching out to us. Try the steps in this article : Let us know if that works in DM."
+          },
+          {
+            "rank": 5,
+            "score": 0.6627,
+            "pair_id": "1976281",
+            "predicted_label": "software_bug",
+            "customer_message": "I\u2019m saying though, y\u2019all going fix this \u201ci \u201c situation or?",
+            "support_response": "We'd like to see how we can help you with this. Let us know what iOS version is currently installed via DM to start:"
+          }
+        ]
+      },
+      {
+        "conversation_id": "236382",
+        "text": "IOS 11 Corrupts my phone, and then I get asked to pay for support..... Awful customer support APPLE!!! Severely disappointed!!!",
+        "golden_label": "software_bug",
+        "first_hit_rank": 1,
+        "top1_score": 0.8239,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": true,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.8239,
+            "pair_id": "2122562",
+            "predicted_label": "software_bug",
+            "customer_message": "iOS 11 has wrecked my phone. Fix up",
+            "support_response": "We want to help. Send us a DM letting us know more about what you are experiencing."
+          },
+          {
+            "rank": 2,
+            "score": 0.8207,
+            "pair_id": "2302309",
+            "predicted_label": "connectivity",
+            "customer_message": "ios 11 wrecked my phone and i have no recourse or way to fix it thanks a lot @115858",
+            "support_response": "We want to see how we can help. Can you tell us a bit about what you're seeing on your iPhone so we have a good starting place? Can you also tell us which iPhon"
+          },
+          {
+            "rank": 3,
+            "score": 0.819,
+            "pair_id": "1014326",
+            "predicted_label": "software_bug",
+            "customer_message": "iOS 11 is honestly such a buggy piece of crap. It\u2019s nearly about to brick my phone. @115858 @AppleSupport I pay this much to just be this mad",
+            "support_response": "We're here for you. What's happening when you attempt to use the device? How do you get it working again?"
+          },
+          {
+            "rank": 4,
+            "score": 0.8188,
+            "pair_id": "931392",
+            "predicted_label": "general_complaint",
+            "customer_message": "have well and truly corrupted my iPhone with the IOS 11 update! #fuming",
+            "support_response": "We're here to help with any issues you maybe experiencing. Provide us a description of the issues and we'll go from there."
+          },
+          {
+            "rank": 5,
+            "score": 0.814,
+            "pair_id": "760524",
+            "predicted_label": "software_bug",
+            "customer_message": "iOS 11 sucks so bad.... please fix",
+            "support_response": "Thanks for reaching out! What kind of issues are you having since updating? Which version of iOS 11 are you running?"
+          }
+        ]
+      },
+      {
+        "conversation_id": "2471945",
+        "text": "please, reply the direct message that i sended for you",
+        "golden_label": "support_process",
+        "first_hit_rank": 5,
+        "top1_score": 0.7571,
+        "top1_predicted_label": "other",
+        "top1_agrees": false,
+        "majority_vote_label": "other",
+        "majority_vote_agrees": false,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.7571,
+            "pair_id": "1231308",
+            "predicted_label": "other",
+            "customer_message": "can i send you a direct message?",
+            "support_response": "We'd be happy to work with you in DM. Send us a message here:"
+          },
+          {
+            "rank": 2,
+            "score": 0.7308,
+            "pair_id": "1956317",
+            "predicted_label": "other",
+            "customer_message": "Hi, I\u2019ve sent you the Direct Message, cheers",
+            "support_response": "We've received your DM and will continue working with you there."
+          },
+          {
+            "rank": 3,
+            "score": 0.7099,
+            "pair_id": "2677444",
+            "predicted_label": "software_bug",
+            "customer_message": "No response from you! I have sent you several direct messages to you and nothing! Reply to my messages!!!",
+            "support_response": "Thank you for your patience. Rest assured, we've received your DM messages and will respond from there."
+          },
+          {
+            "rank": 4,
+            "score": 0.7014,
+            "pair_id": "48008",
+            "predicted_label": "other",
+            "customer_message": "could you please reply back to my private message",
+            "support_response": "We've responded to your DM. Look for us there."
+          },
+          {
+            "rank": 5,
+            "score": 0.684,
+            "pair_id": "797597",
+            "predicted_label": "support_process",
+            "customer_message": "hello please look at your direct messages urgently",
+            "support_response": "We\u2019ve received your DM and will continue there shortly. Thank you for your patience."
+          }
+        ]
+      },
+      {
+        "conversation_id": "2493815",
+        "text": "Hello @AppleSupport - your new iOS has crashed my brand new iPhone & I can't get in for tech support for several days! Can you assist?",
+        "golden_label": "software_bug",
+        "first_hit_rank": 2,
+        "top1_score": 0.8444,
+        "top1_predicted_label": "account_icloud",
+        "top1_agrees": false,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.8444,
+            "pair_id": "2552559",
+            "predicted_label": "account_icloud",
+            "customer_message": "Hello @AppleSupport - your new iOS has crashed my iPhone @116333 @120640",
+            "support_response": "We'd be happy to assist you with this. Please reach out to us via DM and we'll get started."
+          },
+          {
+            "rank": 2,
+            "score": 0.7532,
+            "pair_id": "82061",
+            "predicted_label": "software_bug",
+            "customer_message": "My Iphone is completely UNUSABLE after last iOS uptdate, it crashes after turning it on and inserting password @AppleSupport HELP!!!!!!!!!!!!!!!!!!!!",
+            "support_response": "We want to make sure your iPhone is ready to go when you are. When you are putting in a passcode, is that to unlock your iPhone, or something different? Does th"
+          },
+          {
+            "rank": 3,
+            "score": 0.7422,
+            "pair_id": "1947479",
+            "predicted_label": "software_bug",
+            "customer_message": "my phone has been crashing since I downloaded the new ios. apparently everybody\u2019s phone. \ud83d\ude44 Help! @AppleSupport",
+            "support_response": "We're here to help. DM us with details explaining what happens when the device crashes. We'll continue there."
+          },
+          {
+            "rank": 4,
+            "score": 0.7384,
+            "pair_id": "1921877",
+            "predicted_label": "software_bug",
+            "customer_message": "my phone was perfect, but since i downloaded the new ios, it has crashed (or i have had to restart it) DAILY. @115858, wtf?",
+            "support_response": "We'd like to help with your iPhone's performance. To start, DM us with the country where you're located."
+          },
+          {
+            "rank": 5,
+            "score": 0.7375,
+            "pair_id": "2117828",
+            "predicted_label": "general_complaint",
+            "customer_message": "Hey @AppleSupport my new iphone8 is already fucked up and I can't get support help cause I can't access the phone",
+            "support_response": "We'd be happy to look into this with you more in detail. Please reach out to us via DM and we'll get started."
+          }
+        ]
+      },
+      {
+        "conversation_id": "2870768",
+        "text": "Has anyone else had this drama? #AppleWatchSeries3 #applewatch3 @115858 @AppleSupport",
+        "golden_label": "other",
+        "first_hit_rank": 5,
+        "top1_score": 0.744,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": false,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": false,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.744,
+            "pair_id": "301860",
+            "predicted_label": "software_bug",
+            "customer_message": "Something I should worry about? @AppleSupport #Apple #AppleWatchSeries3 #AppleWatch",
+            "support_response": "We want to check this out. Send us a DM and we will go from there."
+          },
+          {
+            "rank": 2,
+            "score": 0.725,
+            "pair_id": "2532847",
+            "predicted_label": "software_bug",
+            "customer_message": "Stupid watch unpaired itself and now it\u2019s freaking out. AND I\u2019M FREAKING OUT #AppleWatchSeries3 @115858",
+            "support_response": "Let's check it out. Can you tell us what you're experiencing?"
+          },
+          {
+            "rank": 3,
+            "score": 0.7119,
+            "pair_id": "1875330",
+            "predicted_label": "software_bug",
+            "customer_message": "@AppleSupport watching @54680 and my iWatch went crazy... apple please explain? \ud83d\ude33\ud83d\ude44 #iwatchfail",
+            "support_response": "Let's take a look at that together. Please DM us and let us know which Apple Watch you're using and it's OS version to begin."
+          },
+          {
+            "rank": 4,
+            "score": 0.7096,
+            "pair_id": "1813725",
+            "predicted_label": "software_bug",
+            "customer_message": "Omg! What happened to my #applewatch @115858 @AppleSupport ??? Battery problems maybe??",
+            "support_response": "We'd like to investigate that with you. Were you wearing it or did you come to find it that way? DM us back, we'll continue there."
+          },
+          {
+            "rank": 5,
+            "score": 0.7041,
+            "pair_id": "1932715",
+            "predicted_label": "other",
+            "customer_message": "Wow, just wow \ud83d\udc4c\ud83c\udffd #applewatch #watchos4 @AppleSupport #apple",
+            "support_response": "We can help with this update. Are you connected to Wi-Fi currently? Have there been any interruptions since the download started?"
+          }
+        ]
+      },
+      {
+        "conversation_id": "31860",
+        "text": "hey this is the 2nd time I've seen a random $15 charge to my account from itunes on my card and I haven't gotten anything",
+        "golden_label": "billing_purchases",
+        "first_hit_rank": 4,
+        "top1_score": 0.793,
+        "top1_predicted_label": "device_hardware",
+        "top1_agrees": false,
+        "majority_vote_label": "device_hardware",
+        "majority_vote_agrees": false,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.793,
+            "pair_id": "875215",
+            "predicted_label": "device_hardware",
+            "customer_message": "hi, i've been having some charges on my card from itunes and have no knowledge of it, who can i contact for this",
+            "support_response": "For best assistance with unrecognized charges please reach out to our iTunes Advisors here:"
+          },
+          {
+            "rank": 2,
+            "score": 0.7329,
+            "pair_id": "1100847",
+            "predicted_label": "software_bug",
+            "customer_message": "I am not sure if I am charged from Apple or iTunes? I\u2019m just searching about the issue. I\u2019ve cancelled my credit card as well. Do you get any complaint about th",
+            "support_response": "If you're not sure whom the charge is coming from, we recommend that you continue to work with your bank. You can also use this link to identify and report phis"
+          },
+          {
+            "rank": 3,
+            "score": 0.7275,
+            "pair_id": "566809",
+            "predicted_label": "device_hardware",
+            "customer_message": "who do i talk to about an itunes bill im not happy with? Either you have over charged me or some tosser is using my card to buy things!",
+            "support_response": "We'd like to see what we can figure out. Would you DM us more details on what you're seeing and we'll continue from there?"
+          },
+          {
+            "rank": 4,
+            "score": 0.7212,
+            "pair_id": "435186",
+            "predicted_label": "billing_purchases",
+            "customer_message": "My iTunes Store charged my card two times. I need my money back. @118936 @AppleSupport",
+            "support_response": "We can check this out. We have provided some information in reference to your DM. Check your DM to continue."
+          },
+          {
+            "rank": 5,
+            "score": 0.7154,
+            "pair_id": "652264",
+            "predicted_label": "device_hardware",
+            "customer_message": "been charged a couple times on my card but haven't made any purchases as I have apply music",
+            "support_response": "Thanks for reaching out. DM the country or region where you are currently located to get started."
+          }
+        ]
+      },
+      {
+        "conversation_id": "387589",
+        "text": ": In ios11, Wifi & bluetooth gets enabled automaticly.Also,if u enable&thn disable flyt mode it gts active.Plz fix ios11.",
+        "golden_label": "connectivity",
+        "first_hit_rank": 1,
+        "top1_score": 0.7789,
+        "top1_predicted_label": "connectivity",
+        "top1_agrees": true,
+        "majority_vote_label": "connectivity",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.7789,
+            "pair_id": "1086829",
+            "predicted_label": "connectivity",
+            "customer_message": "iOs11 update.Wifi autom. turns on, unless I use airplane mode.Turning that off, wifi&bluetooth turn on. @AppleSupport I. DON\u2019T.WANT.THIS. \ud83d\ude21\ud83d\ude29",
+            "support_response": "We've got you covered. Wi-Fi and Bluetooth connectivity has changed with iOS 11, check out:"
+          },
+          {
+            "rank": 2,
+            "score": 0.7508,
+            "pair_id": "2229309",
+            "predicted_label": "connectivity",
+            "customer_message": "Hi @AppleSupport please resolve the bug facing in iOS 11.1. After switching airplane mode, it\u2019s automatically on Bluetooth and wifi together.",
+            "support_response": "Thanks for reaching out. Please send us a Direct Message, we'll be able to communicate there and gather some details from you."
+          },
+          {
+            "rank": 3,
+            "score": 0.7444,
+            "pair_id": "234408",
+            "predicted_label": "software_bug",
+            "customer_message": "found a defect on #iOS11 , I turned on Airplane mode and Bluetooth turns on automatically after turning off Airplane Mode",
+            "support_response": "Hey, we'd like to take a closer look into this. Let's meet in DM and we'll go from there."
+          },
+          {
+            "rank": 4,
+            "score": 0.738,
+            "pair_id": "735961",
+            "predicted_label": "connectivity",
+            "customer_message": "iOS11.0.1 - MOST ANNOYING feature is how it automatically turns on bluetooth & wifi. I have it off for a reason. Please fix this!!",
+            "support_response": "We recommend checking out the following article about Wi-Fi and Bluetooth: DM us any questions."
+          },
+          {
+            "rank": 5,
+            "score": 0.718,
+            "pair_id": "816423",
+            "predicted_label": "software_bug",
+            "customer_message": "whn we switch flyt mode and off y did bluetooth is automatically on",
+            "support_response": "Wi-Fi and Bluetooth toggles in Control Center work a bit differently in iOS 11. Read more here:"
+          }
+        ]
+      },
+      {
+        "conversation_id": "523817",
+        "text": "Any reason why apps get unchecked in Accessibility within Security and Privacy. macOS High Sierra 10.13.1 (17B1003)",
+        "golden_label": "software_bug",
+        "first_hit_rank": 1,
+        "top1_score": 0.5736,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": true,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.5736,
+            "pair_id": "801083",
+            "predicted_label": "software_bug",
+            "customer_message": "High Sierra is the third version of macOS to STILL have a bug in accessibility with Sticky Keys. We keep reporting it, and it keeps being ignored. Very insultin",
+            "support_response": "That's not what we want to hear. DM us and we'll investigate the issue together."
+          },
+          {
+            "rank": 2,
+            "score": 0.5407,
+            "pair_id": "290206",
+            "predicted_label": "software_bug",
+            "customer_message": "Nothing to see here, just another bug in High Sierra that should\u2019ve been dealt with before release. @115858 @AppleSupport",
+            "support_response": "We'd like to look into this further with you. Could you Direct Message us so we can get more information?"
+          },
+          {
+            "rank": 3,
+            "score": 0.5368,
+            "pair_id": "1499943",
+            "predicted_label": "software_bug",
+            "customer_message": "the current accessibility issues I've had aswell as a \"virus\" on my Mac has disgusted me! Disappointing",
+            "support_response": "We'd like to help. Send us a DM to get started."
+          },
+          {
+            "rank": 4,
+            "score": 0.5332,
+            "pair_id": "1333709",
+            "predicted_label": "software_bug",
+            "customer_message": "In High Sierra, right clicking and selecting \"open with\" ignores my choice and opens with the default app 1/2",
+            "support_response": "We're here to help. Let's take this to DM so we can better assist you."
+          },
+          {
+            "rank": 5,
+            "score": 0.5304,
+            "pair_id": "150024",
+            "predicted_label": "software_bug",
+            "customer_message": "When/why did apple silently get rid of the area in settings that allowed you to edit the settings of downloaded Apps? @AppleSupport",
+            "support_response": "Hi there. We're here to help you. Could you tell us which settings specifically that you're trying to edit? We'll do our best to get you pointed in the right di"
+          }
+        ]
+      },
+      {
+        "conversation_id": "905934",
+        "text": "why is my battery crap on my iPhone 6 after the new update? No I don\u2019t want to upgrade!",
+        "golden_label": "software_bug",
+        "first_hit_rank": 1,
+        "top1_score": 0.846,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": true,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.846,
+            "pair_id": "392681",
+            "predicted_label": "software_bug",
+            "customer_message": "any reason why my iPhone 6s battery is horrendous? After eh update as well so can\u2019t be a coincidence!",
+            "support_response": "We want to help. Send us a DM letting us know if you are updated to iOS 11.0.2."
+          },
+          {
+            "rank": 2,
+            "score": 0.8246,
+            "pair_id": "2292773",
+            "predicted_label": "software_bug",
+            "customer_message": "can you pls make the iphone 6 battery better. Mine was fine before the update/new phone came out.",
+            "support_response": "Thank you for the information. We've recently released an update to the software. Which iOS version is currently installed? To find out, tap Settings > General "
+          },
+          {
+            "rank": 3,
+            "score": 0.8082,
+            "pair_id": "1792638",
+            "predicted_label": "software_bug",
+            "customer_message": "hey guys... why did the new update destroy my battery on my iphone6s. I went from 30% to 2% in less than 30 mins. Fix this!",
+            "support_response": "We certainly don't want that happening! Let's really dive into this together. Please send us a DM to continue."
+          },
+          {
+            "rank": 4,
+            "score": 0.8075,
+            "pair_id": "1887576",
+            "predicted_label": "software_bug",
+            "customer_message": "iPhone 6 has been a disaster since IOS 11 update (and \"patches\"). Support says buy new battery, nothing to do with update \ud83d\ude21",
+            "support_response": "We understand the concern and we can certainly review all support options. Let's meet in DM to look further."
+          },
+          {
+            "rank": 5,
+            "score": 0.8063,
+            "pair_id": "1889685",
+            "predicted_label": "software_bug",
+            "customer_message": "why is my iPhone battery gone to crap since the latest update",
+            "support_response": "That\u2019s not what we\u2019d like to hear. Please let us know more about the changes after the update via DM."
+          }
+        ]
+      },
+      {
+        "conversation_id": "97013",
+        "text": "Apple really needs to do better. First with the hieroglyphics now they change it to I.T . Why would that be the correct spelling? Huh Apple? \ud83d\ude44",
+        "golden_label": "software_bug",
+        "first_hit_rank": 1,
+        "top1_score": 0.7137,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": true,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.7137,
+            "pair_id": "1400532",
+            "predicted_label": "software_bug",
+            "customer_message": "Apple all these spelling corrections. Why when I type it autocorrects to I.T @AppleSupport",
+            "support_response": "We're here for you. Which version of the iOS are you running? You can check by tapping Settings > General > About."
+          },
+          {
+            "rank": 2,
+            "score": 0.6954,
+            "pair_id": "2699112",
+            "predicted_label": "software_bug",
+            "customer_message": "HEY APPLE. FIX THE THING WHERE WHENEVER SOMEBODY TYPES THE LETTER \"i\" or \"I\" IT TURNS INTO \"A ?\"",
+            "support_response": "An update has been released to assist with this issue. If you haven\u2019t yet, please back up your device and update it. For more info, check out:"
+          },
+          {
+            "rank": 3,
+            "score": 0.6778,
+            "pair_id": "1598554",
+            "predicted_label": "software_bug",
+            "customer_message": "When are y\u2019all going to fix the letter \ud83d\udc41? Or how can Apple users fix it? Tired of seeing \u201cI\ufe0f\u201d",
+            "support_response": "This article can help with this Please DM us if the issue continues."
+          },
+          {
+            "rank": 4,
+            "score": 0.6749,
+            "pair_id": "2288777",
+            "predicted_label": "software_bug",
+            "customer_message": "Ima need apple to fix this spelling problem thank @115858",
+            "support_response": "Let's work on this together. DM us and let us know which type of device you're using, and more about the issue you're having:"
+          },
+          {
+            "rank": 5,
+            "score": 0.6595,
+            "pair_id": "2001088",
+            "predicted_label": "software_bug",
+            "customer_message": "Apple I\ufe0f don\u2019t know what the fuck your deal is with autocorrecting words spelled right but I\ufe0f am not happy with you @115858",
+            "support_response": "We'd be happy to help. DM us more details of what's going on with your autocorrect and we'll work this out with you."
+          }
+        ]
+      }
+    ]
+  },
+  "test": {
+    "metrics": {
+      "recall_at_1": 0.5862,
+      "recall_at_3": 0.6552,
+      "recall_at_5": 0.7586,
+      "mrr_at_5": 0.6515,
+      "n": 29,
+      "top1_agreement": 0.5862,
+      "majority_vote_accuracy": 0.6897,
+      "top1_score": {
+        "mean": 0.7503,
+        "median": 0.7476,
+        "min": 0.3671,
+        "max": 0.9679
+      }
+    },
+    "queries": [
+      {
+        "conversation_id": "1020302",
+        "text": "my App Store is not working!!!!",
+        "golden_label": "software_bug",
+        "first_hit_rank": 4,
+        "top1_score": 0.9143,
+        "top1_predicted_label": "device_hardware",
+        "top1_agrees": false,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.9143,
+            "pair_id": "852950",
+            "predicted_label": "device_hardware",
+            "customer_message": "my app store\u2019s not working :(",
+            "support_response": "Can you please provide more details so that we have a better understanding of what's going on? What steps have you tried?"
+          },
+          {
+            "rank": 2,
+            "score": 0.8994,
+            "pair_id": "686565",
+            "predicted_label": "device_hardware",
+            "customer_message": "App Store not working for me either",
+            "support_response": "We can help. What happens when you try using your App Store?"
+          },
+          {
+            "rank": 3,
+            "score": 0.8939,
+            "pair_id": "1007648",
+            "predicted_label": "device_hardware",
+            "customer_message": "your App Store isn't working! What the hell!?",
+            "support_response": "We can help. Tell us more about the issue you're encountering with the App Store. What device are you using?"
+          },
+          {
+            "rank": 4,
+            "score": 0.8803,
+            "pair_id": "1697377",
+            "predicted_label": "software_bug",
+            "customer_message": "is there a reason my App Store isn\u2019t working at all ? Help please",
+            "support_response": "Thanks Rigo. We've received your DM and we'll continue there in just a moment."
+          },
+          {
+            "rank": 5,
+            "score": 0.8786,
+            "pair_id": "1417359",
+            "predicted_label": "software_bug",
+            "customer_message": "why isn\u2019t App Store working for me?!?!?! \ud83d\ude29\ud83d\ude29\ud83d\ude29 I cant download anything but my internet is working perfectly",
+            "support_response": "We want you to be able to use your App Store. Have you tried on a Wi-Fi connection? Let us know in DM."
+          }
+        ]
+      },
+      {
+        "conversation_id": "11126",
+        "text": ", your new iOS 11.1 not resolve the calendar problem. \ud83d\ude21#iOS11 #iosfail",
+        "golden_label": "software_bug",
+        "first_hit_rank": 1,
+        "top1_score": 0.8376,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": true,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.8376,
+            "pair_id": "974029",
+            "predicted_label": "software_bug",
+            "customer_message": "Hey, @AppleSupport. You fucked the Calendar on iOS11. You tap November and try to return... CRASH! Please fix it (it worked for 10 years!).",
+            "support_response": "We\u2019re here to help. Let\u2019s team up in DM and we\u2019ll do our best to assist you."
+          },
+          {
+            "rank": 2,
+            "score": 0.8216,
+            "pair_id": "2890731",
+            "predicted_label": "software_bug",
+            "customer_message": "please fix your calendar app @ iOS 11.1.2. It keep crashing",
+            "support_response": "We\u2019d like to help with your Calendar app. When did this start? Which device are you using?"
+          },
+          {
+            "rank": 3,
+            "score": 0.8174,
+            "pair_id": "2752455",
+            "predicted_label": "software_bug",
+            "customer_message": "I\u2019ve had updated me IPhone 7 to IOS 11.1 and the calendar still doesn\u2019t work.",
+            "support_response": "We're happy to help. What trouble are you experiencing with your Calendar?"
+          },
+          {
+            "rank": 4,
+            "score": 0.8094,
+            "pair_id": "711153",
+            "predicted_label": "software_bug",
+            "customer_message": "Calendar totally bugged after iOS 11.0.2 update. It\u2019s all messed up crashing all the time could you pls fix this @AppleSupport",
+            "support_response": "Thanks for reaching out. Does this issue continue after restarting your iPhone?"
+          },
+          {
+            "rank": 5,
+            "score": 0.802,
+            "pair_id": "1340770",
+            "predicted_label": "connectivity",
+            "customer_message": "There are several complaint that Calendar is not work after ios 11 in web , like my case !",
+            "support_response": "We'd like to work with you to find a solution to what you're experiencing. DM us and we'll get started."
+          }
+        ]
+      },
+      {
+        "conversation_id": "1122780",
+        "text": "can\u2019t download and open epub files to ibooks. whenever i download an epub file it appears for a second and it disappears.",
+        "golden_label": "software_bug",
+        "first_hit_rank": 3,
+        "top1_score": 0.7267,
+        "top1_predicted_label": "account_icloud",
+        "top1_agrees": false,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.7267,
+            "pair_id": "850428",
+            "predicted_label": "account_icloud",
+            "customer_message": "all my epub files got deleted from my ibooks",
+            "support_response": "Got it. We'd be happy to look into this with you. Can you provide us which iOS version you're using?"
+          },
+          {
+            "rank": 2,
+            "score": 0.7223,
+            "pair_id": "798838",
+            "predicted_label": "other",
+            "customer_message": "Hello @AppleSupport pls how do I attach an epub file in my ibooks to a mail? It's giving me headache.",
+            "support_response": "We'd be glad to help. To ensure we give you the right steps, which device are you using & what version of OS is installed?"
+          },
+          {
+            "rank": 3,
+            "score": 0.6968,
+            "pair_id": "1615444",
+            "predicted_label": "software_bug",
+            "customer_message": "iBooks on iOS 11.1/iPhone X won\u2019t show my ePub items, and manually trying to add it again fails. Appears on all other devices.",
+            "support_response": "Congratulations on your new iPhone X. Let\u2019s team up on this. What other devices are you using? Are they also running iOS 11.1?"
+          },
+          {
+            "rank": 4,
+            "score": 0.6728,
+            "pair_id": "1776813",
+            "predicted_label": "device_hardware",
+            "customer_message": "i can\u2019t open any book from iBooks",
+            "support_response": "We're here to help. Send us a DM with your current iOS version and we'll continue there."
+          },
+          {
+            "rank": 5,
+            "score": 0.6377,
+            "pair_id": "1768814",
+            "predicted_label": "software_bug",
+            "customer_message": "Bought a book on iBook but it\u2019s not downloading. Still showing as sample. Explain @AppleSupport",
+            "support_response": "We'd be happy to help. Do you see this book in your Purchased section? Our website here has more info:"
+          }
+        ]
+      },
+      {
+        "conversation_id": "1201168",
+        "text": "Just upgraded to #HighSierra & now Mail will not open. Only 1 bounce& then not responding.",
+        "golden_label": "software_bug",
+        "first_hit_rank": 1,
+        "top1_score": 0.6791,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": true,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.6791,
+            "pair_id": "1342797",
+            "predicted_label": "software_bug",
+            "customer_message": "Hey @AppleSupport, Mail on #HighSierra is a broken mess that crashes whenever I try to compose an email would be appreciated if you fixed it",
+            "support_response": "We can help with that. To get started, be sure you've installed all available updates in the Mac App Store."
+          },
+          {
+            "rank": 2,
+            "score": 0.5811,
+            "pair_id": "712958",
+            "predicted_label": "software_bug",
+            "customer_message": "\ud83d\ude11 @AppleSupport listen here. Day 4 of @115769 not working on #HighSierra. I\u2019ve reinstalled, I\u2019ve patched, I\u2019ve checked Read and Write permissions. Like yo.",
+            "support_response": "We\u2019re happy to dive deeper into this with you. Reach us in DM to continue."
+          },
+          {
+            "rank": 3,
+            "score": 0.5808,
+            "pair_id": "14842",
+            "predicted_label": "account_icloud",
+            "customer_message": "So, that got me back in, but now Mail won\u2019t work.",
+            "support_response": "What happens when you try to open or use the Mail app? Let us know more in DM, please."
+          },
+          {
+            "rank": 4,
+            "score": 0.5799,
+            "pair_id": "619402",
+            "predicted_label": "other",
+            "customer_message": "Since upgrading to #HighSierra, my Apple Mail no longer opens hyperlinks in the browser tab when I click them. They only open the browser Home page. Is this a k",
+            "support_response": "Thanks for reaching out. Is this happening with links from more than one sender?"
+          },
+          {
+            "rank": 5,
+            "score": 0.5683,
+            "pair_id": "1747406",
+            "predicted_label": "account_icloud",
+            "customer_message": "I cannot even open my emails",
+            "support_response": "DM us using the link below. We're glad to look into this with you."
+          }
+        ]
+      },
+      {
+        "conversation_id": "1544927",
+        "text": "do you have a price quote on getting a screen fixed for iPhone 7 Plus?",
+        "golden_label": "repair_warranty",
+        "first_hit_rank": 1,
+        "top1_score": 0.7659,
+        "top1_predicted_label": "repair_warranty",
+        "top1_agrees": true,
+        "majority_vote_label": "repair_warranty",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.7659,
+            "pair_id": "1175543",
+            "predicted_label": "repair_warranty",
+            "customer_message": "how much is it to fix my screen for iPhone 7",
+            "support_response": "What country or region are you currently located in? This will help us provide the best support options. We can help."
+          },
+          {
+            "rank": 2,
+            "score": 0.7328,
+            "pair_id": "954248",
+            "predicted_label": "repair_warranty",
+            "customer_message": "how much does it cost to get my iPhone 6 Plus screen fixed?",
+            "support_response": "We\u2019d like to see how we can help. Can you give us some more details about the issue you're having?"
+          },
+          {
+            "rank": 3,
+            "score": 0.7059,
+            "pair_id": "694216",
+            "predicted_label": "other",
+            "customer_message": "Hey, what's the price to have an iPhone 6 screen replaced and can it be done in store?",
+            "support_response": "We're happy to find that information for you. DM us and tell us which country you're located in."
+          },
+          {
+            "rank": 4,
+            "score": 0.6911,
+            "pair_id": "152931",
+            "predicted_label": "repair_warranty",
+            "customer_message": "how much would it cost to get an iphone 7 screen fixed after it had been smashed?",
+            "support_response": "Having a broken phone is never fun, but we're here to help check into some options for you. Let's talk in DM."
+          },
+          {
+            "rank": 5,
+            "score": 0.6899,
+            "pair_id": "2592217",
+            "predicted_label": "other",
+            "customer_message": "how much do you charge to replace an iPhone 7 screen?",
+            "support_response": "Thanks for reaching out about your iPhone 7 screen. We can look into your replacement options. Send us a DM and let us know your country of residence."
+          }
+        ]
+      },
+      {
+        "conversation_id": "1673516",
+        "text": "Have you ever wanted to punch someone in the face? Like I\ufe0f have SUCH a desire to punch this one person in the face as hard as I\ufe0f can",
+        "golden_label": "other",
+        "first_hit_rank": 2,
+        "top1_score": 0.3671,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": false,
+        "majority_vote_label": "other",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.3671,
+            "pair_id": "1586327",
+            "predicted_label": "software_bug",
+            "customer_message": "Yes I\u2019ve done that numerous times.",
+            "support_response": "Thanks. Let\u2019s try force closing the App Store."
+          },
+          {
+            "rank": 2,
+            "score": 0.3633,
+            "pair_id": "1396717",
+            "predicted_label": "other",
+            "customer_message": "@AppleSupport I have anger issues you don\u2019t mess with me like this I\u2019ll fucking dent them with my teeth",
+            "support_response": "We'd like to take a closer look via DM. Have the AirPods ever worked properly? When did this issue begin?"
+          },
+          {
+            "rank": 3,
+            "score": 0.3526,
+            "pair_id": "2680909",
+            "predicted_label": "other",
+            "customer_message": "Of course I have.",
+            "support_response": "We\u2019d love to help further. To start, send us a DM letting us know which device you\u2019re using."
+          },
+          {
+            "rank": 4,
+            "score": 0.3504,
+            "pair_id": "1920950",
+            "predicted_label": "other",
+            "customer_message": "this is legitimately the worst form of cyber bullying. Please stop.",
+            "support_response": "We'd like to make sure your device is running as expected. Let's take a closer look in DM. Send us a message."
+          },
+          {
+            "rank": 5,
+            "score": 0.3455,
+            "pair_id": "1407783",
+            "predicted_label": "other",
+            "customer_message": "No, just with one friend\u2026",
+            "support_response": "If your friend is having issues with sharing their activity, we'll be happy to help. Just have them reach out to us."
+          }
+        ]
+      },
+      {
+        "conversation_id": "1733789",
+        "text": "@AppleSupport you gotta fix the I\ufe0f like for real",
+        "golden_label": "software_bug",
+        "first_hit_rank": 1,
+        "top1_score": 0.8432,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": true,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.8432,
+            "pair_id": "1673573",
+            "predicted_label": "software_bug",
+            "customer_message": "@AppleSupport fix your shit with this I\ufe0f stuff",
+            "support_response": "Here\u2019s what you can do to work around the issue until it\u2019s fixed in a future software update:"
+          },
+          {
+            "rank": 2,
+            "score": 0.8401,
+            "pair_id": "2000306",
+            "predicted_label": "software_bug",
+            "customer_message": "FIX MY I\u2019S @AppleSupport",
+            "support_response": "Thanks for reaching out. What device is this occurring on? Let us know in a DM and we'll continue to assist."
+          },
+          {
+            "rank": 3,
+            "score": 0.8364,
+            "pair_id": "1754185",
+            "predicted_label": "software_bug",
+            "customer_message": "@AppleSupport y\u2019all fixing this I\ufe0f thing or nah?",
+            "support_response": "Here\u2019s what you can do to work around the issue until it\u2019s fixed in a future software update:"
+          },
+          {
+            "rank": 4,
+            "score": 0.8302,
+            "pair_id": "2614242",
+            "predicted_label": "software_bug",
+            "customer_message": "also @AppleSupport fix my i\u2019s",
+            "support_response": "We can help! Have you had a chance to update your iOS yet? If not, go ahead and create a back up first, then update your iOS under Settings > General > Software"
+          },
+          {
+            "rank": 5,
+            "score": 0.8295,
+            "pair_id": "2276290",
+            "predicted_label": "software_bug",
+            "customer_message": "OH MY GOD I\ufe0f CANT WITH THE I\ufe0f \ud83e\udd2c\ud83e\udd2c\ud83e\udd2c\ud83e\udd2c\ud83e\udd2c\ud83e\udd2c\ud83e\udd2c\ud83e\udd2c @AppleSupport FIX THIS SHIT",
+            "support_response": "We recently released an iOS update, 11.1.1, that contains a fix for autocorrect issues. Let\u2019s be sure to back up your device prior to updating. How to back up:"
+          }
+        ]
+      },
+      {
+        "conversation_id": "1735010",
+        "text": "Why do some ppl not have the \ud83d\udc40 problem @115858 it ain\u2019t funny \ud83d\udc40 pay too much for y\u2019all to be making mistakes we better have an update tmrw",
+        "golden_label": "software_bug",
+        "first_hit_rank": 1,
+        "top1_score": 0.7029,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": true,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.7029,
+            "pair_id": "1587414",
+            "predicted_label": "software_bug",
+            "customer_message": "Y\u2019all really need to fix this\ud83d\ude12 @115858",
+            "support_response": "We'd recommend trying the steps here: let us know in DM if the issues continue."
+          },
+          {
+            "rank": 2,
+            "score": 0.689,
+            "pair_id": "2707663",
+            "predicted_label": "software_bug",
+            "customer_message": "TBFH. @115858 WHY ISNT IT FIXED YET \u2639\ufe0f",
+            "support_response": "We'd like to take a closer look at this with you. Which device model do you have and what's the exact iOS version installed? Let us know in DM here:"
+          },
+          {
+            "rank": 3,
+            "score": 0.6848,
+            "pair_id": "2515950",
+            "predicted_label": "software_bug",
+            "customer_message": "I\ufe0f \u2b05\ufe0f come on @115858. We really can\u2019t get this fixed?",
+            "support_response": "iOS 11.1.1 was recently released and it includes a fix for autocorrect issues. Be sure to back up your device prior to updating, and let us know if the issue pe"
+          },
+          {
+            "rank": 4,
+            "score": 0.6828,
+            "pair_id": "1725244",
+            "predicted_label": "software_bug",
+            "customer_message": "WHY. @115858 fix it\ud83d\ude44\ud83d\ude44\ud83d\ude44\ud83d\ude44",
+            "support_response": "Here\u2019s what you can do to work around the issue until it\u2019s fixed in a future software update:"
+          },
+          {
+            "rank": 5,
+            "score": 0.6791,
+            "pair_id": "2278493",
+            "predicted_label": "software_bug",
+            "customer_message": "Yo why tf y\u2019all ain\u2019t fix this I\ufe0ft shit yet @115858",
+            "support_response": "We're glad to look into this with you. Let's get your iOS version from Settings > General > About > Version."
+          }
+        ]
+      },
+      {
+        "conversation_id": "1762856",
+        "text": "I love when my fucking 10 month old iPhone 7+ breaks for no God damn reason \ud83d\ude0d @AppleSupport",
+        "golden_label": "device_hardware",
+        "first_hit_rank": 0,
+        "top1_score": 0.7376,
+        "top1_predicted_label": "general_complaint",
+        "top1_agrees": false,
+        "majority_vote_label": "general_complaint",
+        "majority_vote_agrees": false,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.7376,
+            "pair_id": "543629",
+            "predicted_label": "general_complaint",
+            "customer_message": "not happy my 8/9 month old iPhone 7 is failing. Can't use anything without being locked out! \ud83e\udd26\u200d\u2640\ufe0f\ud83e\udd26\u200d\u2640\ufe0f\ud83d\udc94",
+            "support_response": "Let's look into that. Can you tell us more about the issue you're experiencing? What seems to be happening with your iPhone?"
+          },
+          {
+            "rank": 2,
+            "score": 0.7208,
+            "pair_id": "1828324",
+            "predicted_label": "general_complaint",
+            "customer_message": "I got my iPhone 7 literally less than a year ago and it\u2019s already completely broken wow I hate @115858 @AppleSupport",
+            "support_response": "We'd like to look into options with you. Can you send us a DM and tell us what's going on with your iPhone?"
+          },
+          {
+            "rank": 3,
+            "score": 0.7126,
+            "pair_id": "1414580",
+            "predicted_label": "general_complaint",
+            "customer_message": "I love when my Iphone decides to just stop working, and I'm on @AppleSupport ready to have a mental break down bc nothing is working",
+            "support_response": "We're here for you. Tell us more about what you're experiencing with your iPhone. Have you tried restarting, by chance?"
+          },
+          {
+            "rank": 4,
+            "score": 0.7124,
+            "pair_id": "2578724",
+            "predicted_label": "general_complaint",
+            "customer_message": "My iPhone has been shit lately, I know you want me to get a new one apple BUT ITS A FUCKING 7!! IM STUCK FOR 1 1/2 more years with this shit! @AppleSupport",
+            "support_response": "We can help with the issues you're experiencing. What's happening with your device? Tell us more via DM here:"
+          },
+          {
+            "rank": 5,
+            "score": 0.7087,
+            "pair_id": "2970221",
+            "predicted_label": "general_complaint",
+            "customer_message": "@AppleSupport Really appreciate my 1 year old iPhone 7 dying at 50% everytime. #PlannedObsolescence.",
+            "support_response": "Getting the battery life that's expected from your iPhone is very important and we definitely want to take a look into this. Select the following link to join u"
+          }
+        ]
+      },
+      {
+        "conversation_id": "1772187",
+        "text": "So I\ufe0f have 280 so I\u2019m going use this time to thank everyone following me even though I\ufe0f get annoying. Y\u2019all are the real ones. Now that I\ufe0f have 280 it\u2019s gonna get worse... so thank you!! So stick around. Also @123765, you fucked up with this update. Should of stayed with 140",
+        "golden_label": "general_complaint",
+        "first_hit_rank": 0,
+        "top1_score": 0.6478,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": false,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": false,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.6478,
+            "pair_id": "1773384",
+            "predicted_label": "software_bug",
+            "customer_message": "have now discovered that everyone got said 280 update. i am now stepping down from my high horse. i shall also try to lengthen every tweet to 280 characters unt",
+            "support_response": "Here\u2019s what you can do to work around the issue until it\u2019s fixed in a future software update:"
+          },
+          {
+            "rank": 2,
+            "score": 0.6449,
+            "pair_id": "1776339",
+            "predicted_label": "software_bug",
+            "customer_message": "your update.....sucks !!! Wish I\u2019d stayed with @138021 geez especially since I\u2019ve had nothing but issues with this refurb.",
+            "support_response": "Let's see what we can figure out together. Please join us in DM and let us know what symptoms you're experiencing."
+          },
+          {
+            "rank": 3,
+            "score": 0.6419,
+            "pair_id": "1966856",
+            "predicted_label": "software_bug",
+            "customer_message": "@115858 Dude me too I\ufe0f was so annoyed I\ufe0f think it\u2019s because of the update",
+            "support_response": "We are here to help whenever possible. DM which iPhone and specific iOS version you are using so we can help."
+          },
+          {
+            "rank": 4,
+            "score": 0.6301,
+            "pair_id": "2004747",
+            "predicted_label": "software_bug",
+            "customer_message": "I\ufe0f did all the updates and it\u2019s still a mess smh I\ufe0f am so upset with @115858 \ud83d\ude12",
+            "support_response": "Thanks for reaching out. This article can help you with the issue you're seeing: DM us your results:"
+          },
+          {
+            "rank": 5,
+            "score": 0.6151,
+            "pair_id": "1640191",
+            "predicted_label": "software_bug",
+            "customer_message": "I\ufe0ft didn\u2019t help mine \ud83d\ude44 I\u2019m very annoyed with @115858 rn",
+            "support_response": "Here\u2019s what you can do to work around the issue until it\u2019s fixed in a future software update:"
+          }
+        ]
+      },
+      {
+        "conversation_id": "1779220",
+        "text": "Hey @115858 stop sucking and fix this \u201cI\ufe0f\u201d problem thank you",
+        "golden_label": "software_bug",
+        "first_hit_rank": 1,
+        "top1_score": 0.8231,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": true,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.8231,
+            "pair_id": "1924750",
+            "predicted_label": "software_bug",
+            "customer_message": "Okay, @115858, stop it with the \u201cI\ufe0f\u201d error already. You suck",
+            "support_response": "We'd love to help and recently released an update to address this issue. Update to iOS 11.1.1 by following these directions: DM us if you still see it when you "
+          },
+          {
+            "rank": 2,
+            "score": 0.806,
+            "pair_id": "1725755",
+            "predicted_label": "software_bug",
+            "customer_message": "Okay @115858 please fix this stupid \u201c*I\ufe0f\u201d problem that I\ufe0f keep having",
+            "support_response": "Here\u2019s what you can do to work around the issue until it\u2019s fixed in a future software update:"
+          },
+          {
+            "rank": 3,
+            "score": 0.8027,
+            "pair_id": "1560003",
+            "predicted_label": "software_bug",
+            "customer_message": "Okay @115858 i need you to fix this \u201cI\ufe0f \u201c problem",
+            "support_response": "We can help out. Check this article for some steps on taking care of this text replacement issue."
+          },
+          {
+            "rank": 4,
+            "score": 0.7984,
+            "pair_id": "2131162",
+            "predicted_label": "software_bug",
+            "customer_message": "Hey uhhh @115858 r u gonna fix the \u201ci\u201d problem yet",
+            "support_response": "Here\u2019s what you can do to work around the issue until it\u2019s fixed in a future software update:"
+          },
+          {
+            "rank": 5,
+            "score": 0.7931,
+            "pair_id": "2005201",
+            "predicted_label": "software_bug",
+            "customer_message": "OMM y\u2019all better fix this \u201cI\ufe0f\u201d problem @115858",
+            "support_response": "Hi. We here to help. Check out this link for help with this issue: DM us any questions."
+          }
+        ]
+      },
+      {
+        "conversation_id": "1802996",
+        "text": "Can you make your iCal app stop deleting my saved date events, oh and stop doubling other's that would be great.",
+        "golden_label": "software_bug",
+        "first_hit_rank": 7,
+        "top1_score": 0.5708,
+        "top1_predicted_label": "other",
+        "top1_agrees": false,
+        "majority_vote_label": "other",
+        "majority_vote_agrees": false,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.5708,
+            "pair_id": "97068",
+            "predicted_label": "other",
+            "customer_message": "Thanks! Yes- specifically iCal, and usually not doing anything other than viewing my days meetings/items.",
+            "support_response": "OK, thanks. Which device are you using and which software version is installed?"
+          },
+          {
+            "rank": 2,
+            "score": 0.5702,
+            "pair_id": "2143243",
+            "predicted_label": "account_icloud",
+            "customer_message": "Hey @AppleSupport why did my calendar just delete all events ???",
+            "support_response": "We'd be happy to help. Have you tried restarting the device? If not, let's try that."
+          },
+          {
+            "rank": 3,
+            "score": 0.5628,
+            "pair_id": "994479",
+            "predicted_label": "account_icloud",
+            "customer_message": "Yes. I also do not sync my calendars between my devices b/c iTunes wanted to delete ALL events from my computer.",
+            "support_response": "Which model do you have and is iOS 11.0.3 the version installed? Have you tried any steps and if yes, which ones?"
+          },
+          {
+            "rank": 4,
+            "score": 0.5568,
+            "pair_id": "935871",
+            "predicted_label": "other",
+            "customer_message": "I do use iCloud to sync my calendar events and I did not notice that in any other apps",
+            "support_response": "Thank you. We suggest force closing the Calendar app and then testing it again:"
+          },
+          {
+            "rank": 5,
+            "score": 0.5557,
+            "pair_id": "1895620",
+            "predicted_label": "other",
+            "customer_message": "iCal birthday alerts from Contacts are shown the day before by default. Can I change this to the day itself, at 8am?",
+            "support_response": "We'd like to gather more details from you on this, and see how we can assist. Meet up with us in DM at the link below, please."
+          }
+        ]
+      },
+      {
+        "conversation_id": "1882044",
+        "text": "Why did the new iPhone update do nothing but kill my battery life now?? @115858",
+        "golden_label": "software_bug",
+        "first_hit_rank": 1,
+        "top1_score": 0.9238,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": true,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.9238,
+            "pair_id": "906400",
+            "predicted_label": "software_bug",
+            "customer_message": "why has the new iPhone update destroyed my battery life??",
+            "support_response": "We're happy to assist. Which iOS 11 version are you currently running? Go to Settings > General > About for the version."
+          },
+          {
+            "rank": 2,
+            "score": 0.9062,
+            "pair_id": "2063371",
+            "predicted_label": "software_bug",
+            "customer_message": "This iPhone update is horrible & messing up my battery life \ud83d\ude2d.What\u2019s going on @115858",
+            "support_response": "Let's work together in DM to investigate what's going on with your iPhone, and make sure it's available when you need it!"
+          },
+          {
+            "rank": 3,
+            "score": 0.8903,
+            "pair_id": "1857685",
+            "predicted_label": "software_bug",
+            "customer_message": "Once again the new iPhone update has had a detrimental effect on battery life @115858",
+            "support_response": "Having a reliable battery is important! Let us help with yours. DM us your exact iOS version. We'll continue from there."
+          },
+          {
+            "rank": 4,
+            "score": 0.8878,
+            "pair_id": "1858642",
+            "predicted_label": "software_bug",
+            "customer_message": "This new IPhone update just drains my battery.... wtf @115858?",
+            "support_response": "Let's take a look at what's going on. Have you implemented our battery tips to maximize performance?"
+          },
+          {
+            "rank": 5,
+            "score": 0.8824,
+            "pair_id": "937724",
+            "predicted_label": "software_bug",
+            "customer_message": "this iPhone update has drained my battery life and made my phone slower than ever what gives @115858",
+            "support_response": "We want to help. Reach out via DM using the link below."
+          }
+        ]
+      },
+      {
+        "conversation_id": "1906187",
+        "text": "I cannot use my iPhone after an upgrade - serious stuff - travel ticket to work as well as all communication. Please advise.",
+        "golden_label": "software_bug",
+        "first_hit_rank": 1,
+        "top1_score": 0.7306,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": true,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.7306,
+            "pair_id": "1354516",
+            "predicted_label": "software_bug",
+            "customer_message": "I\u2019ve had an incredibly frustrating experience with the iPhone Upgrade Program. Can you help? I can\u2019t get through via phone.",
+            "support_response": "Our Sales Support team would best be able to assist you. You can find their contact options here:"
+          },
+          {
+            "rank": 2,
+            "score": 0.6677,
+            "pair_id": "2833029",
+            "predicted_label": "connectivity",
+            "customer_message": "Whenever I try go online to do iphone upgrade programme it will not allow me at all! No phones available in the whole of UK",
+            "support_response": "Thanks for letting us know. Our Online Store team can help you with your order. Please reach out to them directly here:"
+          },
+          {
+            "rank": 3,
+            "score": 0.6635,
+            "pair_id": "342850",
+            "predicted_label": "connectivity",
+            "customer_message": "the new iPhone update messed up my phone really bad, I now can\u2019t connect to my carrier or even open up apps. we\u2019re testing it?",
+            "support_response": "We're happy to see how we can help with your iPhone. Send us a DM with more information, and we'll meet you there."
+          },
+          {
+            "rank": 4,
+            "score": 0.6567,
+            "pair_id": "205312",
+            "predicted_label": "connectivity",
+            "customer_message": "my iPhone has gone from great to awful with iOS upgrade. Battery drain, data not loading at all. Phone is almost unusable.",
+            "support_response": "We\u2019d like to help get you back to enjoying your iPhone. Send us a DM and we'll look into this together."
+          },
+          {
+            "rank": 5,
+            "score": 0.6462,
+            "pair_id": "2448412",
+            "predicted_label": "general_complaint",
+            "customer_message": "frustrated, went to Apple store to upgrade the phone, system was down, had to head back home with old phone :(",
+            "support_response": "We\u2019d like to know more about your experience. Meet us over in DM with some more details about what happened, and we\u2019ll take a look at this together."
+          }
+        ]
+      },
+      {
+        "conversation_id": "2001818",
+        "text": "what\u2019s the deal with my phone autocorrecting \u201cI\u201d into I\ufe0f",
+        "golden_label": "software_bug",
+        "first_hit_rank": 1,
+        "top1_score": 0.9351,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": true,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.9351,
+            "pair_id": "1458990",
+            "predicted_label": "software_bug",
+            "customer_message": "why is my phone autocorrecting I to I\ufe0f",
+            "support_response": "Thanks for reaching out. We're here to help. DM us so we can look into this further with you."
+          },
+          {
+            "rank": 2,
+            "score": 0.9185,
+            "pair_id": "1551804",
+            "predicted_label": "software_bug",
+            "customer_message": "Why is my phone auto correcting \u201cI\u201d to I\ufe0f",
+            "support_response": "Check out our article here: DM us any other questions."
+          },
+          {
+            "rank": 3,
+            "score": 0.9181,
+            "pair_id": "2013080",
+            "predicted_label": "software_bug",
+            "customer_message": "why does autocorrect on my phone keep changing \u201ci\u201d to I\ufe0f ??",
+            "support_response": "Thanks for reaching out. We have a workaround for this here: DM us if you still need help"
+          },
+          {
+            "rank": 4,
+            "score": 0.9047,
+            "pair_id": "1418035",
+            "predicted_label": "software_bug",
+            "customer_message": "my phone keeps autocorrecting \u201cI\u201d to \u201c I\ufe0f \u201c and it\u2019s really annoying",
+            "support_response": "We want to help. Please DM us what iOS version you have and we'll continue support there."
+          },
+          {
+            "rank": 5,
+            "score": 0.8881,
+            "pair_id": "1517836",
+            "predicted_label": "software_bug",
+            "customer_message": ", why is my phone now autocorrecting \u201cI\ufe0f\u201d to jibberish? Please help.",
+            "support_response": "We're here for you. Reach out via DM using the link below."
+          }
+        ]
+      },
+      {
+        "conversation_id": "2046588",
+        "text": "Jesus fucking Christ my phone keeps dying at like 90% y'all ain't shot prolly gon get a samsung @AppleSupport",
+        "golden_label": "device_hardware",
+        "first_hit_rank": 6,
+        "top1_score": 0.7355,
+        "top1_predicted_label": "general_complaint",
+        "top1_agrees": false,
+        "majority_vote_label": "general_complaint",
+        "majority_vote_agrees": false,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.7355,
+            "pair_id": "455018",
+            "predicted_label": "general_complaint",
+            "customer_message": "I\u2019m so tired of my phone dying at 93% @AppleSupport",
+            "support_response": "This is not the experience we want you to have. Which iPhone model do you own?"
+          },
+          {
+            "rank": 2,
+            "score": 0.7266,
+            "pair_id": "1699908",
+            "predicted_label": "software_bug",
+            "customer_message": "My phone dies in literally 0.5 seconds wtf I haven\u2019t even had it for a year this is ridiculous @AppleSupport",
+            "support_response": "Hi. We are here to help. Send us a DM, and we'll help from there. Thanks"
+          },
+          {
+            "rank": 3,
+            "score": 0.7231,
+            "pair_id": "2288050",
+            "predicted_label": "general_complaint",
+            "customer_message": "Fix your shit @AppleSupport, I\u2019m sick of my phone dying at 20%",
+            "support_response": "We'd like to work together on that. Let's get a bit of information and meet up in DM. What iOS version is installed? You'll find that in Settings > General > Ab"
+          },
+          {
+            "rank": 4,
+            "score": 0.6993,
+            "pair_id": "2590445",
+            "predicted_label": "general_complaint",
+            "customer_message": "@AppleSupport My phone died today at 40% like wtf!!",
+            "support_response": "We would be glad to take a look at this further for you. Are you using an original Apple charger? DM us the answer."
+          },
+          {
+            "rank": 5,
+            "score": 0.697,
+            "pair_id": "1548531",
+            "predicted_label": "general_complaint",
+            "customer_message": "@AppleSupport my phone is messsing up and dying on 100%\ud83d\ude11\ud83d\ude11\ud83d\ude11\ud83d\ude11\ud83d\ude11",
+            "support_response": "Let's look into this shutdown issue for you. Send us a DM with your current iOS version to get started,"
+          }
+        ]
+      },
+      {
+        "conversation_id": "2062504",
+        "text": "you have misspelled a word in your page.",
+        "golden_label": "other",
+        "first_hit_rank": 0,
+        "top1_score": 0.5536,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": false,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": false,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.5536,
+            "pair_id": "2037003",
+            "predicted_label": "software_bug",
+            "customer_message": "Hey @115858 what\u2019s up with all the glitches? Now I have spell check \u201cerrors\u201d under words I KNOW I spelled right?",
+            "support_response": "DM us some details on the words you're noticing this with, and we'll work together to get this resolved."
+          },
+          {
+            "rank": 2,
+            "score": 0.5362,
+            "pair_id": "215375",
+            "predicted_label": "software_bug",
+            "customer_message": "Hi, when I misspelled words, and tapped them, a suggestion for autocorrect used to appear above the word. Stopped happening?",
+            "support_response": "You're in the right place, and we'll do all we can to help. To get started, what device and OS are you using?"
+          },
+          {
+            "rank": 3,
+            "score": 0.5333,
+            "pair_id": "2586412",
+            "predicted_label": "software_bug",
+            "customer_message": "WHY DOES MY KEYBOARD AUTOCORRECT WORDS THAT I ALREADY SPELLED CORRECTLY @116333",
+            "support_response": "Can you tell us more about what words you're having trouble with? Also, which iOS version are you using? Let's work in DM to make sure things are working proper"
+          },
+          {
+            "rank": 4,
+            "score": 0.5333,
+            "pair_id": "2970230",
+            "predicted_label": "software_bug",
+            "customer_message": "- A minor error in the spelling",
+            "support_response": "Thank you for bringing this to our attention. We would like to meet up in DM to gather a few additional details from you."
+          },
+          {
+            "rank": 5,
+            "score": 0.5327,
+            "pair_id": "2117910",
+            "predicted_label": "software_bug",
+            "customer_message": "Please explain to me why I\ufe0f can\u2019t type the letter I\ufe0f do to this spellcheck Help a brotha out",
+            "support_response": "Here\u2019s what you can do to work around the issue until it\u2019s fixed in a future software update:"
+          }
+        ]
+      },
+      {
+        "conversation_id": "2117289",
+        "text": "do you have a 24 hr number?",
+        "golden_label": "support_process",
+        "first_hit_rank": 4,
+        "top1_score": 0.5515,
+        "top1_predicted_label": "account_icloud",
+        "top1_agrees": false,
+        "majority_vote_label": "account_icloud",
+        "majority_vote_agrees": false,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.5515,
+            "pair_id": "2549527",
+            "predicted_label": "account_icloud",
+            "customer_message": "No, I'm not. It asks for the verification code and I don't have that phone number anymore.",
+            "support_response": "Take a look at the following article, it has a lot of information that may assist you:"
+          },
+          {
+            "rank": 2,
+            "score": 0.5491,
+            "pair_id": "452629",
+            "predicted_label": "account_icloud",
+            "customer_message": "I no longer have this number",
+            "support_response": "Thank you for providing us with that screenshot. With regard to the issue that you\u2019re experiencing with your account, our Apple ID Specialists are going to be y"
+          },
+          {
+            "rank": 3,
+            "score": 0.5312,
+            "pair_id": "1852593",
+            "predicted_label": "software_bug",
+            "customer_message": "I just got an email saying you called me tonight but you did not. If you did it was not on either number I gave you",
+            "support_response": "Thanks for reaching out! So we can look closer into this with you, reach out to us in DM and we'll continue from there."
+          },
+          {
+            "rank": 4,
+            "score": 0.5092,
+            "pair_id": "724635",
+            "predicted_label": "support_process",
+            "customer_message": "are any of your other stores open 24 hours?",
+            "support_response": "Thanks for reaching out. We're here to help. DM us so we can look into this further with you."
+          },
+          {
+            "rank": 5,
+            "score": 0.5059,
+            "pair_id": "1503976",
+            "predicted_label": "support_process",
+            "customer_message": "i tried to forgot the pw, i remember my number but the number was not active. i get a notification of waiting 4 days and that is so long",
+            "support_response": "Send us a DM and we'll be more than happy to explain the recovery process in more detail."
+          }
+        ]
+      },
+      {
+        "conversation_id": "2140945",
+        "text": "La \u00faltima actualizaci\u00f3n de software del #iphone a 11.1 me tiene el cel demasiado lento y se bloquean las aplicaciones @AppleSupport",
+        "golden_label": "software_bug",
+        "first_hit_rank": 1,
+        "top1_score": 0.8153,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": true,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.8153,
+            "pair_id": "121550",
+            "predicted_label": "software_bug",
+            "customer_message": "Estoy teniendo demasiados problemas con la nueva actualizaci\u00f3n del iOS 11.1.2 de @115858 , es extremadamente mala esta actualizaci\u00f3n @AppleSupport necesito solu",
+            "support_response": "Thanks for reaching out. We offer support via Twitter in English. Get help in Spanish here: or join:"
+          },
+          {
+            "rank": 2,
+            "score": 0.8019,
+            "pair_id": "2647377",
+            "predicted_label": "software_bug",
+            "customer_message": "La actualizaci\u00f3n de iPhone 11.01 es para que nos compremos el X o para que dejemos de usar @115858 ? @AppleSupport desde actualizaci\u00f3n el m\u00f3vil tarda segundos s",
+            "support_response": "We offer support via Twitter in English. Get help in Spanish here: or join"
+          },
+          {
+            "rank": 3,
+            "score": 0.7974,
+            "pair_id": "764867",
+            "predicted_label": "software_bug",
+            "customer_message": "Acabo de actualizar al 11.0.3 y sigue igual el sistema ralentizado. Una mierda todo esto de #iOS11 @AppleSupport quiero el iOS10 ya.",
+            "support_response": "We offer support via Twitter in English. Get help in Spanish here: or join"
+          },
+          {
+            "rank": 4,
+            "score": 0.7917,
+            "pair_id": "1744882",
+            "predicted_label": "software_bug",
+            "customer_message": "Actualizaci\u00f3n de iOS 11.1 sucks. @AppleSupport, Traba Llamadas, Se bloque seguido. Hay que reiniciar para que vuelva a funcionar\ud83d\ude21\ud83d\ude21\ud83d\ude21",
+            "support_response": "We offer support via Twitter in English. Get help in Spanish here: or join"
+          },
+          {
+            "rank": 5,
+            "score": 0.7893,
+            "pair_id": "794094",
+            "predicted_label": "software_bug",
+            "customer_message": "Con iOS 11.02 ya no se est\u00e1n generando las notificaciones de las apps. S\u00f3lo despu\u00e9s de abrirlas manualmente @AppleSupport",
+            "support_response": "We offer support via Twitter in English. Get help in Spanish here: or join"
+          }
+        ]
+      },
+      {
+        "conversation_id": "222974",
+        "text": "just updated to latest update now I can\u2019t access I tunes or download podcast please help",
+        "golden_label": "software_bug",
+        "first_hit_rank": 1,
+        "top1_score": 0.7283,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": true,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.7283,
+            "pair_id": "40559",
+            "predicted_label": "software_bug",
+            "customer_message": "Hey @AppleSupport why can\u2019t I download podcasts from @1922 ? New update is terrible",
+            "support_response": "Thank you for reaching out to us. Which software version are you using? Does this happen when downloading all episodes?"
+          },
+          {
+            "rank": 2,
+            "score": 0.7239,
+            "pair_id": "1809626",
+            "predicted_label": "software_bug",
+            "customer_message": "Why? You have stopped updating podcasts and the iTunes update won't update. Technology and Apple FAIL.",
+            "support_response": "We're here to help with iTunes and Podcasts. Click the DM link and let us know what happens when trying to update these."
+          },
+          {
+            "rank": 3,
+            "score": 0.7197,
+            "pair_id": "1586250",
+            "predicted_label": "software_bug",
+            "customer_message": "since this new update I can\u2019t access podcasts, music, or the App Store. This is ridiculous. Every updated makes it worse.",
+            "support_response": "We'll help out. What happens when you try to access those apps? Are you getting a specific error message?"
+          },
+          {
+            "rank": 4,
+            "score": 0.6873,
+            "pair_id": "2123219",
+            "predicted_label": "account_icloud",
+            "customer_message": "can no longer access ANY of my itunes music after upgrade, 'item not available' HELP!",
+            "support_response": "Thank you. We\u2019ve received your DM and will continue working with you there."
+          },
+          {
+            "rank": 5,
+            "score": 0.6823,
+            "pair_id": "1313970",
+            "predicted_label": "software_bug",
+            "customer_message": "The updated #Podcasts app is hard to navigate and won\u2019t download my episodes?! Urgh!! @115858 @AppleSupport #ios11",
+            "support_response": "We want to help! What model of iOS device are you using? Do you have the most recent version of iOS 11.0.3 downloaded?"
+          }
+        ]
+      },
+      {
+        "conversation_id": "23130",
+        "text": "Dear @115858, you\u2019re really rude for ruining the battery life on our phones with that last update.",
+        "golden_label": "software_bug",
+        "first_hit_rank": 1,
+        "top1_score": 0.822,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": true,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.822,
+            "pair_id": "2590423",
+            "predicted_label": "software_bug",
+            "customer_message": ".@115858 hey wtf. Thanks for the update that ruined my phone's battery. I'm mad. But moreso I'm disappointed.",
+            "support_response": "We can help with your battery. Which iOS version and iPhone model do you have? Send us a DM and let us know."
+          },
+          {
+            "rank": 2,
+            "score": 0.8104,
+            "pair_id": "937480",
+            "predicted_label": "software_bug",
+            "customer_message": "Dear @115858, this new update has made my battery life shit.",
+            "support_response": "We're happy to assist. Which iOS version are you currently running? Go to Settings > General > About for the version."
+          },
+          {
+            "rank": 3,
+            "score": 0.8061,
+            "pair_id": "215363",
+            "predicted_label": "software_bug",
+            "customer_message": "Hey @115858 your new update has killed my phone if it\u2019s battery life. Come on.",
+            "support_response": "We want to help. Which iOS version is your device currently running? You can locate this under Settings > General > About."
+          },
+          {
+            "rank": 4,
+            "score": 0.7891,
+            "pair_id": "1928294",
+            "predicted_label": "software_bug",
+            "customer_message": "It\u2019s amazing how every time you update your phone, the quicker your battery dies. @115858 you suck.",
+            "support_response": "Check out these great tips on maintaining battery health, and DM us if you have any questions:"
+          },
+          {
+            "rank": 5,
+            "score": 0.7888,
+            "pair_id": "2040362",
+            "predicted_label": "software_bug",
+            "customer_message": "Don\u2019t care. I want @115858 to sort out my battery life since the new iOS update.",
+            "support_response": "We want to help with your device's battery. DM us details and include which device you're having the issue on. We'll help there."
+          }
+        ]
+      },
+      {
+        "conversation_id": "2693953",
+        "text": "@116333 Tim, I wrote you an email Through Apple about MacBook Pro I\u2019ve bought but not gotten. I don\u2019t expect this to help but no one at Apple has helped either. The more I call Apple the more frustrating it becomes. #NoCustomerService",
+        "golden_label": "billing_purchases",
+        "first_hit_rank": 0,
+        "top1_score": 0.7315,
+        "top1_predicted_label": "repair_warranty",
+        "top1_agrees": false,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": false,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.7315,
+            "pair_id": "2352147",
+            "predicted_label": "repair_warranty",
+            "customer_message": "Due to your support team you may have lost a previous loyal professional customer. Thanks #angry #premiumproduct? #MacBookPro",
+            "support_response": "We're here for you. Tell us more about your experience in DM:"
+          },
+          {
+            "rank": 2,
+            "score": 0.7241,
+            "pair_id": "1809614",
+            "predicted_label": "support_process",
+            "customer_message": "Just purchased a MacBook Pro @115858 @29645. Need service help. Four hour wait time. Someone needs to disrupt this business.",
+            "support_response": "Congratulations on the purchase of your new MacBook Pro. We may be able to help. Can you please message us in DM?"
+          },
+          {
+            "rank": 3,
+            "score": 0.7227,
+            "pair_id": "1279917",
+            "predicted_label": "repair_warranty",
+            "customer_message": "Dear @115858 my very expensive MacBook Pro has failed for the third time in a year and your customer service has been dreadful.",
+            "support_response": "We\u2019d like to learn more about your experience. Please meet us in DM."
+          },
+          {
+            "rank": 4,
+            "score": 0.7188,
+            "pair_id": "2285603",
+            "predicted_label": "software_bug",
+            "customer_message": "@AppleSupport There are many problems on my MacBook Pro. Customer service unable to help. What should I do ? \ud83d\ude11\ud83d\ude11\ud83d\ude11",
+            "support_response": "We'd like to see how we can help. DM us and we'll continue with you there."
+          },
+          {
+            "rank": 5,
+            "score": 0.6929,
+            "pair_id": "1682426",
+            "predicted_label": "device_hardware",
+            "customer_message": "i need assistance with my MacBook Pro.",
+            "support_response": "We'd be happy to see how we can help. What's going on?"
+          }
+        ]
+      },
+      {
+        "conversation_id": "2773256",
+        "text": "sorry if i lose our streak!!!!! my phone is dumb and reset itself and locked me out of it @AppleSupport EXPLAIN",
+        "golden_label": "software_bug",
+        "first_hit_rank": 4,
+        "top1_score": 0.6292,
+        "top1_predicted_label": "general_complaint",
+        "top1_agrees": false,
+        "majority_vote_label": "general_complaint",
+        "majority_vote_agrees": false,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.6292,
+            "pair_id": "1895718",
+            "predicted_label": "general_complaint",
+            "customer_message": "Hey @115858 @AppleSupport I got my phone like a few months ago & now ya glitching it to the max. Please stop.",
+            "support_response": "We'd like to know more. Please DM us with more details about the challenges you're experiencing."
+          },
+          {
+            "rank": 2,
+            "score": 0.6252,
+            "pair_id": "519196",
+            "predicted_label": "device_hardware",
+            "customer_message": "well, my phone keeps randomly resetting/crashing every 60 seconds so sorry if you need to contact me while i\u2019m out!! @AppleSupport thank you for making a very b",
+            "support_response": "We want to help with your iPhone. To start, can you tell us when this first began and were you using a specific application or feature at that time? Also, what'"
+          },
+          {
+            "rank": 3,
+            "score": 0.6223,
+            "pair_id": "1230354",
+            "predicted_label": "general_complaint",
+            "customer_message": "What a great way to start the day, sent snaps to all my snap streaks close phone and now it wont come back on..... thanks @115858 \ud83d\ude05",
+            "support_response": "We can take a look at that. Is it just that app having the issue?"
+          },
+          {
+            "rank": 4,
+            "score": 0.61,
+            "pair_id": "559186",
+            "predicted_label": "software_bug",
+            "customer_message": "My phone keeps resetting itself as I use it. @AppleSupport explain.",
+            "support_response": "Thanks for reaching out, we'd like to help. If you're currently not running iOS 11.2, we recommend backing up your device and completing the steps here: Let us "
+          },
+          {
+            "rank": 5,
+            "score": 0.6017,
+            "pair_id": "938184",
+            "predicted_label": "connectivity",
+            "customer_message": "Both devices show that the Move goal was achieved, but the Streak (as reported the phone) has stopped for some reason...",
+            "support_response": "Let's continue this conversation in DM. Click the link below to send us a message with your WatchOS version to get started."
+          }
+        ]
+      },
+      {
+        "conversation_id": "2789816",
+        "text": "my phone is moving really slow, there\u2019s a delay in my keyboard as well....just got this phone \ud83e\udd14",
+        "golden_label": "software_bug",
+        "first_hit_rank": 1,
+        "top1_score": 0.7653,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": true,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.7653,
+            "pair_id": "1774489",
+            "predicted_label": "software_bug",
+            "customer_message": "why is my phone lagging so bad? keyboard especially. please hlp.",
+            "support_response": "Thank you for reaching out. DM us your iOS version to get started."
+          },
+          {
+            "rank": 2,
+            "score": 0.7645,
+            "pair_id": "2013176",
+            "predicted_label": "software_bug",
+            "customer_message": "why is my phone so slow rn? \ud83d\ude21",
+            "support_response": "We\u2019d be glad to look into that together. Can you send us a DM confirming what apps you're using when this happens?"
+          },
+          {
+            "rank": 3,
+            "score": 0.7608,
+            "pair_id": "2647380",
+            "predicted_label": "software_bug",
+            "customer_message": "why is my phone moving so slow ?",
+            "support_response": "Let's work together to get your iPhone back up and running smoothly. To clarify, does this happen while using any particular apps? Also, can you tell us the exa"
+          },
+          {
+            "rank": 4,
+            "score": 0.7568,
+            "pair_id": "2029392",
+            "predicted_label": "software_bug",
+            "customer_message": "ever since I updated my phone , it\u2019s been slow af & has a delay when I type. also had to google how to get my \u201ci\u201d button back\ud83d\ude44\ud83e\udd26\ud83c\udffd\u200d\u2640\ufe0f @115858",
+            "support_response": "We'd love to help. What iPhone model and iOS version are you using? Here's how to find it:"
+          },
+          {
+            "rank": 5,
+            "score": 0.7487,
+            "pair_id": "2804358",
+            "predicted_label": "software_bug",
+            "customer_message": "Did the update for my phone cuz my friend said it made hers better & quicker! Welp, not me!! My keyboard is still getting stuck when I\u2019m texting & overall phone",
+            "support_response": "We'd like to assist, and understand how a non-responsive device would cause issues. When did you update? Also, do you show any app updates pending?"
+          }
+        ]
+      },
+      {
+        "conversation_id": "2975695",
+        "text": "Why does my iPad keep asking me to sign into iCloud every 30 seconds but when I put in my NEWLY changed password it tells me it is incorrect!!! WTF...I can't even use it right now!",
+        "golden_label": "account_icloud",
+        "first_hit_rank": 1,
+        "top1_score": 0.7693,
+        "top1_predicted_label": "account_icloud",
+        "top1_agrees": true,
+        "majority_vote_label": "account_icloud",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.7693,
+            "pair_id": "1954028",
+            "predicted_label": "account_icloud",
+            "customer_message": "WTF is wrong with icloud today, I've entered my password over 100 times on 2 different devices and it won't sync. What are you doing!",
+            "support_response": "We'd like to help with any iCloud issues you're experiencing. Please DM us all about it & any steps you've tried so far to proceed."
+          },
+          {
+            "rank": 2,
+            "score": 0.7315,
+            "pair_id": "1020317",
+            "predicted_label": "account_icloud",
+            "customer_message": "wtf is going on? iPad Keeps telling me to reset my Apple ID I've done this 2x in the past month already it's getting #annoying af",
+            "support_response": "Let's see what we can do to help. Reach out to our Account Security team here:"
+          },
+          {
+            "rank": 3,
+            "score": 0.7262,
+            "pair_id": "1802391",
+            "predicted_label": "account_icloud",
+            "customer_message": "had to change password & now having trouble signing into iCloud. Telling me to sign in w/ other device????",
+            "support_response": "We can help you get signed in. Is that asking for a passcode from another device? Let us know in DM to get started."
+          },
+          {
+            "rank": 4,
+            "score": 0.716,
+            "pair_id": "2558660",
+            "predicted_label": "account_icloud",
+            "customer_message": "the amount of time I\u2019m being asked to repeatedly sign in to my Apple ID/iCloud on my iPhone seems really abnormal. I\u2019ve also had some really bad iCloud bugs lat",
+            "support_response": "Let's take a look into this together. Send us a DM with details of the issues you're noting and when they started. We'll meet you there."
+          },
+          {
+            "rank": 5,
+            "score": 0.7087,
+            "pair_id": "97071",
+            "predicted_label": "account_icloud",
+            "customer_message": "Ever since I got my iPhone X I\u2019ve been prompted to sign in to iCloud every day at the same time. I\u2019ve tried completely signing out then back in, changing the pa",
+            "support_response": "We don't want you having to sign in every day! Meet us in DM with some details about what's going on, and which country you're in, and we'll take a look."
+          }
+        ]
+      },
+      {
+        "conversation_id": "34614",
+        "text": "Hi @AppleSupport ! #TimeMachine still not working with #HighSierra update",
+        "golden_label": "software_bug",
+        "first_hit_rank": 1,
+        "top1_score": 0.8519,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": true,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.8519,
+            "pair_id": "2686071",
+            "predicted_label": "software_bug",
+            "customer_message": "Hi! #TimeMachine doesn't work on #HighSierra . Any ideas, please? No one on the support communities knows what to do.",
+            "support_response": "We want to check this out. Send us a DM and we will go from there."
+          },
+          {
+            "rank": 2,
+            "score": 0.7303,
+            "pair_id": "1779197",
+            "predicted_label": "software_bug",
+            "customer_message": "OMG! I can't take it anymore... Since the #HighSierra update my #Mac has been screwed up & I can't work \ud83d\ude21 @AppleSupport #apple",
+            "support_response": "We\u2019d love to help with your Mac. To start, send us a DM with more details on the behavior you\u2019re experiencing."
+          },
+          {
+            "rank": 3,
+            "score": 0.7159,
+            "pair_id": "712958",
+            "predicted_label": "software_bug",
+            "customer_message": "\ud83d\ude11 @AppleSupport listen here. Day 4 of @115769 not working on #HighSierra. I\u2019ve reinstalled, I\u2019ve patched, I\u2019ve checked Read and Write permissions. Like yo.",
+            "support_response": "We\u2019re happy to dive deeper into this with you. Reach us in DM to continue."
+          },
+          {
+            "rank": 4,
+            "score": 0.7014,
+            "pair_id": "426716",
+            "predicted_label": "software_bug",
+            "customer_message": "Hey @AppleSupport please fix this bug #HighSierra #MacOS",
+            "support_response": "We'd love to look into this. Please click here to join us in DM:"
+          },
+          {
+            "rank": 5,
+            "score": 0.6876,
+            "pair_id": "2957142",
+            "predicted_label": "software_bug",
+            "customer_message": "So apparently there\u2019s some issue with @AppleSupport #HighSierra that makes your #mac easier to hack. I\u2019m being told to avoid this update like the plague.",
+            "support_response": "Let's look into this for you. Send us a DM and we can go over some options with you."
+          }
+        ]
+      },
+      {
+        "conversation_id": "519252",
+        "text": "iPhone 6S going to black screen with loading wheel, then to lock screen on a loop. Phone unusable. Need a fix ASAP",
+        "golden_label": "software_bug",
+        "first_hit_rank": 1,
+        "top1_score": 0.9679,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": true,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.9679,
+            "pair_id": "542389",
+            "predicted_label": "software_bug",
+            "customer_message": "iPhone 6S & iPhone 7 going to black screen with loading wheel, then to lock screen on a loop. Phone unusable. Need a fix",
+            "support_response": "We'd like to help. An update has been released that addresses this issue. If you haven't already, back up your iPhone and follow the steps here: DM us if you ha"
+          },
+          {
+            "rank": 2,
+            "score": 0.9275,
+            "pair_id": "523850",
+            "predicted_label": "device_hardware",
+            "customer_message": "iPhone 6S & iPhone 7 going to black screen with loading wheel, then to lock screen on a loop. Phone unusable. Need a fix ASAP. #SouthAfrica #Vodacom",
+            "support_response": "We know how important it is to have an iPhone that works. We'd like to help. Send us a DM."
+          },
+          {
+            "rank": 3,
+            "score": 0.8325,
+            "pair_id": "539996",
+            "predicted_label": "device_hardware",
+            "customer_message": "hi, Im having trouble with my iPhone 6s. a black screen with spinning wheel appears every 10 seconds. I did full reset",
+            "support_response": "We understand needing your iPhone to work properly, and we want to help. Take a look here for the steps that will help: If you're still having trouble, please l"
+          },
+          {
+            "rank": 4,
+            "score": 0.7882,
+            "pair_id": "514815",
+            "predicted_label": "software_bug",
+            "customer_message": "I'm one of the many people with the black screen>spinning wheel>lockscreen issue ( I have a 6 running the latest iOS. Provide a fix ASAP please as I'm travellin",
+            "support_response": "Thanks for reaching out. We know how important it is to be able to depend on your iPhone, especially when traveling. Reach out to us in DM and we\u2019ll help."
+          },
+          {
+            "rank": 5,
+            "score": 0.74,
+            "pair_id": "554795",
+            "predicted_label": "device_hardware",
+            "customer_message": "please help. My iPhone 6s keeps going to black screen then log on screen approx every 1.5minutws. I have forced reboot and done a reset no change. What else can",
+            "support_response": "We can definitely help with that. To start, we'd like to ask that you give the steps in this article a try: Also, please be sure to backup your iPhone before do"
+          }
+        ]
+      },
+      {
+        "conversation_id": "718093",
+        "text": "your updates for #iPhone bite. Can't even connect to WiFi at @32366 #ditchiPhoneGoAndroid #iPhone7Horrible #sad #lotsofissues",
+        "golden_label": "connectivity",
+        "first_hit_rank": 0,
+        "top1_score": 0.7476,
+        "top1_predicted_label": "general_complaint",
+        "top1_agrees": false,
+        "majority_vote_label": "general_complaint",
+        "majority_vote_agrees": false,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.7476,
+            "pair_id": "1001177",
+            "predicted_label": "general_complaint",
+            "customer_message": "So the new #ios update has not been pleasant for me, FFS! ugh!!!! @115858 #iphone7plus #iphone",
+            "support_response": "We've got your back! What kind of issues are you having with the update on your iPhone?"
+          },
+          {
+            "rank": 2,
+            "score": 0.7206,
+            "pair_id": "2803479",
+            "predicted_label": "general_complaint",
+            "customer_message": "your last update really screwed my phone up! #pissed #iPhone",
+            "support_response": "We certainly want your iPhone to work as expected after an update. Give us some more details on what's happening, and we'd be happy to help."
+          },
+          {
+            "rank": 3,
+            "score": 0.7196,
+            "pair_id": "1950955",
+            "predicted_label": "general_complaint",
+            "customer_message": "#ios11update ruined my phone and patience. #iphone7 @115858",
+            "support_response": "Let us know all about any issues you're seeing. We'd love to help sort it out. Please DM us to proceed."
+          },
+          {
+            "rank": 4,
+            "score": 0.7121,
+            "pair_id": "865922",
+            "predicted_label": "software_bug",
+            "customer_message": "@115858 please fix my iPhone7 this is beyond a joke! Cant hear anyone when they call me now! Poor update on #iOS11 #Apple #iPhone losing confidence!!",
+            "support_response": "We're here to help. Take a look at this article and let us know if these troubleshooting steps help:"
+          },
+          {
+            "rank": 5,
+            "score": 0.7117,
+            "pair_id": "1808476",
+            "predicted_label": "software_bug",
+            "customer_message": "worst update ever! Phone freezes, audio goes off whenever, and calls dropped. #iphone7issues",
+            "support_response": "Certainly not the behavior we want you to experience. We want to help. Could you DM us which iOS version you're using?"
+          }
+        ]
+      },
+      {
+        "conversation_id": "925370",
+        "text": "Ever since I updated my phone, it\u2019s been sooo slow and keeps crashing! @AppleSupport",
+        "golden_label": "software_bug",
+        "first_hit_rank": 1,
+        "top1_score": 0.884,
+        "top1_predicted_label": "software_bug",
+        "top1_agrees": true,
+        "majority_vote_label": "software_bug",
+        "majority_vote_agrees": true,
+        "retrieved": [
+          {
+            "rank": 1,
+            "score": 0.884,
+            "pair_id": "1973823",
+            "predicted_label": "software_bug",
+            "customer_message": "@AppleSupport the last few updates have messed my phone up. It\u2019s constantly freezing and crashing. Sort it outttttt \ud83d\ude12\ud83d\ude12\ud83d\ude12",
+            "support_response": "Thanks for reaching out to us. We are always happy to help. Send us a DM so we can look into this with you together."
+          },
+          {
+            "rank": 2,
+            "score": 0.8634,
+            "pair_id": "2585759",
+            "predicted_label": "software_bug",
+            "customer_message": "So sick of my phone crashing constantly since the new update. Sort it out \ud83d\ude24\ud83d\ude24 @AppleSupport",
+            "support_response": "This isn't expected behavior. Let's figure this out. Send us a DM with more details on what's happening, and your iOS version"
+          },
+          {
+            "rank": 3,
+            "score": 0.855,
+            "pair_id": "365697",
+            "predicted_label": "software_bug",
+            "customer_message": "Hey @AppleSupport thanks for forcing me to update my phone then have it crash every 6 seconds \ud83d\udc4d\ud83c\udffb",
+            "support_response": "Thank you for reaching out. DM us what iOS version you're currently on and we'll go from there."
+          },
+          {
+            "rank": 4,
+            "score": 0.8517,
+            "pair_id": "2372213",
+            "predicted_label": "software_bug",
+            "customer_message": "Ever since I\u2019ve updated my phone all my apps keep crashing ALL the time @AppleSupport \ud83d\ude20",
+            "support_response": "We can help you. Try restarting your device as our article explains, and DM us if this continues:"
+          },
+          {
+            "rank": 5,
+            "score": 0.8493,
+            "pair_id": "1497023",
+            "predicted_label": "software_bug",
+            "customer_message": "ever since I updated my phone it freezes multiple times a day and it runs soooooo slow now @AppleSupport THIS SHIT IS WHACK!!!",
+            "support_response": "We'd like to look into this. DM us and tell us the exact version of iOS you're running."
+          }
+        ]
+      }
+    ]
+  },
+  "threshold_preview_test": {
+    "threshold": 0.65,
+    "note": "Share of TEST openers whose top-1 cosine is at least the configured RETRIEVAL_THRESHOLD, and label-agreement recall among them \u2014 the grounding gate Phase 5/6 will consume. n=29, indicative only.",
+    "share_top1_above": 0.7931,
+    "n_above": 23,
+    "recall_at_5_when_above": 0.8261
+  }
+}

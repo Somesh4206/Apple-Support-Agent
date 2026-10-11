@@ -7,10 +7,11 @@ retrieves historically similar support cases, generates responses **grounded
 in that historical evidence**, and decides safely between auto-handling and
 escalation — with quantitative evaluation of every component.
 
-> **Current status: Phases 1–3 complete — data foundation + intent
-> classification foundation + embedding classifier (measured).** The
-> assignment mandates a phased build; Phases 4–9 are scoped but deliberately
-> **not implemented** until each prior phase is working and tested.
+> **Current status: Phases 1–9 complete — data foundation + taxonomy &
+> baselines + embedding classifier + FAISS retrieval + grounded generation
+> + escalation policy + unified agent + Streamlit app + final report, every
+> phase measured.** The assignment's phased build is finished: each phase
+> was implemented only after the prior one was working and tested.
 
 ---
 
@@ -29,7 +30,7 @@ support practice.
 Given a customer support message, the system must (1) classify the issue,
 (2) retrieve similar historical AppleSupport cases, (3) generate a reply
 grounded in them, (4) auto-handle or escalate, and (5) measure all of the
-above. Phase 1 delivers the data layer this depends on.
+above. All nine phases are delivered; each layer below is measured.
 
 ## Architecture (Phase 1 slice)
 
@@ -54,9 +55,10 @@ notebooks/01_data_exploration.ipynb (executed, cross-checked)
 web dashboard (Next.js page + /api/phase1/status — this repo's root app)
 ```
 
-Phases 4–9 (not yet built): FAISS retrieval
-(Recall@K) → grounded generation → escalation policy (false-auto rate) →
-unified agent → Streamlit app → final report.
+Phases 6–9 (built): escalation policy
+(false-auto 0/10 measured against human ground truth) → unified agent
+(policy gates the LLM; 48.3% of test calls skip it) → Streamlit app →
+final report.
 
 ## Dataset
 
@@ -94,6 +96,25 @@ python scripts/train_baselines.py            # metrics -> evaluation/results/
 
 # 6) Phase 3: embedding classifier (installs sentence-transformers/torch)
 python scripts/train_embedding_classifier.py  # metrics + reusable model heads
+
+# 7) Phase 4: FAISS retrieval index + Recall@K (installs faiss-cpu)
+python scripts/build_retrieval_index.py      # index + evaluation + live-service corpus
+
+# 8) Phase 5: grounded reply generation + honest reply scoring
+#    (needs the live service running — see the next step)
+python scripts/evaluate_generation.py         # 29 grounded replies -> results/
+
+# 9) Phase 6: escalation policy vs human ground truth (offline, deterministic)
+python scripts/evaluate_escalation.py         # false-auto / precision / recall -> results/
+
+# 10) Phase 7: unified agent end-to-end (needs the live service)
+python scripts/evaluate_agent.py              # 29 live agent calls + consistency -> results/
+
+# 11) Phase 8: Streamlit app (needs the live service on :3030)
+streamlit run streamlit_app.py --server.port 8501 --server.headless true
+
+# 12) Optional: the live retrieval + generation + agent service powering the demos
+bun run dev          # inside mini-services/retrieval-service (port 3030)
 ```
 
 Environment variables (`.env`) — full list in `.env.example`:
@@ -101,8 +122,10 @@ Environment variables (`.env`) — full list in `.env.example`:
 `RANDOM_SEED`, `CHUNK_SIZE`, `CLOSURE_MAX_PASSES`; `EMBEDDING_MODEL`
 (consumed since Phase 3, default `sentence-transformers/all-MiniLM-L6-v2`);
 Phase 4+ thresholds (`INTENT_CONFIDENCE_THRESHOLD=0.60` — already measured
-as a preview in Phase 3, `RETRIEVAL_THRESHOLD=0.65`, `TOP_K=5`, `LLM_MODEL`,
-`LLM_API_KEY`) are parsed but not consumed until the phase that needs them.
+as a preview in Phase 3, `RETRIEVAL_THRESHOLD=0.65`, `TOP_K=5`) are consumed
+by the Phase 5 generation service (parsed from this same `.env`);
+`LLM_MODEL`/`LLM_API_KEY` remain reserved and unused — generation goes
+through the backend-only z-ai-web-dev-sdk.
 **Never commit `.env`.**
 
 ## Example output (real run)
@@ -129,7 +152,7 @@ A reconstructed pair (from `conversation_pairs.csv`):
 |---|---|---|
 | 14838 | "iOS 11 is draining the battery on my iPhone 7 twice as fast as iOS 10. Help!" | "We'd like to gather some more information for better troubleshooting. Can you DM us the country you are locate…" |
 
-## Metrics (Phases 1–3 — actually measured)
+## Metrics (Phases 1–7 — actually measured)
 
 | metric | value |
 |---|---|
@@ -147,11 +170,32 @@ A reconstructed pair (from `conversation_pairs.csv`):
 | **MiniLM + LogReg head (Phase 3, test)** | accuracy 0.655 · macro-F1 **0.303** · weighted-F1 **0.659** |
 | **MiniLM + centroids (Phase 3, test)** | accuracy 0.552 · macro-F1 **0.389** (zero hyperparams) |
 | confidence (Phase 3, test) | 0.780 mean on correct vs 0.508 on wrong |
-| structural validations | 7/7 PASS |
+| **retrieval index (Phase 4)** | 105,871 pairs (106,137 − 266 golden-conversation pairs) · exact cosine FAISS |
+| **Recall@1/3/5 (Phase 4, golden test)** | **0.586 / 0.655 / 0.759** · MRR@5 0.651 |
+| retrieval majority-vote (Phase 4, test) | accuracy **0.690** — above the Phase 3 head |
+| retrieval threshold 0.65 (Phase 4, test) | 79.3% of openers above · Recall@5 0.826 among them |
+| **grounded generations (Phase 5, test)** | **29/29 succeeded** · zero unsupported specifics · 100% safety framing |
+| grounding token overlap (Phase 5, test) | mean **0.474** (median 0.500) — lexical proxy, caveats recorded |
+| escalation consistency (Phase 5, test) | 13/13 gated replies ask a clarifying question or redirect to DMs |
+| reply style (Phase 5, test) | 127.0 chars / 23.4 words mean (corpus: 100.8 / 19.1) · all ≤ 280 chars |
+| generation latency (Phase 5) | 599.9 ms mean LLM per reply (live service) |
+| **escalation false-auto rate (Phase 6, test)** | **0/10** · exact CI95 [0.000, 0.309] |
+| escalation precision / recall / F1 (Phase 6) | 0.7143 / **1.0000** / 0.8333 |
+| over-escalation (Phase 6, honest cost) | 4/19 = 0.2105 — all four are low-confidence G1 fires, documented |
+| **agent policy consistency (Phase 7)** | **29/29** TypeScript service mirror ≡ Python policy |
+| agent decisions (Phase 7, live) | 15 auto / 14 escalate · false-auto 0 · TP 10 / FP 4 / TN 15 |
+| **agent LLM-call savings (Phase 7)** | **48.3%** of test calls skip the LLM entirely |
+| agent latency (Phase 7) | auto 734.9 ms vs escalate **28.1 ms** end-to-end |
+| Streamlit app (Phase 8) | AppTest 0 exceptions · both decision paths verified live |
+| structural validations | 7/7 PASS · self-retrieval check score 1.0000 |
 
-Recall@K / escalation metrics **do not exist yet** — they are Phase 4–6
-deliverables and will be reported only once measured. Full Phase 3 detail:
-`evaluation/results/embedding_results.json` and `reports/report.md` §7.
+Full Phase 3 detail: `evaluation/results/embedding_results.json`; Phase 4
+detail: `evaluation/results/retrieval_results.json`; Phase 5 detail:
+`evaluation/results/generation_results.json`; Phase 6 detail:
+`evaluation/results/escalation_results.json` (+ ground truth in
+`evaluation/escalation_labels.json`); Phase 7 detail:
+`evaluation/results/agent_results.json`; all summarised in
+`reports/report.md` §7–§11.
 
 ## Repository layout
 
@@ -159,23 +203,34 @@ deliverables and will be reported only once measured. Full Phase 3 detail:
 hiver-support-agent/
 ├── data/                  # raw (gitignored) + processed outputs
 ├── notebooks/             # 01_data_exploration.ipynb (executed)
-├── scripts/               # find_author_ids · prepare_data · run_eda · build_golden_set · train_baselines · train_embedding_classifier · make_synthetic_sample
+├── scripts/               # find_author_ids · prepare_data · run_eda · build_golden_set · train_baselines · train_embedding_classifier · build_retrieval_index · evaluate_generation · evaluate_escalation · evaluate_agent · make_synthetic_sample
 ├── src/
 │   ├── config.py          # env-driven settings, no magic constants
 │   ├── data/              # load · preprocessing · conversations
-│   └── intents/           # taxonomy · baselines (Phase 2) · embeddings · embedding_classifier (Phase 3)
-├── evaluation/            # Phase 2–3: golden set, labels, splits, results
-├── models/                # Phase 3: trained heads + embedding cache (gitignored)
-├── reports/               # report.md · decision_log.md
-├── requirements.txt       # only packages actually used (Phases 1–3)
+│   ├── intents/           # taxonomy · baselines (Phase 2) · embeddings · embedding_classifier (Phase 3)
+│   ├── retrieval/         # faiss_index (Phase 4: build/save/load/search, exact cosine)
+│   └── escalation/        # policy (Phase 6: five explainable rules, runtime signals only)
+├── evaluation/            # Phase 2–7: golden set, labels, splits, escalation labels, results
+├── models/                # Phase 3–4 artifacts (gitignored): heads, embedding cache, faiss index, live-service corpus
+├── reports/               # report.md · decision_log.md (D1–D28)
+├── streamlit_app.py       # Phase 8 UI (thin client over the live agent)
+├── requirements.txt       # only packages actually used (Phases 1–8)
 ├── .env.example           # configuration template
 └── .gitignore             # keeps the 516 MB corpus out of git
+
+# sibling (dashboard + live retrieval/generation/agent, outside this repo):
+../src/components/phase{5,6,7,8,9}/  # dashboard panels (live generation + agent consoles)
+../mini-services/retrieval-service/  # Bun :3030 + Python worker + z-ai LLM — search, grounded drafts, unified agent
 ```
 
 ## Limitations & safety
 
 * Historical evidence ≠ current policy (disclaimer above) — enforced in every
-  user-facing surface.
+  user-facing surface and in the Phase 5 generation prompt itself (six
+  non-negotiable safety rules; compliance measured, not assumed).
+* Phase 5 reply-quality metrics are transparent lexical heuristics with
+  recorded caveats (token-overlap grounding is a proxy, not entailment; LLM
+  outputs are nondeterministic; no human annotation was performed).
 * Provisional topics are transparent keyword heuristics feeding the Phase 2
   taxonomy; they are not a classifier.
 * Ultra-deep threads are truncated by the configurable closure pass budget

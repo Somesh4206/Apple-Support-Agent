@@ -311,13 +311,238 @@ the later policy design cannot quietly ignore it.
 
 ---
 
-## Planned decisions (Phases 4+)
+## D19. Recall@K relevance = Phase 3 head label agreement *(Phase 4)*
 
-The following are recorded as *intent*, not yet implemented: FAISS for
-local vector retrieval over the 106,137 pairs with golden conversations
-excluded via the isolation manifest, Recall@1/3/5 evaluation (Phase 4);
-LLM generation grounded in retrieved pairs with assignment §16 safety
-rules (Phase 5); rule-based, explainable escalation consuming the Phase 3
-confidence surface plus retrieval scores and security signals
-(INTENT_CONFIDENCE_THRESHOLD / RETRIEVAL_THRESHOLD from configuration),
-false-auto rate as the primary safety metric (Phase 6).
+**Decision:** The retrieval corpus is unlabeled, so a relevance function
+had to be *chosen* and documented rather than assumed. Every corpus pair
+is labelled by the Phase 3 `logreg_head` (test accuracy 0.6552, macro-F1
+0.3032) over the same embeddings the index uses; a hit at rank ≤ k is a
+retrieved pair whose predicted label equals the opener's golden label.
+The proxy's noise is reported as part of the measurement (the head's own
+metrics are restated wherever the relevance numbers appear), and five
+qualitative examples (3 hits + 2 no-hits) let a reader judge semantic
+similarity directly, unmediated by the classifier.
+
+**Why:** The alternatives were worse or circular: same-conversation
+retrieval is impossible by design (golden conversations are excluded —
+that is the point of the isolation manifest), human-labeling 105,871
+pairs is out of scope, and keyword overlap was already measured in Phase
+2 as a weak intent signal. The Phase 3 head is the best measured
+classifier available, uses the same encoder (so relevance shares the
+retrieval geometry), and — decisively — its errors are *inspectable*
+through the Phase 3 error analysis. A future calibration pass
+(human-label a small retrieval sample) is recorded as the standing
+improvement lever in report §16.
+
+---
+
+## D20. Exact flat index, not approximate *(Phase 4)*
+
+**Decision:** `faiss.IndexFlatIP` over L2-normalised 384-d vectors —
+exact cosine similarity, 105,871 × 384 float32 (~155 MB), brute-force
+search — with a saved id-mapping sidecar and a structural
+self-retrieval check (a corpus vector must return itself at rank 1 with
+score ≥ 0.999; measured 1.0000). The corpus embedding is chunked into
+5k-text cache files so an interrupted 20-minute CPU encode resumes
+instead of restarting.
+
+**Why:** At ~106k vectors, exact search is sub-millisecond per query on
+CPU — IVF/HNSW would add nprobe/cluster knobs and recall loss for zero
+measurable latency win, and exactness keeps Recall@K reproducible (no
+clustering seed to document). The chunk cache exists because the first
+attempt (single 106k-text embed, batch 256) spiked memory enough to
+trigger a kernel OOM against the resident dev server on a 4 GB box;
+batch 64 in 5k chunks caps the spike under ~1 GB while keeping the
+determinism guarantees (cache key = model id + texts hash; batch size
+never changes the values).
+
+---
+
+## D21. Live retrieval behind a lazy-loading mini-service *(Phase 4)*
+
+**Decision:** The dashboard's "try it" demo talks to a real HTTP service
+(Bun on port 3030 wrapping a persistent Python worker over stdio
+JSON-lines) that lazily loads the encoder + FAISS index + corpus +
+intent head on the first request (~15 s, one-time) and then answers
+searches in ~80 ms. The worker also reports the query's predicted intent
+(Phase 3 head) alongside each retrieved pair's precomputed predicted
+intent. The frontend reaches it only through the sandbox gateway as a
+relative URL with `?XTransformPort=3030` — never an absolute
+localhost URL.
+
+**Why:** A live index search is the first genuinely interactive ML
+feature the dashboard has had, and it demonstrates the actual artifact
+(the same 105,871-pair index the Recall@K numbers were measured on)
+rather than a canned screenshot of it. Lazy loading keeps the ~830 MB
+resident cost off the box until someone actually uses the demo — the
+memory budget is shared with the Next.js dev server, which this round's
+kernel OOM history makes a first-class constraint. The unsolicited
+`event: loading/ready` protocol lets the UI show an honest "warming up"
+state instead of a frozen spinner.
+
+---
+
+## D22. Generation as an extension of the retrieval service *(Phase 5)*
+
+**Decision:** Grounded generation lives in the *same* mini-service as
+retrieval (Bun :3030) as `POST /api/phase5/generate`, not in a Next.js API
+route. One request does the whole Phase 5 pipeline: embed → FAISS top-K →
+Phase 3 head intent/confidence → grounded prompt → z-ai-web-dev-sdk LLM
+(backend-only; the SDK is never imported client-side) → per-reply heuristic
+scoring. Thresholds (TOP_K, INTENT_CONFIDENCE_THRESHOLD,
+RETRIEVAL_THRESHOLD) are parsed from the project `.env` so the service and
+`src/config.py` share one source of truth. The offline evaluation
+(`scripts/evaluate_generation.py`) is a thin HTTP client over this endpoint,
+which makes the live dashboard demo and the recorded metrics run the exact
+same code path.
+
+**Why:** The service already owns the ~830 MB resident artifacts and the
+lazy-load lifecycle; a separate generation service or a Next.js route would
+either duplicate that memory or push it into the memory-fragile dev-server
+process. One code path for demo + evaluation removes drift between what the
+dashboard shows and what the report claims. The SDK import under Bun was
+verified before wiring (glm-4-plus confirmed from the completion object,
+not hard-coded).
+
+---
+
+## D23. Six safety rules in the prompt; one prompt iteration *(Phase 5)*
+
+**Decision:** The system prompt encodes assignment §16 as six
+non-negotiable rules: (1) evidence-only facts — no invented prices, dates,
+versions, policies, links; (2) an explicit historical grounding phrase
+("Based on similar cases we've seen, …") that never implies current policy;
+(3) on weak evidence, ask ONE clarifying question instead of guessing;
+(4) for account/payment/security, redirect to DMs and never solicit personal
+details in public; (5) evidence-matched warm/concise style, no hashtags or
+emoji; (6) ≤280 characters. The user prompt carries the Phase 3 intent +
+confidence (with runner-up) and an explicit evidence-quality line (top-1
+cosine vs RETRIEVAL_THRESHOLD, phrased "strong/weak grounding"), so the
+generation genuinely consumes the Phase 3/4 signals. Rule 2 was strengthened
+after the first (unrecorded) evaluation run showed ~45% framing compliance
+("make it clear…" → "include a brief grounding phrase…"); the recorded run
+then measured 100% compliance. The prompt iteration is disclosed rather
+than hidden — the recorded artifacts describe the final prompt only.
+
+**Why:** §16 compliance that is merely *hoped for* is not measurable; rules
+phrased as required output surface (a phrase family the scorer can regex)
+make the safety framing both enforced and checkable. Feeding the
+intent/confidence and evidence-quality into the prompt (not just recording
+them) means the LLM itself degrades gracefully on weak evidence — the
+behaviour the Phase 6 policy will gate.
+
+---
+
+## D24. Honest heuristic reply scoring; no LLM-as-judge *(Phase 5)*
+
+**Decision:** Reply quality is measured only with transparent lexical
+heuristics, all implemented once in the service and reused by the
+evaluation: grounding overlap (share of stopword-filtered reply tokens
+present in the top-K evidence pairs), unsupported specifics (numbers /
+version-like tokens / prices / URLs absent from the evidence), safety
+framing compliance, clarifying-question / DM-redirect presence,
+personal-data *solicitation* (advising a password change is explicitly not
+flagged — only asking for / repeating private details is), reply length vs
+corpus style, and latency. Escalation consistency previews Phase 6: among
+replies whose gates fail, the reply must ask a clarifying question or
+redirect to DMs. Every metric ships with its definition string and five
+recorded caveats (lexical proxy ≠ entailment; nondeterministic outputs; no
+human annotation; specifics check limited to numbers/URLs; policy not yet
+implemented). No LLM grades its own output.
+
+**Why:** An LLM-as-judge loop would score the replies with the same model
+that wrote them — circular, uncalibrated and opaque. Lexical heuristics are
+reproducible, cheap enough to run per live demo request, and their failure
+modes are statable in one sentence each. Recording the caveats *in the
+artifact* (not just the report) keeps every future consumer honest.
+
+---
+
+*The former "Planned decisions (Phases 6+)" placeholder was executed as
+D25–D28 above.*
+
+---
+
+## D25 — Phase 6 escalation policy: rules, the account_icloud refinement, and no tuning on test labels
+
+**Decision:** The escalation policy is five explainable rules evaluated on
+runtime signals only (predicted intent, intent confidence, top-1 retrieval
+score, message text): E2 private-state domains (billing_purchases,
+repair_warranty, security_privacy, support_process — the Phase 2
+`typically_escalated` hints — **plus account_icloud**), E3 unmatched intent
+(`other`), E4 sensitive content (payment/order language, email, phone,
+card-like number), G1 confidence < 0.60, G2 top-1 < 0.65. Any firing rule ⇒
+escalate. The numeric gates reuse the thresholds fixed since Phases 3/4.
+
+**Why:** (1) The taxonomy hints were designed in Phase 2 as routing priors —
+consuming them as policy rules closes the loop between design and execution.
+(2) `account_icloud` deviates from its Phase 2 hint ("recovery steps are
+well covered") deliberately: the golden test set contains a sign-in loop
+rejecting a *newly changed* password that passes both numeric gates
+(confidence 0.825, top-1 0.769) — exactly the takeover-adjiguous case where
+public advice can compound a lockout. Public generic advice in
+private-state domains has asymmetric downside; a human minute is cheaper.
+(3) Safety asymmetry: a false auto publishes an unreviewed public reply; a
+false escalation costs one human review. The policy is therefore designed
+to over-fire, and the cost is measured (4/19) rather than hidden.
+
+**Rejected:** learned escalation (a classifier on gate features) — n=29
+labels make any learned policy unvalidatable and unexplainable;
+threshold tuning on the test labels — that is the definition of leakage.
+
+---
+
+## D26 — Phase 6 ground truth: single-annotator labels with fixed criteria, recorded before evaluation
+
+**Decision:** The 29 golden TEST openers were labelled escalate/auto_ok by
+the author against four fixed written criteria (money/account stakes;
+safety/off-topic; ambiguity; unusable device/data at stake), recorded in
+`evaluation/escalation_labels.json` with per-message rationale, *before*
+running the policy on the set: 10 escalate / 19 auto_ok.
+
+**Why:** Escalation quality needs ground truth, and no external annotator
+exists for this assignment. The honest version of a single annotator is:
+written criteria fixed in advance, labels + rationale committed next to the
+code, the limitation stated (no inter-rater agreement), and exact
+Clopper-Pearson intervals attached to every rate so n=29 speaks for
+itself. Labels were made on message content; the predicted
+intent/confidence were visible to the annotator but the criteria are
+content-based, and no label was changed after the policy's decisions were
+seen.
+
+---
+
+## D27 — Phase 7 agent: the policy gates the LLM, and the TypeScript mirror is asserted, not trusted
+
+**Decision:** The unified agent evaluates the Phase 6 policy *before* any
+LLM call. Auto-handle ⇒ Phase 5 grounded generation, reply ready to send.
+Escalate ⇒ no LLM call at all; the human receives a structured handoff
+(fired rules with observed values, top-3 evidence, a deterministic
+acknowledgment template labelled "never sent automatically"). The service
+implements the policy in TypeScript (same rules, same shared-`.env`
+thresholds), and `scripts/evaluate_agent.py` **asserts 29/29 decision + rule
+agreement** with `src/escalation/policy.py` on identical signals.
+
+**Why:** Dual implementations drift silently; a consistency assertion turns
+drift into a loud test failure. Skipping the LLM on escalation is the
+policy made architectural: the unsafe path is not "a careful prompt" but
+0 ms and 0 tokens — measured as 48.3% of test calls skipped. The suggested
+acknowledgment is a fixed template, not an LLM draft, so nothing generated
+is ever published on the escalate path.
+
+---
+
+## D28 — Phase 8 Streamlit app: a thin client, not a second pipeline
+
+**Decision:** `streamlit_app.py` contains no ML and no LLM code — it is a
+UI over the same live `/api/phase7/agent` endpoint the dashboard uses,
+verified with Streamlit's AppTest (zero exceptions, both decision paths)
+plus live browser screenshots.
+
+**Why:** The assignment asks for a Streamlit app; duplicating the
+encoder/index/head/generation stack inside it would double resident memory
+(~600 MB), fork the scoring logic, and create a second thing to keep
+consistent. A thin client extends the Phase 5 one-code-path decision (D22):
+the Streamlit app, the web dashboard and the offline evaluations all
+observe the same agent. Its limitation is stated too: it needs the
+retrieval service running on :3030.

@@ -1,6 +1,6 @@
 {
   "phase": 3,
-  "generated_at": "2026-09-11 08:15:10 UTC",
+  "generated_at": "2026-10-11 07:11:19 UTC",
   "random_seed": 42,
   "embedding_model": {
     "id": "sentence-transformers/all-MiniLM-L6-v2",
@@ -8,7 +8,7 @@
     "parameters": "22.3M (frozen; only the head is trained)",
     "trained_on": "external public corpus (not this dataset) \u2014 no golden leakage",
     "runtime": "CPU, float32",
-    "embedding_seconds_for_golden_set": 17.16
+    "embedding_seconds_for_golden_set": 25.33
   },
   "protocol": "Frozen public encoder (no fine-tuning); both heads fit on the TRAIN split only; logreg_head hyperparameters selected by 5-fold stratified CV on train with criterion mean(accuracy, macro-F1) (identical to Phase 2 so the comparison isolates the feature representation); VAL is a held-out sanity check; TEST untouched until final evaluation.",
   "heads": {

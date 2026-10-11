@@ -1,0 +1,52 @@
+{
+  "phase": 6,
+  "artifact": "escalation ground-truth labels for the 29 golden TEST openers",
+  "purpose": "Human judgement of whether each message may be auto-handled (a grounded draft reply published without human review) or must be escalated to a human agent. Consumed by scripts/evaluate_escalation.py to measure the Phase 6 policy (precision / recall / F1 / false-auto rate).",
+  "labeling_protocol": {
+    "annotator": "assignment author (single pass, before running the policy on this set)",
+    "input": "message text only; golden intent labels were visible but NOT used as escalation labels",
+    "criteria": [
+      "ESCALATE (money/account stakes): the issue involves purchases, refunds, payments, order delivery, warranty/repair pricing, or Apple ID/iCloud account access — wrong public advice could cause financial or account harm, or resolution needs private details.",
+      "ESCALATE (safety/off-topic): the message is abusive, violent, off-topic, or does not describe a technical issue — there is no groundable problem, and a casual auto-reply is a brand risk.",
+      "ESCALATE (ambiguity): the message is too vague or mixes many topics to safely answer with ONE public reply.",
+      "ESCALATE (unusable device / data at stake): the device is bricked/unusable or real-world data (tickets, work access) is at risk — wrong troubleshooting steps could destroy data; needs priority human help.",
+      "AUTO_OK: a single, clear technical software/hardware issue with standard troubleshooting evidence available — a grounded draft (with DM-redirect where the evidence style demands it) is safe to publish."
+    ],
+    "honesty_notes": [
+      "Labels are a single human's judgement with fixed criteria, recorded once; no inter-annotator agreement exists (n=1 annotator).",
+      "The policy was designed from the rule semantics (taxonomy hints, Phase 3/4 threshold previews), then evaluated once on this labelled set — the numeric gates were NOT tuned on these labels.",
+      "n=29 is small: every rate below carries wide confidence intervals (reported by the evaluation script)."
+    ]
+  },
+  "labels": {
+    "01": {"label": "auto_ok", "rationale": "clear single software issue (App Store not working); standard troubleshooting evidence exists"},
+    "02": {"label": "auto_ok", "rationale": "clear software bug report (iOS 11.1 calendar); evidence-grounded reply is safe"},
+    "03": {"label": "auto_ok", "rationale": "clear software issue (epub/ibooks downloads)"},
+    "04": {"label": "auto_ok", "rationale": "clear software issue (Mail won't open after HighSierra upgrade)"},
+    "05": {"label": "escalate", "rationale": "repair PRICE QUOTE request — money stakes; prices must not be quoted from 2017 historical evidence and vary by region/plan (criteria: money/account stakes)"},
+    "06": {"label": "escalate", "rationale": "violent/off-topic content, no technical issue at all (criteria: safety/off-topic); a casual public auto-reply is a brand risk"},
+    "07": {"label": "auto_ok", "rationale": "clear software bug (I autocorrect), evidence covers it"},
+    "08": {"label": "auto_ok", "rationale": "bug complaint affecting some users; evidence-grounded troubleshooting reply is safe"},
+    "09": {"label": "auto_ok", "rationale": "vulgar but real hardware complaint (iPhone 7+ broke); safe reply asks what's going on / DM"},
+    "10": {"label": "escalate", "rationale": "off-topic rambling (follower thank-yous) with a vague complaint mixed in — no single groundable issue (criteria: ambiguity/off-topic)"},
+    "11": {"label": "auto_ok", "rationale": "clear software bug (I autocorrect)"},
+    "12": {"label": "auto_ok", "rationale": "clear software issue (iCal deleting/doubling events)"},
+    "13": {"label": "auto_ok", "rationale": "clear software issue (battery drain after update); well-covered evidence"},
+    "14": {"label": "escalate", "rationale": "iPhone UNUSABLE after upgrade with real-world stakes (travel ticket to work, all communication) (criteria: unusable device / data at stake)"},
+    "15": {"label": "auto_ok", "rationale": "clear software bug (autocorrect I); strongest evidence case"},
+    "16": {"label": "auto_ok", "rationale": "battery dying at 90% — hardware-ish complaint, evidence covers battery diagnostics"},
+    "17": {"label": "escalate", "rationale": "reports a typo on Apple's own page — not a customer-device issue; a public auto-reply cannot resolve it and routing needs a human (criteria: off-topic/ambiguity)"},
+    "18": {"label": "escalate", "rationale": "asks for a support PHONE NUMBER — a specific fact that must not be quoted from stale historical evidence; support-process routing needs a human (criteria: money/account stakes analog: fact-risk + process routing)"},
+    "19": {"label": "auto_ok", "rationale": "clear software issue (update slowed phone, Spanish); evidence covers it"},
+    "20": {"label": "auto_ok", "rationale": "clear software issue (no iTunes access / podcast downloads after update)"},
+    "21": {"label": "auto_ok", "rationale": "rude but clear software complaint (battery after update)"},
+    "22": {"label": "escalate", "rationale": "MacBook Pro PAID FOR but not received + prior failed support contacts (criteria: money/account stakes; needs private order details)"},
+    "23": {"label": "escalate", "rationale": "phone reset itself and is now LOCKED — access recovery needed; wrong public advice (e.g. reset again) could lock out further; app streak loss suggests account coupling (criteria: money/account stakes + unusable device)"},
+    "24": {"label": "auto_ok", "rationale": "clear performance issue (slow, keyboard delay)"},
+    "25": {"label": "escalate", "rationale": "iCloud sign-in loop REJECTING a newly changed password, iPad unusable — account access where the correct step depends on private account state; public password advice can compound a lockout or miss a takeover (criteria: money/account stakes)"},
+    "26": {"label": "auto_ok", "rationale": "clear software issue (TimeMachine + HighSierra)"},
+    "27": {"label": "escalate", "rationale": "iPhone 6S boot-loop, phone UNUSABLE, urgent (criteria: unusable device / data at stake — wrong steps could force data loss)"},
+    "28": {"label": "auto_ok", "rationale": "ranting tone but a single clear technical issue (WiFi won't connect); evidence-grounded WiFi troubleshooting is safe"},
+    "29": {"label": "auto_ok", "rationale": "clear software issue (slow + crashing after update)"}
+  }
+}

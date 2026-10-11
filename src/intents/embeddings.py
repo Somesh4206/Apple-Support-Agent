@@ -94,13 +94,18 @@ def _cache_key(model_id: str, texts: Sequence[str]) -> str:
 
 
 def embed_texts_cached(
-    texts: Sequence[str], cache_dir: Path, tag: str
+    texts: Sequence[str], cache_dir: Path, tag: str,
+    batch_size: int = 32,
 ) -> tuple[np.ndarray, bool]:
     """Embed texts with an on-disk .npz cache.
 
     Returns ``(vectors, cache_hit)``. The cache file is
     ``<cache_dir>/<tag>_<key>.npz`` and is validated by shape — a stale or
     corrupted cache is ignored and recomputed rather than trusted.
+    ``batch_size`` only affects encode speed, never the values (the encoder
+    is deterministic), so it is deliberately not part of the cache key;
+    Phase 4's 106k-text corpus uses a large batch, the 200-example golden
+    set keeps the small default.
     """
     settings = get_settings()
     cache_dir.mkdir(parents=True, exist_ok=True)
@@ -120,7 +125,7 @@ def embed_texts_cached(
             )
         except Exception:  # corrupted cache file
             logger.warning("Embedding cache unreadable — recomputing")
-    vectors = embed_texts(texts)
+    vectors = embed_texts(texts, batch_size=batch_size)
     np.savez_compressed(cache_path, vectors=vectors)
     logger.info("Embedding cache written: %s", cache_path.name)
     return vectors, False

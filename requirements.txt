@@ -12,3 +12,5 @@ seaborn>=0.13
 python-dotenv>=1.0
 scikit-learn>=1.5
 sentence-transformers>=3.0        # Phase 3: all-MiniLM-L6-v2 encoder (installs torch)
+faiss-cpu>=1.8                     # Phase 4: exact cosine FAISS index over the evidence corpus
+streamlit>=1.30                    # Phase 8: the assignment's agent UI (thin client)

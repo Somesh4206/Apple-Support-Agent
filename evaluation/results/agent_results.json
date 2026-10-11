@@ -1,0 +1,1862 @@
+{
+  "phase": 7,
+  "generated_at": "2026-09-16T12:06:12.150227+00:00",
+  "random_seed": 42,
+  "config": {
+    "top_k": 5,
+    "intent_confidence_threshold": 0.6,
+    "retrieval_threshold": 0.65,
+    "endpoint": "http://localhost:3030/api/phase7/agent",
+    "llm": "glm-4-plus via z-ai-web-dev-sdk (backend-only)"
+  },
+  "agent_steps": [
+    "Phase 3 logreg head → predicted intent + confidence for the message",
+    "Phase 4 FAISS index → top-K most similar historical evidence pairs",
+    "Phase 6 escalation policy → auto_handle / escalate (rule-based, explainable) — decided BEFORE any LLM call",
+    "auto_handle ⇒ Phase 5 grounded generation (six safety rules) → reply ready to send + heuristic scores",
+    "escalate ⇒ structured human handoff: reasons, top-3 evidence, optional acknowledgment template — no LLM call spent"
+  ],
+  "policy": {
+    "type": "rule-based, explainable (no learned component)",
+    "decision": "escalate if ANY rule fires; auto_handle only when all rules pass",
+    "safety_asymmetry": "a false auto-handle is far costlier than a false escalation — the policy is deliberately conservative",
+    "rules": [
+      {
+        "id": "E2",
+        "name": "private_state_domain",
+        "fires_when": "predicted intent ∈ {account_icloud, billing_purchases, repair_warranty, security_privacy, support_process}",
+        "why": "the correct next step depends on private state the system cannot see (order, quote, account, identity, official channels); public generic advice risks harm",
+        "provenance": "Phase 2 taxonomy typically_escalated hints (4 of 5) + documented Phase 6 account_icloud refinement (decision log D25)"
+      },
+      {
+        "id": "E3",
+        "name": "unmatched_intent",
+        "fires_when": "predicted intent == 'other'",
+        "why": "no groundable issue class; an evidence draft would rest on irrelevant historical cases",
+        "provenance": "Phase 2 taxonomy (the unmatched pool)"
+      },
+      {
+        "id": "E4",
+        "name": "sensitive_content",
+        "fires_when": "message matches one of ['order_or_payment_language', 'email_address', 'phone_number', 'card_like_number']",
+        "why": "payment/order language or private data (email, phone, card-like number) in the message must not be answered — or echoed — by a public auto-reply",
+        "provenance": "Phase 5 safety rule 4, applied at the decision layer as defense-in-depth against intent misclassification"
+      },
+      {
+        "id": "G1",
+        "name": "intent_confidence_gate",
+        "fires_when": "intent_confidence < 0.60",
+        "why": "Phase 3 measured 0.780 mean confidence on correct vs 0.508 on wrong test predictions; below the threshold the routing itself is unreliable",
+        "provenance": "INTENT_CONFIDENCE_THRESHOLD fixed since Phase 3 (.env, single source of truth)"
+      },
+      {
+        "id": "G2",
+        "name": "retrieval_evidence_gate",
+        "fires_when": "top1_score < 0.65",
+        "why": "Phase 4 measured Recall@5 0.826 above vs 0.586 below the threshold; weak evidence produces clarifying questions, which a human should own",
+        "provenance": "RETRIEVAL_THRESHOLD fixed since Phase 4 (.env, single source of truth)"
+      }
+    ],
+    "inputs": [
+      "predicted intent (Phase 3 logreg head)",
+      "intent confidence (Phase 3)",
+      "top-1 retrieval score (Phase 4 FAISS)",
+      "raw message text (E4 patterns)"
+    ]
+  },
+  "service_health": {
+    "ok": true,
+    "service": "retrieval-service",
+    "worker": "ready",
+    "corpus_size": 105871,
+    "model": "sentence-transformers/all-MiniLM-L6-v2",
+    "index": "faiss.IndexFlatIP (exact cosine)",
+    "uptime_s": 55
+  },
+  "evaluation": {
+    "n_test": 29,
+    "n_success": 29,
+    "failures": [],
+    "consistency": {
+      "description": "the service's TypeScript policy mirror vs the Python policy applied to the same runtime signals (predicted intent, confidence, top-1 score) — must agree on every message",
+      "agreed_n": 29,
+      "total_n": 29,
+      "all_agree": true,
+      "mismatches": []
+    },
+    "structure_ok_n": 29,
+    "decisions": {
+      "auto_handle_n": 15,
+      "escalate_n": 14,
+      "auto_rate": 0.5172
+    },
+    "end_to_end_quality": {
+      "confusion": {
+        "true_escalate": 10,
+        "over_escalation": 4,
+        "false_auto": 0,
+        "true_auto": 15
+      },
+      "false_auto_rate": 0.0,
+      "precision_escalate": 0.7143,
+      "recall_escalate": 1.0,
+      "note": "fresh live decisions on rebuilt artifacts — may differ marginally from the Phase 6 offline evaluation if intent confidences / retrieval scores shifted across rebuilds; both runs are reported, neither is hidden"
+    },
+    "cost": {
+      "llm_calls_made": 15,
+      "llm_calls_skipped_by_policy": 14,
+      "llm_call_saving_rate": 0.4828,
+      "mean_llm_ms_auto": 705.2,
+      "phase5_mean_llm_ms_per_reply": 599.8966,
+      "estimated_llm_ms_saved": 8398.6
+    },
+    "latency": {
+      "mean_total_ms_auto": 734.8667,
+      "mean_total_ms_escalate": 28.1429,
+      "note": "escalations skip the LLM entirely — their end-to-end time is embedding + FAISS + policy only"
+    },
+    "auto_reply_quality": {
+      "n": 15,
+      "mean_grounding_overlap": 0.5157,
+      "note": "same transparent Phase 5 heuristics, computed by the service for the replies it did generate"
+    },
+    "honest_caveats": [
+      "LLM outputs are nondeterministic: the auto-path replies and their scores describe the recorded run (see generated_at).",
+      "n=29 (golden test split); the end-to-end decision rates inherit the Phase 6 confidence-interval caveat.",
+      "Latency is measured on a shared sandbox VM and varies with load; relative auto-vs-escalate gap is the meaningful signal.",
+      "The consistency assertion checks the DECISION and rule ids; reason prose may differ in wording between implementations."
+    ]
+  },
+  "records": [
+    {
+      "index": 1,
+      "conversation_id": "1020302",
+      "message": "my App Store is not working!!!!",
+      "golden_label": "software_bug",
+      "ground_truth": "auto_ok",
+      "predicted_intent": "device_hardware",
+      "intent_confidence": 0.367,
+      "top1_score": 0.9143,
+      "policy_action": "escalate",
+      "policy_reasons": [
+        {
+          "rule": "G1",
+          "name": "intent_confidence_below_threshold",
+          "detail": "intent confidence 0.367 < 0.60 — the Phase 3 head's prediction cannot be trusted to route a public reply"
+        }
+      ],
+      "python_policy_agrees": true,
+      "structure_ok": true,
+      "reply": null,
+      "reply_status": "not_generated_by_policy",
+      "scores": null,
+      "handoff": {
+        "next_step": "human_review",
+        "reasons": [
+          {
+            "rule": "G1",
+            "name": "intent_confidence_below_threshold",
+            "detail": "intent confidence 0.367 < 0.60 — the Phase 3 head's prediction cannot be trusted to route a public reply"
+          }
+        ],
+        "suggested_public_acknowledgment": "Thanks for reaching out — we'd like to gather a few more details so we can help accurately. Could you tell us more about what you're seeing?",
+        "note_for_agent": "Draft generation was intentionally skipped (policy: escalate). The acknowledgment template above is optional context — it is never sent automatically.",
+        "evidence_for_review": [
+          {
+            "rank": 1,
+            "score": 0.9143,
+            "pair_id": "852950",
+            "conversation_id": "852952",
+            "turn": 2,
+            "customer_message": "my app store’s not working :(",
+            "support_response": "Can you please provide more details so that we have a better understanding of what's going on? What steps have you tried?",
+            "predicted_intent": "device_hardware",
+            "predicted_confidence": 0.3206
+          },
+          {
+            "rank": 2,
+            "score": 0.8994,
+            "pair_id": "686565",
+            "conversation_id": "686566",
+            "turn": 2,
+            "customer_message": "App Store not working for me either",
+            "support_response": "We can help. What happens when you try using your App Store?",
+            "predicted_intent": "device_hardware",
+            "predicted_confidence": 0.3793
+          },
+          {
+            "rank": 3,
+            "score": 0.8939,
+            "pair_id": "1007648",
+            "conversation_id": "1007651",
+            "turn": 2,
+            "customer_message": "your App Store isn't working! What the hell!?",
+            "support_response": "We can help. Tell us more about the issue you're encountering with the App Store. What device are you using?",
+            "predicted_intent": "device_hardware",
+            "predicted_confidence": 0.2929
+          }
+        ]
+      },
+      "llm": null,
+      "timings": {
+        "embed_ms": 11.4,
+        "faiss_search_ms": 14.6,
+        "llm_ms": 0,
+        "total_ms": 27
+      }
+    },
+    {
+      "index": 2,
+      "conversation_id": "11126",
+      "message": ", your new iOS 11.1 not resolve the calendar problem. 😡#iOS11 #iosfail",
+      "golden_label": "software_bug",
+      "ground_truth": "auto_ok",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.6724,
+      "top1_score": 0.8376,
+      "policy_action": "auto_handle",
+      "policy_reasons": [],
+      "python_policy_agrees": true,
+      "structure_ok": true,
+      "reply": "Based on similar cases we've seen, we'd like to help with your Calendar issue. Could you tell us what specific problems you're experiencing?",
+      "reply_status": "ready_to_send",
+      "scores": {
+        "grounding_overlap": 0.3571,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": true,
+        "dm_redirect": false,
+        "personal_data_solicited": false,
+        "length_chars": 140,
+        "length_words": 23
+      },
+      "handoff": null,
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "timings": {
+        "embed_ms": 12.6,
+        "faiss_search_ms": 13.9,
+        "llm_ms": 603,
+        "total_ms": 631
+      }
+    },
+    {
+      "index": 3,
+      "conversation_id": "1122780",
+      "message": "can’t download and open epub files to ibooks. whenever i download an epub file it appears for a second and it disappears.",
+      "golden_label": "software_bug",
+      "ground_truth": "auto_ok",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.7552,
+      "top1_score": 0.7267,
+      "policy_action": "auto_handle",
+      "policy_reasons": [],
+      "python_policy_agrees": true,
+      "structure_ok": true,
+      "reply": "Based on similar cases we'd like to check which iOS version you're using. Could you share that with us?",
+      "reply_status": "ready_to_send",
+      "scores": {
+        "grounding_overlap": 0.4,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": true,
+        "dm_redirect": false,
+        "personal_data_solicited": false,
+        "length_chars": 103,
+        "length_words": 19
+      },
+      "handoff": null,
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "timings": {
+        "embed_ms": 16,
+        "faiss_search_ms": 16.2,
+        "llm_ms": 602,
+        "total_ms": 635
+      }
+    },
+    {
+      "index": 4,
+      "conversation_id": "1201168",
+      "message": "Just upgraded to #HighSierra & now Mail will not open. Only 1 bounce& then not responding.",
+      "golden_label": "software_bug",
+      "ground_truth": "auto_ok",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.7128,
+      "top1_score": 0.6791,
+      "policy_action": "auto_handle",
+      "policy_reasons": [],
+      "python_policy_agrees": true,
+      "structure_ok": true,
+      "reply": "Based on similar cases we've seen, be sure you've installed all available updates in the Mac App Store.",
+      "reply_status": "ready_to_send",
+      "scores": {
+        "grounding_overlap": 0.6154,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": false,
+        "dm_redirect": false,
+        "personal_data_solicited": false,
+        "length_chars": 103,
+        "length_words": 18
+      },
+      "handoff": null,
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "timings": {
+        "embed_ms": 12.3,
+        "faiss_search_ms": 12.5,
+        "llm_ms": 606,
+        "total_ms": 632
+      }
+    },
+    {
+      "index": 5,
+      "conversation_id": "1544927",
+      "message": "do you have a price quote on getting a screen fixed for iPhone 7 Plus?",
+      "golden_label": "repair_warranty",
+      "ground_truth": "escalate",
+      "predicted_intent": "other",
+      "intent_confidence": 0.3705,
+      "top1_score": 0.7659,
+      "policy_action": "escalate",
+      "policy_reasons": [
+        {
+          "rule": "E3",
+          "name": "unmatched_intent",
+          "detail": "predicted intent 'other' — no groundable issue class, an evidence-grounded draft would rest on irrelevant cases"
+        },
+        {
+          "rule": "G1",
+          "name": "intent_confidence_below_threshold",
+          "detail": "intent confidence 0.370 < 0.60 — the Phase 3 head's prediction cannot be trusted to route a public reply"
+        }
+      ],
+      "python_policy_agrees": true,
+      "structure_ok": true,
+      "reply": null,
+      "reply_status": "not_generated_by_policy",
+      "scores": null,
+      "handoff": {
+        "next_step": "human_review",
+        "reasons": [
+          {
+            "rule": "E3",
+            "name": "unmatched_intent",
+            "detail": "predicted intent 'other' — no groundable issue class, an evidence-grounded draft would rest on irrelevant cases"
+          },
+          {
+            "rule": "G1",
+            "name": "intent_confidence_below_threshold",
+            "detail": "intent confidence 0.370 < 0.60 — the Phase 3 head's prediction cannot be trusted to route a public reply"
+          }
+        ],
+        "suggested_public_acknowledgment": "Thanks for reaching out — we'd like to gather a few more details so we can help accurately. Could you tell us more about what you're seeing?",
+        "note_for_agent": "Draft generation was intentionally skipped (policy: escalate). The acknowledgment template above is optional context — it is never sent automatically.",
+        "evidence_for_review": [
+          {
+            "rank": 1,
+            "score": 0.7659,
+            "pair_id": "1175543",
+            "conversation_id": "1175545",
+            "turn": 2,
+            "customer_message": "how much is it to fix my screen for iPhone 7",
+            "support_response": "What country or region are you currently located in? This will help us provide the best support options. We can help.",
+            "predicted_intent": "repair_warranty",
+            "predicted_confidence": 0.4584
+          },
+          {
+            "rank": 2,
+            "score": 0.7328,
+            "pair_id": "954248",
+            "conversation_id": "954249",
+            "turn": 2,
+            "customer_message": "how much does it cost to get my iPhone 6 Plus screen fixed?",
+            "support_response": "We’d like to see how we can help. Can you give us some more details about the issue you're having?",
+            "predicted_intent": "repair_warranty",
+            "predicted_confidence": 0.5465
+          },
+          {
+            "rank": 3,
+            "score": 0.7059,
+            "pair_id": "694216",
+            "conversation_id": "694217",
+            "turn": 2,
+            "customer_message": "Hey, what's the price to have an iPhone 6 screen replaced and can it be done in store?",
+            "support_response": "We're happy to find that information for you. DM us and tell us which country you're located in.",
+            "predicted_intent": "other",
+            "predicted_confidence": 0.3972
+          }
+        ]
+      },
+      "llm": null,
+      "timings": {
+        "embed_ms": 11.7,
+        "faiss_search_ms": 13,
+        "llm_ms": 0,
+        "total_ms": 26
+      }
+    },
+    {
+      "index": 6,
+      "conversation_id": "1673516",
+      "message": "Have you ever wanted to punch someone in the face? Like I️ have SUCH a desire to punch this one person in the face as hard as I️ can",
+      "golden_label": "other",
+      "ground_truth": "escalate",
+      "predicted_intent": "other",
+      "intent_confidence": 0.9193,
+      "top1_score": 0.3671,
+      "policy_action": "escalate",
+      "policy_reasons": [
+        {
+          "rule": "E3",
+          "name": "unmatched_intent",
+          "detail": "predicted intent 'other' — no groundable issue class, an evidence-grounded draft would rest on irrelevant cases"
+        },
+        {
+          "rule": "G2",
+          "name": "retrieval_score_below_threshold",
+          "detail": "top-1 retrieval score 0.367 < 0.65 — evidence too weak to ground a public reply"
+        }
+      ],
+      "python_policy_agrees": true,
+      "structure_ok": true,
+      "reply": null,
+      "reply_status": "not_generated_by_policy",
+      "scores": null,
+      "handoff": {
+        "next_step": "human_review",
+        "reasons": [
+          {
+            "rule": "E3",
+            "name": "unmatched_intent",
+            "detail": "predicted intent 'other' — no groundable issue class, an evidence-grounded draft would rest on irrelevant cases"
+          },
+          {
+            "rule": "G2",
+            "name": "retrieval_score_below_threshold",
+            "detail": "top-1 retrieval score 0.367 < 0.65 — evidence too weak to ground a public reply"
+          }
+        ],
+        "suggested_public_acknowledgment": "Thanks for reaching out — we'd like to gather a few more details so we can help accurately. Could you tell us more about what you're seeing?",
+        "note_for_agent": "Draft generation was intentionally skipped (policy: escalate). The acknowledgment template above is optional context — it is never sent automatically.",
+        "evidence_for_review": [
+          {
+            "rank": 1,
+            "score": 0.3671,
+            "pair_id": "1586327",
+            "conversation_id": "1586326",
+            "turn": 4,
+            "customer_message": "Yes I’ve done that numerous times.",
+            "support_response": "Thanks. Let’s try force closing the App Store.",
+            "predicted_intent": "software_bug",
+            "predicted_confidence": 0.4515
+          },
+          {
+            "rank": 2,
+            "score": 0.3633,
+            "pair_id": "1396717",
+            "conversation_id": "1396719",
+            "turn": 3,
+            "customer_message": "@AppleSupport I have anger issues you don’t mess with me like this I’ll fucking dent them with my teeth",
+            "support_response": "We'd like to take a closer look via DM. Have the AirPods ever worked properly? When did this issue begin?",
+            "predicted_intent": "other",
+            "predicted_confidence": 0.347
+          },
+          {
+            "rank": 3,
+            "score": 0.3526,
+            "pair_id": "2680909",
+            "conversation_id": "2680913",
+            "turn": 4,
+            "customer_message": "Of course I have.",
+            "support_response": "We’d love to help further. To start, send us a DM letting us know which device you’re using.",
+            "predicted_intent": "other",
+            "predicted_confidence": 0.6673
+          }
+        ]
+      },
+      "llm": null,
+      "timings": {
+        "embed_ms": 12.8,
+        "faiss_search_ms": 12,
+        "llm_ms": 0,
+        "total_ms": 26
+      }
+    },
+    {
+      "index": 7,
+      "conversation_id": "1733789",
+      "message": "@AppleSupport you gotta fix the I️ like for real",
+      "golden_label": "software_bug",
+      "ground_truth": "auto_ok",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.6585,
+      "top1_score": 0.8432,
+      "policy_action": "auto_handle",
+      "policy_reasons": [],
+      "python_policy_agrees": true,
+      "structure_ok": true,
+      "reply": "Based on similar cases we've seen, here's what you can do to work around the issue until it's fixed in a future software update.",
+      "reply_status": "ready_to_send",
+      "scores": {
+        "grounding_overlap": 0.5,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": false,
+        "dm_redirect": false,
+        "personal_data_solicited": false,
+        "length_chars": 128,
+        "length_words": 24
+      },
+      "handoff": null,
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "timings": {
+        "embed_ms": 10.6,
+        "faiss_search_ms": 10.7,
+        "llm_ms": 635,
+        "total_ms": 658
+      }
+    },
+    {
+      "index": 8,
+      "conversation_id": "1735010",
+      "message": "Why do some ppl not have the 👀 problem @115858 it ain’t funny 👀 pay too much for y’all to be making mistakes we better have an update tmrw",
+      "golden_label": "software_bug",
+      "ground_truth": "auto_ok",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.9057,
+      "top1_score": 0.7029,
+      "policy_action": "auto_handle",
+      "policy_reasons": [],
+      "python_policy_agrees": true,
+      "structure_ok": true,
+      "reply": "Based on similar cases we've seen, we'd like to take a closer look at this with you. Could you share your device model and iOS version?",
+      "reply_status": "ready_to_send",
+      "scores": {
+        "grounding_overlap": 0.5714,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": true,
+        "dm_redirect": false,
+        "personal_data_solicited": false,
+        "length_chars": 135,
+        "length_words": 26
+      },
+      "handoff": null,
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "timings": {
+        "embed_ms": 16.3,
+        "faiss_search_ms": 14,
+        "llm_ms": 640,
+        "total_ms": 673
+      }
+    },
+    {
+      "index": 9,
+      "conversation_id": "1762856",
+      "message": "I love when my fucking 10 month old iPhone 7+ breaks for no God damn reason 😍 @AppleSupport",
+      "golden_label": "device_hardware",
+      "ground_truth": "auto_ok",
+      "predicted_intent": "general_complaint",
+      "intent_confidence": 0.8893,
+      "top1_score": 0.7376,
+      "policy_action": "auto_handle",
+      "policy_reasons": [],
+      "python_policy_agrees": true,
+      "structure_ok": true,
+      "reply": "Based on similar cases we've seen, we'd like to look into options with you. Can you send us a DM and tell us what's happening with your iPhone?",
+      "reply_status": "ready_to_send",
+      "scores": {
+        "grounding_overlap": 0.6154,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": true,
+        "dm_redirect": true,
+        "personal_data_solicited": false,
+        "length_chars": 143,
+        "length_words": 28
+      },
+      "handoff": null,
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "timings": {
+        "embed_ms": 11.8,
+        "faiss_search_ms": 12.8,
+        "llm_ms": 655,
+        "total_ms": 682
+      }
+    },
+    {
+      "index": 10,
+      "conversation_id": "1772187",
+      "message": "So I️ have 280 so I’m going use this time to thank everyone following me even though I️ get annoying. Y’all are the real ones. Now that I️ have 280 it’s gonna get worse... so thank you!! So stick around. Also @123765, you fucked up with this update. Should of stayed with 140",
+      "golden_label": "general_complaint",
+      "ground_truth": "escalate",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.6446,
+      "top1_score": 0.6478,
+      "policy_action": "escalate",
+      "policy_reasons": [
+        {
+          "rule": "G2",
+          "name": "retrieval_score_below_threshold",
+          "detail": "top-1 retrieval score 0.648 < 0.65 — evidence too weak to ground a public reply"
+        }
+      ],
+      "python_policy_agrees": true,
+      "structure_ok": true,
+      "reply": null,
+      "reply_status": "not_generated_by_policy",
+      "scores": null,
+      "handoff": {
+        "next_step": "human_review",
+        "reasons": [
+          {
+            "rule": "G2",
+            "name": "retrieval_score_below_threshold",
+            "detail": "top-1 retrieval score 0.648 < 0.65 — evidence too weak to ground a public reply"
+          }
+        ],
+        "suggested_public_acknowledgment": "Thanks for reaching out — we'd like to gather a few more details so we can help accurately. Could you tell us more about what you're seeing?",
+        "note_for_agent": "Draft generation was intentionally skipped (policy: escalate). The acknowledgment template above is optional context — it is never sent automatically.",
+        "evidence_for_review": [
+          {
+            "rank": 1,
+            "score": 0.6478,
+            "pair_id": "1773384",
+            "conversation_id": "1773385",
+            "turn": 2,
+            "customer_message": "have now discovered that everyone got said 280 update. i am now stepping down from my high horse. i shall also try to lengthen every tweet to 280 characters until this newness wears off and i become annoyed with typing. also can @115858 plz fix the i error please it’s getting old",
+            "support_response": "Here’s what you can do to work around the issue until it’s fixed in a future software update:",
+            "predicted_intent": "software_bug",
+            "predicted_confidence": 0.9915
+          },
+          {
+            "rank": 2,
+            "score": 0.6449,
+            "pair_id": "1776339",
+            "conversation_id": "1776340",
+            "turn": 2,
+            "customer_message": "your update.....sucks !!! Wish I’d stayed with @138021 geez especially since I’ve had nothing but issues with this refurb.",
+            "support_response": "Let's see what we can figure out together. Please join us in DM and let us know what symptoms you're experiencing.",
+            "predicted_intent": "software_bug",
+            "predicted_confidence": 0.4826
+          },
+          {
+            "rank": 3,
+            "score": 0.6419,
+            "pair_id": "1966856",
+            "conversation_id": "1966858",
+            "turn": 3,
+            "customer_message": "@115858 Dude me too I️ was so annoyed I️ think it’s because of the update",
+            "support_response": "We are here to help whenever possible. DM which iPhone and specific iOS version you are using so we can help.",
+            "predicted_intent": "software_bug",
+            "predicted_confidence": 0.9817
+          }
+        ]
+      },
+      "llm": null,
+      "timings": {
+        "embed_ms": 19.2,
+        "faiss_search_ms": 13.8,
+        "llm_ms": 0,
+        "total_ms": 34
+      }
+    },
+    {
+      "index": 11,
+      "conversation_id": "1779220",
+      "message": "Hey @115858 stop sucking and fix this “I️” problem thank you",
+      "golden_label": "software_bug",
+      "ground_truth": "auto_ok",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.9697,
+      "top1_score": 0.8231,
+      "policy_action": "auto_handle",
+      "policy_reasons": [],
+      "python_policy_agrees": true,
+      "structure_ok": true,
+      "reply": "Based on similar cases we've seen, check this article for steps on resolving this text replacement issue.",
+      "reply_status": "ready_to_send",
+      "scores": {
+        "grounding_overlap": 0.5,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": false,
+        "dm_redirect": false,
+        "personal_data_solicited": false,
+        "length_chars": 105,
+        "length_words": 17
+      },
+      "handoff": null,
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "timings": {
+        "embed_ms": 10.9,
+        "faiss_search_ms": 11.6,
+        "llm_ms": 566,
+        "total_ms": 589
+      }
+    },
+    {
+      "index": 12,
+      "conversation_id": "1802996",
+      "message": "Can you make your iCal app stop deleting my saved date events, oh and stop doubling other's that would be great.",
+      "golden_label": "software_bug",
+      "ground_truth": "auto_ok",
+      "predicted_intent": "account_icloud",
+      "intent_confidence": 0.3189,
+      "top1_score": 0.5708,
+      "policy_action": "escalate",
+      "policy_reasons": [
+        {
+          "rule": "E2",
+          "name": "private_state_domain",
+          "detail": "predicted intent 'account_icloud' is a private-state domain (order/quote/account/security/support-process): the correct next step depends on private information the system cannot see"
+        },
+        {
+          "rule": "G1",
+          "name": "intent_confidence_below_threshold",
+          "detail": "intent confidence 0.319 < 0.60 — the Phase 3 head's prediction cannot be trusted to route a public reply"
+        },
+        {
+          "rule": "G2",
+          "name": "retrieval_score_below_threshold",
+          "detail": "top-1 retrieval score 0.571 < 0.65 — evidence too weak to ground a public reply"
+        }
+      ],
+      "python_policy_agrees": true,
+      "structure_ok": true,
+      "reply": null,
+      "reply_status": "not_generated_by_policy",
+      "scores": null,
+      "handoff": {
+        "next_step": "human_review",
+        "reasons": [
+          {
+            "rule": "E2",
+            "name": "private_state_domain",
+            "detail": "predicted intent 'account_icloud' is a private-state domain (order/quote/account/security/support-process): the correct next step depends on private information the system cannot see"
+          },
+          {
+            "rule": "G1",
+            "name": "intent_confidence_below_threshold",
+            "detail": "intent confidence 0.319 < 0.60 — the Phase 3 head's prediction cannot be trusted to route a public reply"
+          },
+          {
+            "rule": "G2",
+            "name": "retrieval_score_below_threshold",
+            "detail": "top-1 retrieval score 0.571 < 0.65 — evidence too weak to ground a public reply"
+          }
+        ],
+        "suggested_public_acknowledgment": "Thanks for reaching out — we'd like to look into this with you in Direct Messages where we can help with the details.",
+        "note_for_agent": "Draft generation was intentionally skipped (policy: escalate). The acknowledgment template above is optional context — it is never sent automatically.",
+        "evidence_for_review": [
+          {
+            "rank": 1,
+            "score": 0.5708,
+            "pair_id": "97068",
+            "conversation_id": "97067",
+            "turn": 4,
+            "customer_message": "Thanks! Yes- specifically iCal, and usually not doing anything other than viewing my days meetings/items.",
+            "support_response": "OK, thanks. Which device are you using and which software version is installed?",
+            "predicted_intent": "other",
+            "predicted_confidence": 0.793
+          },
+          {
+            "rank": 2,
+            "score": 0.5702,
+            "pair_id": "2143243",
+            "conversation_id": "2143245",
+            "turn": 2,
+            "customer_message": "Hey @AppleSupport why did my calendar just delete all events ???",
+            "support_response": "We'd be happy to help. Have you tried restarting the device? If not, let's try that.",
+            "predicted_intent": "account_icloud",
+            "predicted_confidence": 0.4269
+          },
+          {
+            "rank": 3,
+            "score": 0.5628,
+            "pair_id": "994479",
+            "conversation_id": "994478",
+            "turn": 4,
+            "customer_message": "Yes. I also do not sync my calendars between my devices b/c iTunes wanted to delete ALL events from my computer.",
+            "support_response": "Which model do you have and is iOS 11.0.3 the version installed? Have you tried any steps and if yes, which ones?",
+            "predicted_intent": "account_icloud",
+            "predicted_confidence": 0.4115
+          }
+        ]
+      },
+      "llm": null,
+      "timings": {
+        "embed_ms": 13.7,
+        "faiss_search_ms": 13.3,
+        "llm_ms": 0,
+        "total_ms": 28
+      }
+    },
+    {
+      "index": 13,
+      "conversation_id": "1882044",
+      "message": "Why did the new iPhone update do nothing but kill my battery life now?? @115858",
+      "golden_label": "software_bug",
+      "ground_truth": "auto_ok",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.9338,
+      "top1_score": 0.9238,
+      "policy_action": "auto_handle",
+      "policy_reasons": [],
+      "python_policy_agrees": true,
+      "structure_ok": true,
+      "reply": "Based on similar cases we've seen, let's work together in DM to investigate what's going on with your iPhone battery life.",
+      "reply_status": "ready_to_send",
+      "scores": {
+        "grounding_overlap": 0.5714,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": false,
+        "dm_redirect": true,
+        "personal_data_solicited": false,
+        "length_chars": 122,
+        "length_words": 21
+      },
+      "handoff": null,
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "timings": {
+        "embed_ms": 11.7,
+        "faiss_search_ms": 12.1,
+        "llm_ms": 607,
+        "total_ms": 632
+      }
+    },
+    {
+      "index": 14,
+      "conversation_id": "1906187",
+      "message": "I cannot use my iPhone after an upgrade - serious stuff - travel ticket to work as well as all communication. Please advise.",
+      "golden_label": "software_bug",
+      "ground_truth": "escalate",
+      "predicted_intent": "connectivity",
+      "intent_confidence": 0.4801,
+      "top1_score": 0.7306,
+      "policy_action": "escalate",
+      "policy_reasons": [
+        {
+          "rule": "G1",
+          "name": "intent_confidence_below_threshold",
+          "detail": "intent confidence 0.480 < 0.60 — the Phase 3 head's prediction cannot be trusted to route a public reply"
+        }
+      ],
+      "python_policy_agrees": true,
+      "structure_ok": true,
+      "reply": null,
+      "reply_status": "not_generated_by_policy",
+      "scores": null,
+      "handoff": {
+        "next_step": "human_review",
+        "reasons": [
+          {
+            "rule": "G1",
+            "name": "intent_confidence_below_threshold",
+            "detail": "intent confidence 0.480 < 0.60 — the Phase 3 head's prediction cannot be trusted to route a public reply"
+          }
+        ],
+        "suggested_public_acknowledgment": "Thanks for reaching out — we'd like to gather a few more details so we can help accurately. Could you tell us more about what you're seeing?",
+        "note_for_agent": "Draft generation was intentionally skipped (policy: escalate). The acknowledgment template above is optional context — it is never sent automatically.",
+        "evidence_for_review": [
+          {
+            "rank": 1,
+            "score": 0.7306,
+            "pair_id": "1354516",
+            "conversation_id": "1354518",
+            "turn": 2,
+            "customer_message": "I’ve had an incredibly frustrating experience with the iPhone Upgrade Program. Can you help? I can’t get through via phone.",
+            "support_response": "Our Sales Support team would best be able to assist you. You can find their contact options here:",
+            "predicted_intent": "software_bug",
+            "predicted_confidence": 0.5257
+          },
+          {
+            "rank": 2,
+            "score": 0.6677,
+            "pair_id": "2833029",
+            "conversation_id": "2833032",
+            "turn": 5,
+            "customer_message": "Whenever I try go online to do iphone upgrade programme it will not allow me at all! No phones available in the whole of UK",
+            "support_response": "Thanks for letting us know. Our Online Store team can help you with your order. Please reach out to them directly here:",
+            "predicted_intent": "connectivity",
+            "predicted_confidence": 0.3554
+          },
+          {
+            "rank": 3,
+            "score": 0.6635,
+            "pair_id": "342850",
+            "conversation_id": "342851",
+            "turn": 2,
+            "customer_message": "the new iPhone update messed up my phone really bad, I now can’t connect to my carrier or even open up apps. we’re testing it?",
+            "support_response": "We're happy to see how we can help with your iPhone. Send us a DM with more information, and we'll meet you there.",
+            "predicted_intent": "connectivity",
+            "predicted_confidence": 0.7092
+          }
+        ]
+      },
+      "llm": null,
+      "timings": {
+        "embed_ms": 13.1,
+        "faiss_search_ms": 12.9,
+        "llm_ms": 0,
+        "total_ms": 27
+      }
+    },
+    {
+      "index": 15,
+      "conversation_id": "2001818",
+      "message": "what’s the deal with my phone autocorrecting “I” into I️",
+      "golden_label": "software_bug",
+      "ground_truth": "auto_ok",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.9927,
+      "top1_score": 0.9351,
+      "policy_action": "auto_handle",
+      "policy_reasons": [],
+      "python_policy_agrees": true,
+      "structure_ok": true,
+      "reply": "Based on similar cases we've seen, please DM us so we can look into this autocorrect issue further with you.",
+      "reply_status": "ready_to_send",
+      "scores": {
+        "grounding_overlap": 0.25,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": false,
+        "dm_redirect": true,
+        "personal_data_solicited": false,
+        "length_chars": 108,
+        "length_words": 20
+      },
+      "handoff": null,
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "timings": {
+        "embed_ms": 10.6,
+        "faiss_search_ms": 12.1,
+        "llm_ms": 550,
+        "total_ms": 574
+      }
+    },
+    {
+      "index": 16,
+      "conversation_id": "2046588",
+      "message": "Jesus fucking Christ my phone keeps dying at like 90% y'all ain't shot prolly gon get a samsung @AppleSupport",
+      "golden_label": "device_hardware",
+      "ground_truth": "auto_ok",
+      "predicted_intent": "general_complaint",
+      "intent_confidence": 0.4879,
+      "top1_score": 0.7355,
+      "policy_action": "escalate",
+      "policy_reasons": [
+        {
+          "rule": "G1",
+          "name": "intent_confidence_below_threshold",
+          "detail": "intent confidence 0.488 < 0.60 — the Phase 3 head's prediction cannot be trusted to route a public reply"
+        }
+      ],
+      "python_policy_agrees": true,
+      "structure_ok": true,
+      "reply": null,
+      "reply_status": "not_generated_by_policy",
+      "scores": null,
+      "handoff": {
+        "next_step": "human_review",
+        "reasons": [
+          {
+            "rule": "G1",
+            "name": "intent_confidence_below_threshold",
+            "detail": "intent confidence 0.488 < 0.60 — the Phase 3 head's prediction cannot be trusted to route a public reply"
+          }
+        ],
+        "suggested_public_acknowledgment": "Thanks for reaching out — we'd like to gather a few more details so we can help accurately. Could you tell us more about what you're seeing?",
+        "note_for_agent": "Draft generation was intentionally skipped (policy: escalate). The acknowledgment template above is optional context — it is never sent automatically.",
+        "evidence_for_review": [
+          {
+            "rank": 1,
+            "score": 0.7355,
+            "pair_id": "455018",
+            "conversation_id": "455020",
+            "turn": 2,
+            "customer_message": "I’m so tired of my phone dying at 93% @AppleSupport",
+            "support_response": "This is not the experience we want you to have. Which iPhone model do you own?",
+            "predicted_intent": "general_complaint",
+            "predicted_confidence": 0.3813
+          },
+          {
+            "rank": 2,
+            "score": 0.7266,
+            "pair_id": "1699908",
+            "conversation_id": "1699909",
+            "turn": 2,
+            "customer_message": "My phone dies in literally 0.5 seconds wtf I haven’t even had it for a year this is ridiculous @AppleSupport",
+            "support_response": "Hi. We are here to help. Send us a DM, and we'll help from there. Thanks",
+            "predicted_intent": "software_bug",
+            "predicted_confidence": 0.4134
+          },
+          {
+            "rank": 3,
+            "score": 0.7231,
+            "pair_id": "2288050",
+            "conversation_id": "2288051",
+            "turn": 2,
+            "customer_message": "Fix your shit @AppleSupport, I’m sick of my phone dying at 20%",
+            "support_response": "We'd like to work together on that. Let's get a bit of information and meet up in DM. What iOS version is installed? You'll find that in Settings > General > About.",
+            "predicted_intent": "general_complaint",
+            "predicted_confidence": 0.7798
+          }
+        ]
+      },
+      "llm": null,
+      "timings": {
+        "embed_ms": 13.6,
+        "faiss_search_ms": 13.5,
+        "llm_ms": 0,
+        "total_ms": 28
+      }
+    },
+    {
+      "index": 17,
+      "conversation_id": "2062504",
+      "message": "you have misspelled a word in your page.",
+      "golden_label": "other",
+      "ground_truth": "escalate",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.6269,
+      "top1_score": 0.5536,
+      "policy_action": "escalate",
+      "policy_reasons": [
+        {
+          "rule": "G2",
+          "name": "retrieval_score_below_threshold",
+          "detail": "top-1 retrieval score 0.554 < 0.65 — evidence too weak to ground a public reply"
+        }
+      ],
+      "python_policy_agrees": true,
+      "structure_ok": true,
+      "reply": null,
+      "reply_status": "not_generated_by_policy",
+      "scores": null,
+      "handoff": {
+        "next_step": "human_review",
+        "reasons": [
+          {
+            "rule": "G2",
+            "name": "retrieval_score_below_threshold",
+            "detail": "top-1 retrieval score 0.554 < 0.65 — evidence too weak to ground a public reply"
+          }
+        ],
+        "suggested_public_acknowledgment": "Thanks for reaching out — we'd like to gather a few more details so we can help accurately. Could you tell us more about what you're seeing?",
+        "note_for_agent": "Draft generation was intentionally skipped (policy: escalate). The acknowledgment template above is optional context — it is never sent automatically.",
+        "evidence_for_review": [
+          {
+            "rank": 1,
+            "score": 0.5536,
+            "pair_id": "2037003",
+            "conversation_id": "2037004",
+            "turn": 2,
+            "customer_message": "Hey @115858 what’s up with all the glitches? Now I have spell check “errors” under words I KNOW I spelled right?",
+            "support_response": "DM us some details on the words you're noticing this with, and we'll work together to get this resolved.",
+            "predicted_intent": "software_bug",
+            "predicted_confidence": 0.9749
+          },
+          {
+            "rank": 2,
+            "score": 0.5362,
+            "pair_id": "215375",
+            "conversation_id": "215376",
+            "turn": 2,
+            "customer_message": "Hi, when I misspelled words, and tapped them, a suggestion for autocorrect used to appear above the word. Stopped happening?",
+            "support_response": "You're in the right place, and we'll do all we can to help. To get started, what device and OS are you using?",
+            "predicted_intent": "software_bug",
+            "predicted_confidence": 0.9057
+          },
+          {
+            "rank": 3,
+            "score": 0.5333,
+            "pair_id": "2586412",
+            "conversation_id": "2586413",
+            "turn": 2,
+            "customer_message": "WHY DOES MY KEYBOARD AUTOCORRECT WORDS THAT I ALREADY SPELLED CORRECTLY @116333",
+            "support_response": "Can you tell us more about what words you're having trouble with? Also, which iOS version are you using? Let's work in DM to make sure things are working properly.",
+            "predicted_intent": "software_bug",
+            "predicted_confidence": 0.976
+          }
+        ]
+      },
+      "llm": null,
+      "timings": {
+        "embed_ms": 10.9,
+        "faiss_search_ms": 12.5,
+        "llm_ms": 0,
+        "total_ms": 25
+      }
+    },
+    {
+      "index": 18,
+      "conversation_id": "2117289",
+      "message": "do you have a 24 hr number?",
+      "golden_label": "support_process",
+      "ground_truth": "escalate",
+      "predicted_intent": "support_process",
+      "intent_confidence": 0.2993,
+      "top1_score": 0.5515,
+      "policy_action": "escalate",
+      "policy_reasons": [
+        {
+          "rule": "E2",
+          "name": "private_state_domain",
+          "detail": "predicted intent 'support_process' is a private-state domain (order/quote/account/security/support-process): the correct next step depends on private information the system cannot see"
+        },
+        {
+          "rule": "G1",
+          "name": "intent_confidence_below_threshold",
+          "detail": "intent confidence 0.299 < 0.60 — the Phase 3 head's prediction cannot be trusted to route a public reply"
+        },
+        {
+          "rule": "G2",
+          "name": "retrieval_score_below_threshold",
+          "detail": "top-1 retrieval score 0.551 < 0.65 — evidence too weak to ground a public reply"
+        }
+      ],
+      "python_policy_agrees": true,
+      "structure_ok": true,
+      "reply": null,
+      "reply_status": "not_generated_by_policy",
+      "scores": null,
+      "handoff": {
+        "next_step": "human_review",
+        "reasons": [
+          {
+            "rule": "E2",
+            "name": "private_state_domain",
+            "detail": "predicted intent 'support_process' is a private-state domain (order/quote/account/security/support-process): the correct next step depends on private information the system cannot see"
+          },
+          {
+            "rule": "G1",
+            "name": "intent_confidence_below_threshold",
+            "detail": "intent confidence 0.299 < 0.60 — the Phase 3 head's prediction cannot be trusted to route a public reply"
+          },
+          {
+            "rule": "G2",
+            "name": "retrieval_score_below_threshold",
+            "detail": "top-1 retrieval score 0.551 < 0.65 — evidence too weak to ground a public reply"
+          }
+        ],
+        "suggested_public_acknowledgment": "Thanks for reaching out — we'd like to look into this with you in Direct Messages where we can help with the details.",
+        "note_for_agent": "Draft generation was intentionally skipped (policy: escalate). The acknowledgment template above is optional context — it is never sent automatically.",
+        "evidence_for_review": [
+          {
+            "rank": 1,
+            "score": 0.5515,
+            "pair_id": "2549527",
+            "conversation_id": "2549526",
+            "turn": 4,
+            "customer_message": "No, I'm not. It asks for the verification code and I don't have that phone number anymore.",
+            "support_response": "Take a look at the following article, it has a lot of information that may assist you:",
+            "predicted_intent": "account_icloud",
+            "predicted_confidence": 0.2584
+          },
+          {
+            "rank": 2,
+            "score": 0.5491,
+            "pair_id": "452629",
+            "conversation_id": "452628",
+            "turn": 4,
+            "customer_message": "I no longer have this number",
+            "support_response": "Thank you for providing us with that screenshot. With regard to the issue that you’re experiencing with your account, our Apple ID Specialists are going to be your best resource for getting your issue resolved. You can contact them here:",
+            "predicted_intent": "account_icloud",
+            "predicted_confidence": 0.6694
+          },
+          {
+            "rank": 3,
+            "score": 0.5312,
+            "pair_id": "1852593",
+            "conversation_id": "1852594",
+            "turn": 2,
+            "customer_message": "I just got an email saying you called me tonight but you did not. If you did it was not on either number I gave you",
+            "support_response": "Thanks for reaching out! So we can look closer into this with you, reach out to us in DM and we'll continue from there.",
+            "predicted_intent": "software_bug",
+            "predicted_confidence": 0.2629
+          }
+        ]
+      },
+      "llm": null,
+      "timings": {
+        "embed_ms": 12.1,
+        "faiss_search_ms": 12.5,
+        "llm_ms": 0,
+        "total_ms": 26
+      }
+    },
+    {
+      "index": 19,
+      "conversation_id": "2140945",
+      "message": "La última actualización de software del #iphone a 11.1 me tiene el cel demasiado lento y se bloquean las aplicaciones @AppleSupport",
+      "golden_label": "software_bug",
+      "ground_truth": "auto_ok",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.9286,
+      "top1_score": 0.8153,
+      "policy_action": "auto_handle",
+      "policy_reasons": [],
+      "python_policy_agrees": true,
+      "structure_ok": true,
+      "reply": "Based on similar cases we've seen, we offer support via Twitter in English. Get help in Spanish here: or join",
+      "reply_status": "ready_to_send",
+      "scores": {
+        "grounding_overlap": 0.6154,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": false,
+        "dm_redirect": false,
+        "personal_data_solicited": false,
+        "length_chars": 109,
+        "length_words": 20
+      },
+      "handoff": null,
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "timings": {
+        "embed_ms": 13.8,
+        "faiss_search_ms": 31.5,
+        "llm_ms": 531,
+        "total_ms": 577
+      }
+    },
+    {
+      "index": 20,
+      "conversation_id": "222974",
+      "message": "just updated to latest update now I can’t access I tunes or download podcast please help",
+      "golden_label": "software_bug",
+      "ground_truth": "auto_ok",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.9181,
+      "top1_score": 0.7283,
+      "policy_action": "auto_handle",
+      "policy_reasons": [],
+      "python_policy_agrees": true,
+      "structure_ok": true,
+      "reply": "Based on similar cases we've seen, we'll help you troubleshoot this issue. Could you let us know what happens when you try to access iTunes or download podcasts?",
+      "reply_status": "ready_to_send",
+      "scores": {
+        "grounding_overlap": 0.5333,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": true,
+        "dm_redirect": false,
+        "personal_data_solicited": false,
+        "length_chars": 161,
+        "length_words": 28
+      },
+      "handoff": null,
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "timings": {
+        "embed_ms": 15.6,
+        "faiss_search_ms": 14.5,
+        "llm_ms": 744,
+        "total_ms": 776
+      }
+    },
+    {
+      "index": 21,
+      "conversation_id": "23130",
+      "message": "Dear @115858, you’re really rude for ruining the battery life on our phones with that last update.",
+      "golden_label": "software_bug",
+      "ground_truth": "auto_ok",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.8259,
+      "top1_score": 0.822,
+      "policy_action": "auto_handle",
+      "policy_reasons": [],
+      "python_policy_agrees": true,
+      "structure_ok": true,
+      "reply": "Based on similar cases we've seen, we can help with your battery. Which iOS version and iPhone model do you have? Send us a DM and let us know.",
+      "reply_status": "ready_to_send",
+      "scores": {
+        "grounding_overlap": 0.6154,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": true,
+        "dm_redirect": true,
+        "personal_data_solicited": false,
+        "length_chars": 143,
+        "length_words": 29
+      },
+      "handoff": null,
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "timings": {
+        "embed_ms": 13.5,
+        "faiss_search_ms": 13.4,
+        "llm_ms": 1246,
+        "total_ms": 1275
+      }
+    },
+    {
+      "index": 22,
+      "conversation_id": "2693953",
+      "message": "@116333 Tim, I wrote you an email Through Apple about MacBook Pro I’ve bought but not gotten. I don’t expect this to help but no one at Apple has helped either. The more I call Apple the more frustrating it becomes. #NoCustomerService",
+      "golden_label": "billing_purchases",
+      "ground_truth": "escalate",
+      "predicted_intent": "device_hardware",
+      "intent_confidence": 0.3164,
+      "top1_score": 0.7315,
+      "policy_action": "escalate",
+      "policy_reasons": [
+        {
+          "rule": "E4",
+          "name": "content:order_or_payment_language",
+          "detail": "message contains order or payment language (match: \"bought but not gotten\") — payment/order matters or private data must not be handled by a public auto-reply"
+        },
+        {
+          "rule": "G1",
+          "name": "intent_confidence_below_threshold",
+          "detail": "intent confidence 0.316 < 0.60 — the Phase 3 head's prediction cannot be trusted to route a public reply"
+        }
+      ],
+      "python_policy_agrees": true,
+      "structure_ok": true,
+      "reply": null,
+      "reply_status": "not_generated_by_policy",
+      "scores": null,
+      "handoff": {
+        "next_step": "human_review",
+        "reasons": [
+          {
+            "rule": "E4",
+            "name": "content:order_or_payment_language",
+            "detail": "message contains order or payment language (match: \"bought but not gotten\") — payment/order matters or private data must not be handled by a public auto-reply"
+          },
+          {
+            "rule": "G1",
+            "name": "intent_confidence_below_threshold",
+            "detail": "intent confidence 0.316 < 0.60 — the Phase 3 head's prediction cannot be trusted to route a public reply"
+          }
+        ],
+        "suggested_public_acknowledgment": "Thanks for reaching out — we'd like to look into this with you in Direct Messages where we can help with the details.",
+        "note_for_agent": "Draft generation was intentionally skipped (policy: escalate). The acknowledgment template above is optional context — it is never sent automatically.",
+        "evidence_for_review": [
+          {
+            "rank": 1,
+            "score": 0.7315,
+            "pair_id": "2352147",
+            "conversation_id": "2352148",
+            "turn": 2,
+            "customer_message": "Due to your support team you may have lost a previous loyal professional customer. Thanks #angry #premiumproduct? #MacBookPro",
+            "support_response": "We're here for you. Tell us more about your experience in DM:",
+            "predicted_intent": "repair_warranty",
+            "predicted_confidence": 0.466
+          },
+          {
+            "rank": 2,
+            "score": 0.7241,
+            "pair_id": "1809614",
+            "conversation_id": "1809615",
+            "turn": 2,
+            "customer_message": "Just purchased a MacBook Pro @115858 @29645. Need service help. Four hour wait time. Someone needs to disrupt this business.",
+            "support_response": "Congratulations on the purchase of your new MacBook Pro. We may be able to help. Can you please message us in DM?",
+            "predicted_intent": "support_process",
+            "predicted_confidence": 0.6044
+          },
+          {
+            "rank": 3,
+            "score": 0.7227,
+            "pair_id": "1279917",
+            "conversation_id": "1279918",
+            "turn": 2,
+            "customer_message": "Dear @115858 my very expensive MacBook Pro has failed for the third time in a year and your customer service has been dreadful.",
+            "support_response": "We’d like to learn more about your experience. Please meet us in DM.",
+            "predicted_intent": "repair_warranty",
+            "predicted_confidence": 0.2405
+          }
+        ]
+      },
+      "llm": null,
+      "timings": {
+        "embed_ms": 17.2,
+        "faiss_search_ms": 13,
+        "llm_ms": 0,
+        "total_ms": 31
+      }
+    },
+    {
+      "index": 23,
+      "conversation_id": "2773256",
+      "message": "sorry if i lose our streak!!!!! my phone is dumb and reset itself and locked me out of it @AppleSupport EXPLAIN",
+      "golden_label": "software_bug",
+      "ground_truth": "escalate",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.354,
+      "top1_score": 0.6292,
+      "policy_action": "escalate",
+      "policy_reasons": [
+        {
+          "rule": "G1",
+          "name": "intent_confidence_below_threshold",
+          "detail": "intent confidence 0.354 < 0.60 — the Phase 3 head's prediction cannot be trusted to route a public reply"
+        },
+        {
+          "rule": "G2",
+          "name": "retrieval_score_below_threshold",
+          "detail": "top-1 retrieval score 0.629 < 0.65 — evidence too weak to ground a public reply"
+        }
+      ],
+      "python_policy_agrees": true,
+      "structure_ok": true,
+      "reply": null,
+      "reply_status": "not_generated_by_policy",
+      "scores": null,
+      "handoff": {
+        "next_step": "human_review",
+        "reasons": [
+          {
+            "rule": "G1",
+            "name": "intent_confidence_below_threshold",
+            "detail": "intent confidence 0.354 < 0.60 — the Phase 3 head's prediction cannot be trusted to route a public reply"
+          },
+          {
+            "rule": "G2",
+            "name": "retrieval_score_below_threshold",
+            "detail": "top-1 retrieval score 0.629 < 0.65 — evidence too weak to ground a public reply"
+          }
+        ],
+        "suggested_public_acknowledgment": "Thanks for reaching out — we'd like to gather a few more details so we can help accurately. Could you tell us more about what you're seeing?",
+        "note_for_agent": "Draft generation was intentionally skipped (policy: escalate). The acknowledgment template above is optional context — it is never sent automatically.",
+        "evidence_for_review": [
+          {
+            "rank": 1,
+            "score": 0.6292,
+            "pair_id": "1895718",
+            "conversation_id": "1895719",
+            "turn": 2,
+            "customer_message": "Hey @115858 @AppleSupport I got my phone like a few months ago & now ya glitching it to the max. Please stop.",
+            "support_response": "We'd like to know more. Please DM us with more details about the challenges you're experiencing.",
+            "predicted_intent": "general_complaint",
+            "predicted_confidence": 0.5589
+          },
+          {
+            "rank": 2,
+            "score": 0.6252,
+            "pair_id": "519196",
+            "conversation_id": "519197",
+            "turn": 2,
+            "customer_message": "well, my phone keeps randomly resetting/crashing every 60 seconds so sorry if you need to contact me while i’m out!! @AppleSupport thank you for making a very bad and useless phone.",
+            "support_response": "We want to help with your iPhone. To start, can you tell us when this first began and were you using a specific application or feature at that time? Also, what's the iOS version you're using? Meet us in a DM, we'll continue there.",
+            "predicted_intent": "device_hardware",
+            "predicted_confidence": 0.4659
+          },
+          {
+            "rank": 3,
+            "score": 0.6223,
+            "pair_id": "1230354",
+            "conversation_id": "1230356",
+            "turn": 2,
+            "customer_message": "What a great way to start the day, sent snaps to all my snap streaks close phone and now it wont come back on..... thanks @115858 😅",
+            "support_response": "We can take a look at that. Is it just that app having the issue?",
+            "predicted_intent": "general_complaint",
+            "predicted_confidence": 0.2702
+          }
+        ]
+      },
+      "llm": null,
+      "timings": {
+        "embed_ms": 13.3,
+        "faiss_search_ms": 13.2,
+        "llm_ms": 0,
+        "total_ms": 28
+      }
+    },
+    {
+      "index": 24,
+      "conversation_id": "2789816",
+      "message": "my phone is moving really slow, there’s a delay in my keyboard as well....just got this phone 🤔",
+      "golden_label": "software_bug",
+      "ground_truth": "auto_ok",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.9554,
+      "top1_score": 0.7653,
+      "policy_action": "auto_handle",
+      "policy_reasons": [],
+      "python_policy_agrees": true,
+      "structure_ok": true,
+      "reply": "Based on similar cases we've seen, we'd love to help get your phone running smoothly. Could you DM us your iOS version to get started?",
+      "reply_status": "ready_to_send",
+      "scores": {
+        "grounding_overlap": 0.5,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": true,
+        "dm_redirect": true,
+        "personal_data_solicited": false,
+        "length_chars": 134,
+        "length_words": 25
+      },
+      "handoff": null,
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "timings": {
+        "embed_ms": 13.4,
+        "faiss_search_ms": 12.4,
+        "llm_ms": 1230,
+        "total_ms": 1258
+      }
+    },
+    {
+      "index": 25,
+      "conversation_id": "2975695",
+      "message": "Why does my iPad keep asking me to sign into iCloud every 30 seconds but when I put in my NEWLY changed password it tells me it is incorrect!!! WTF...I can't even use it right now!",
+      "golden_label": "account_icloud",
+      "ground_truth": "escalate",
+      "predicted_intent": "account_icloud",
+      "intent_confidence": 0.8248,
+      "top1_score": 0.7693,
+      "policy_action": "escalate",
+      "policy_reasons": [
+        {
+          "rule": "E2",
+          "name": "private_state_domain",
+          "detail": "predicted intent 'account_icloud' is a private-state domain (order/quote/account/security/support-process): the correct next step depends on private information the system cannot see"
+        }
+      ],
+      "python_policy_agrees": true,
+      "structure_ok": true,
+      "reply": null,
+      "reply_status": "not_generated_by_policy",
+      "scores": null,
+      "handoff": {
+        "next_step": "human_review",
+        "reasons": [
+          {
+            "rule": "E2",
+            "name": "private_state_domain",
+            "detail": "predicted intent 'account_icloud' is a private-state domain (order/quote/account/security/support-process): the correct next step depends on private information the system cannot see"
+          }
+        ],
+        "suggested_public_acknowledgment": "Thanks for reaching out — we'd like to look into this with you in Direct Messages where we can help with the details.",
+        "note_for_agent": "Draft generation was intentionally skipped (policy: escalate). The acknowledgment template above is optional context — it is never sent automatically.",
+        "evidence_for_review": [
+          {
+            "rank": 1,
+            "score": 0.7693,
+            "pair_id": "1954028",
+            "conversation_id": "1954030",
+            "turn": 2,
+            "customer_message": "WTF is wrong with icloud today, I've entered my password over 100 times on 2 different devices and it won't sync. What are you doing!",
+            "support_response": "We'd like to help with any iCloud issues you're experiencing. Please DM us all about it & any steps you've tried so far to proceed.",
+            "predicted_intent": "account_icloud",
+            "predicted_confidence": 0.9372
+          },
+          {
+            "rank": 2,
+            "score": 0.7315,
+            "pair_id": "1020317",
+            "conversation_id": "1020318",
+            "turn": 2,
+            "customer_message": "wtf is going on? iPad Keeps telling me to reset my Apple ID I've done this 2x in the past month already it's getting #annoying af",
+            "support_response": "Let's see what we can do to help. Reach out to our Account Security team here:",
+            "predicted_intent": "account_icloud",
+            "predicted_confidence": 0.7211
+          },
+          {
+            "rank": 3,
+            "score": 0.7262,
+            "pair_id": "1802391",
+            "conversation_id": "1802392",
+            "turn": 2,
+            "customer_message": "had to change password & now having trouble signing into iCloud. Telling me to sign in w/ other device????",
+            "support_response": "We can help you get signed in. Is that asking for a passcode from another device? Let us know in DM to get started.",
+            "predicted_intent": "account_icloud",
+            "predicted_confidence": 0.8506
+          }
+        ]
+      },
+      "llm": null,
+      "timings": {
+        "embed_ms": 16.5,
+        "faiss_search_ms": 13.3,
+        "llm_ms": 0,
+        "total_ms": 32
+      }
+    },
+    {
+      "index": 26,
+      "conversation_id": "34614",
+      "message": "Hi @AppleSupport ! #TimeMachine still not working with #HighSierra update",
+      "golden_label": "software_bug",
+      "ground_truth": "auto_ok",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.9704,
+      "top1_score": 0.8519,
+      "policy_action": "auto_handle",
+      "policy_reasons": [],
+      "python_policy_agrees": true,
+      "structure_ok": true,
+      "reply": "Based on similar cases we've seen, we'd like to look into this TimeMachine issue with HighSierra. Could you send us a DM with more details?",
+      "reply_status": "ready_to_send",
+      "scores": {
+        "grounding_overlap": 0.5455,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": true,
+        "dm_redirect": true,
+        "personal_data_solicited": false,
+        "length_chars": 139,
+        "length_words": 25
+      },
+      "handoff": null,
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "timings": {
+        "embed_ms": 11.9,
+        "faiss_search_ms": 13.3,
+        "llm_ms": 636,
+        "total_ms": 663
+      }
+    },
+    {
+      "index": 27,
+      "conversation_id": "519252",
+      "message": "iPhone 6S going to black screen with loading wheel, then to lock screen on a loop. Phone unusable. Need a fix ASAP",
+      "golden_label": "software_bug",
+      "ground_truth": "escalate",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.3395,
+      "top1_score": 0.9679,
+      "policy_action": "escalate",
+      "policy_reasons": [
+        {
+          "rule": "G1",
+          "name": "intent_confidence_below_threshold",
+          "detail": "intent confidence 0.340 < 0.60 — the Phase 3 head's prediction cannot be trusted to route a public reply"
+        }
+      ],
+      "python_policy_agrees": true,
+      "structure_ok": true,
+      "reply": null,
+      "reply_status": "not_generated_by_policy",
+      "scores": null,
+      "handoff": {
+        "next_step": "human_review",
+        "reasons": [
+          {
+            "rule": "G1",
+            "name": "intent_confidence_below_threshold",
+            "detail": "intent confidence 0.340 < 0.60 — the Phase 3 head's prediction cannot be trusted to route a public reply"
+          }
+        ],
+        "suggested_public_acknowledgment": "Thanks for reaching out — we'd like to gather a few more details so we can help accurately. Could you tell us more about what you're seeing?",
+        "note_for_agent": "Draft generation was intentionally skipped (policy: escalate). The acknowledgment template above is optional context — it is never sent automatically.",
+        "evidence_for_review": [
+          {
+            "rank": 1,
+            "score": 0.9679,
+            "pair_id": "542389",
+            "conversation_id": "542390",
+            "turn": 2,
+            "customer_message": "iPhone 6S & iPhone 7 going to black screen with loading wheel, then to lock screen on a loop. Phone unusable. Need a fix",
+            "support_response": "We'd like to help. An update has been released that addresses this issue. If you haven't already, back up your iPhone and follow the steps here: DM us if you have questions.",
+            "predicted_intent": "software_bug",
+            "predicted_confidence": 0.3699
+          },
+          {
+            "rank": 2,
+            "score": 0.9275,
+            "pair_id": "523850",
+            "conversation_id": "523851",
+            "turn": 2,
+            "customer_message": "iPhone 6S & iPhone 7 going to black screen with loading wheel, then to lock screen on a loop. Phone unusable. Need a fix ASAP. #SouthAfrica #Vodacom",
+            "support_response": "We know how important it is to have an iPhone that works. We'd like to help. Send us a DM.",
+            "predicted_intent": "device_hardware",
+            "predicted_confidence": 0.3922
+          },
+          {
+            "rank": 3,
+            "score": 0.8325,
+            "pair_id": "539996",
+            "conversation_id": "539997",
+            "turn": 2,
+            "customer_message": "hi, Im having trouble with my iPhone 6s. a black screen with spinning wheel appears every 10 seconds. I did full reset",
+            "support_response": "We understand needing your iPhone to work properly, and we want to help. Take a look here for the steps that will help: If you're still having trouble, please let us know in DM.",
+            "predicted_intent": "device_hardware",
+            "predicted_confidence": 0.4266
+          }
+        ]
+      },
+      "llm": null,
+      "timings": {
+        "embed_ms": 13.1,
+        "faiss_search_ms": 13.9,
+        "llm_ms": 0,
+        "total_ms": 28
+      }
+    },
+    {
+      "index": 28,
+      "conversation_id": "718093",
+      "message": "your updates for #iPhone bite. Can't even connect to WiFi at @32366 #ditchiPhoneGoAndroid #iPhone7Horrible #sad #lotsofissues",
+      "golden_label": "connectivity",
+      "ground_truth": "auto_ok",
+      "predicted_intent": "general_complaint",
+      "intent_confidence": 0.5769,
+      "top1_score": 0.7476,
+      "policy_action": "escalate",
+      "policy_reasons": [
+        {
+          "rule": "G1",
+          "name": "intent_confidence_below_threshold",
+          "detail": "intent confidence 0.577 < 0.60 — the Phase 3 head's prediction cannot be trusted to route a public reply"
+        }
+      ],
+      "python_policy_agrees": true,
+      "structure_ok": true,
+      "reply": null,
+      "reply_status": "not_generated_by_policy",
+      "scores": null,
+      "handoff": {
+        "next_step": "human_review",
+        "reasons": [
+          {
+            "rule": "G1",
+            "name": "intent_confidence_below_threshold",
+            "detail": "intent confidence 0.577 < 0.60 — the Phase 3 head's prediction cannot be trusted to route a public reply"
+          }
+        ],
+        "suggested_public_acknowledgment": "Thanks for reaching out — we'd like to gather a few more details so we can help accurately. Could you tell us more about what you're seeing?",
+        "note_for_agent": "Draft generation was intentionally skipped (policy: escalate). The acknowledgment template above is optional context — it is never sent automatically.",
+        "evidence_for_review": [
+          {
+            "rank": 1,
+            "score": 0.7476,
+            "pair_id": "1001177",
+            "conversation_id": "1001178",
+            "turn": 2,
+            "customer_message": "So the new #ios update has not been pleasant for me, FFS! ugh!!!! @115858 #iphone7plus #iphone",
+            "support_response": "We've got your back! What kind of issues are you having with the update on your iPhone?",
+            "predicted_intent": "general_complaint",
+            "predicted_confidence": 0.4998
+          },
+          {
+            "rank": 2,
+            "score": 0.7206,
+            "pair_id": "2803479",
+            "conversation_id": "2803481",
+            "turn": 2,
+            "customer_message": "your last update really screwed my phone up! #pissed #iPhone",
+            "support_response": "We certainly want your iPhone to work as expected after an update. Give us some more details on what's happening, and we'd be happy to help.",
+            "predicted_intent": "general_complaint",
+            "predicted_confidence": 0.9656
+          },
+          {
+            "rank": 3,
+            "score": 0.7196,
+            "pair_id": "1950955",
+            "conversation_id": "1950956",
+            "turn": 2,
+            "customer_message": "#ios11update ruined my phone and patience. #iphone7 @115858",
+            "support_response": "Let us know all about any issues you're seeing. We'd love to help sort it out. Please DM us to proceed.",
+            "predicted_intent": "general_complaint",
+            "predicted_confidence": 0.6841
+          }
+        ]
+      },
+      "llm": null,
+      "timings": {
+        "embed_ms": 13.8,
+        "faiss_search_ms": 13.3,
+        "llm_ms": 0,
+        "total_ms": 28
+      }
+    },
+    {
+      "index": 29,
+      "conversation_id": "925370",
+      "message": "Ever since I updated my phone, it’s been sooo slow and keeps crashing! @AppleSupport",
+      "golden_label": "software_bug",
+      "ground_truth": "auto_ok",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.8866,
+      "top1_score": 0.884,
+      "policy_action": "auto_handle",
+      "policy_reasons": [],
+      "python_policy_agrees": true,
+      "structure_ok": true,
+      "reply": "Based on similar cases we've seen, we'd like to look into this with you together. DM us your iOS version and we'll go from there.",
+      "reply_status": "ready_to_send",
+      "scores": {
+        "grounding_overlap": 0.5455,
+        "unsupported_specifics": [],
+        "framing_compliant": true,
+        "clarifying_question": false,
+        "dm_redirect": true,
+        "personal_data_solicited": false,
+        "length_chars": 129,
+        "length_words": 25
+      },
+      "handoff": null,
+      "llm": {
+        "model": "glm-4-plus",
+        "attempts": 1,
+        "max_reply_chars": 280
+      },
+      "timings": {
+        "embed_ms": 12.1,
+        "faiss_search_ms": 27.6,
+        "llm_ms": 727,
+        "total_ms": 768
+      }
+    }
+  ],
+  "failures": [],
+  "wall_clock_seconds": 11.5
+}

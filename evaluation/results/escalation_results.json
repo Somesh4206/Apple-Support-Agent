@@ -1,0 +1,746 @@
+{
+  "phase": 6,
+  "generated_at": "2026-09-16T11:52:45.645416+00:00",
+  "random_seed": 42,
+  "policy": {
+    "type": "rule-based, explainable (no learned component)",
+    "decision": "escalate if ANY rule fires; auto_handle only when all rules pass",
+    "safety_asymmetry": "a false auto-handle is far costlier than a false escalation — the policy is deliberately conservative",
+    "rules": [
+      {
+        "id": "E2",
+        "name": "private_state_domain",
+        "fires_when": "predicted intent ∈ {account_icloud, billing_purchases, repair_warranty, security_privacy, support_process}",
+        "why": "the correct next step depends on private state the system cannot see (order, quote, account, identity, official channels); public generic advice risks harm",
+        "provenance": "Phase 2 taxonomy typically_escalated hints (4 of 5) + documented Phase 6 account_icloud refinement (decision log D25)"
+      },
+      {
+        "id": "E3",
+        "name": "unmatched_intent",
+        "fires_when": "predicted intent == 'other'",
+        "why": "no groundable issue class; an evidence draft would rest on irrelevant historical cases",
+        "provenance": "Phase 2 taxonomy (the unmatched pool)"
+      },
+      {
+        "id": "E4",
+        "name": "sensitive_content",
+        "fires_when": "message matches one of ['order_or_payment_language', 'email_address', 'phone_number', 'card_like_number']",
+        "why": "payment/order language or private data (email, phone, card-like number) in the message must not be answered — or echoed — by a public auto-reply",
+        "provenance": "Phase 5 safety rule 4, applied at the decision layer as defense-in-depth against intent misclassification"
+      },
+      {
+        "id": "G1",
+        "name": "intent_confidence_gate",
+        "fires_when": "intent_confidence < 0.60",
+        "why": "Phase 3 measured 0.780 mean confidence on correct vs 0.508 on wrong test predictions; below the threshold the routing itself is unreliable",
+        "provenance": "INTENT_CONFIDENCE_THRESHOLD fixed since Phase 3 (.env, single source of truth)"
+      },
+      {
+        "id": "G2",
+        "name": "retrieval_evidence_gate",
+        "fires_when": "top1_score < 0.65",
+        "why": "Phase 4 measured Recall@5 0.826 above vs 0.586 below the threshold; weak evidence produces clarifying questions, which a human should own",
+        "provenance": "RETRIEVAL_THRESHOLD fixed since Phase 4 (.env, single source of truth)"
+      }
+    ],
+    "inputs": [
+      "predicted intent (Phase 3 logreg head)",
+      "intent confidence (Phase 3)",
+      "top-1 retrieval score (Phase 4 FAISS)",
+      "raw message text (E4 patterns)"
+    ]
+  },
+  "ground_truth": {
+    "source": "evaluation/escalation_labels.json",
+    "criteria": [
+      "ESCALATE (money/account stakes): the issue involves purchases, refunds, payments, order delivery, warranty/repair pricing, or Apple ID/iCloud account access — wrong public advice could cause financial or account harm, or resolution needs private details.",
+      "ESCALATE (safety/off-topic): the message is abusive, violent, off-topic, or does not describe a technical issue — there is no groundable problem, and a casual auto-reply is a brand risk.",
+      "ESCALATE (ambiguity): the message is too vague or mixes many topics to safely answer with ONE public reply.",
+      "ESCALATE (unusable device / data at stake): the device is bricked/unusable or real-world data (tickets, work access) is at risk — wrong troubleshooting steps could destroy data; needs priority human help.",
+      "AUTO_OK: a single, clear technical software/hardware issue with standard troubleshooting evidence available — a grounded draft (with DM-redirect where the evidence style demands it) is safe to publish."
+    ],
+    "annotator": "assignment author (single pass, before running the policy on this set)",
+    "escalate_n": 10,
+    "auto_n": 19
+  },
+  "evaluation": {
+    "n_test": 29,
+    "confusion": {
+      "true_escalate (policy=escalate, truth=escalate)": 10,
+      "over_escalation (policy=escalate, truth=auto)": 4,
+      "false_auto (policy=auto, truth=escalate)": 0,
+      "true_auto (policy=auto, truth=auto)": 15
+    },
+    "false_auto_rate": {
+      "value": 0.0,
+      "numerator": 0,
+      "denominator": 10,
+      "ci95": [
+        0.0,
+        0.3085
+      ],
+      "ci_method": "Clopper-Pearson (exact)"
+    },
+    "false_auto_rate_overall": {
+      "value": 0.0,
+      "numerator": 0,
+      "denominator": 29,
+      "ci95": [
+        0.0,
+        0.1194
+      ],
+      "ci_method": "Clopper-Pearson (exact)"
+    },
+    "precision_escalate": {
+      "value": 0.7143,
+      "numerator": 10,
+      "denominator": 14,
+      "ci95": [
+        0.419,
+        0.9161
+      ],
+      "ci_method": "Clopper-Pearson (exact)"
+    },
+    "recall_escalate": {
+      "value": 1.0,
+      "numerator": 10,
+      "denominator": 10,
+      "ci95": [
+        0.6915,
+        1.0
+      ],
+      "ci_method": "Clopper-Pearson (exact)"
+    },
+    "f1_escalate": 0.8333,
+    "over_escalation_rate": {
+      "value": 0.2105,
+      "numerator": 4,
+      "denominator": 19,
+      "ci95": [
+        0.0605,
+        0.4557
+      ],
+      "ci_method": "Clopper-Pearson (exact)"
+    },
+    "auto_handle_rate": {
+      "value": 0.5172,
+      "numerator": 15,
+      "denominator": 29,
+      "ci95": [
+        0.3253,
+        0.7055
+      ],
+      "ci_method": "Clopper-Pearson (exact)"
+    },
+    "rule_fire_counts": {
+      "E2": 3,
+      "E3": 2,
+      "E4": 1,
+      "G1": 10,
+      "G2": 6
+    },
+    "ablation_vs_phase5_gates": {
+      "description": "the Phase 5 preview auto-handled a message iff both numeric gates passed (intent_pass AND retrieval_pass); this ablation isolates what the Phase 6 domain/content rules add",
+      "gates_only_auto_n": 16,
+      "policy_auto_n": 15,
+      "decision_deltas": [
+        {
+          "index": 25,
+          "message": "Why does my iPad keep asking me to sign into iCloud every 30 seconds but when I put in my NEWLY chan",
+          "was_auto_now_escalated": true,
+          "reasons": [
+            "E2 private_state_domain"
+          ],
+          "ground_truth": "escalate"
+        }
+      ]
+    },
+    "qualitative_over_escalations": [
+      {
+        "index": 1,
+        "message": "my App Store is not working!!!!",
+        "predicted_intent": "device_hardware",
+        "intent_confidence": 0.367,
+        "top1_score": 0.9143,
+        "reasons_fired": [
+          "G1 intent_confidence_below_threshold"
+        ],
+        "rationale": "clear single software issue (App Store not working); standard troubleshooting evidence exists"
+      },
+      {
+        "index": 12,
+        "message": "Can you make your iCal app stop deleting my saved date events, oh and stop doubling other's that would be great.",
+        "predicted_intent": "account_icloud",
+        "intent_confidence": 0.3189,
+        "top1_score": 0.5708,
+        "reasons_fired": [
+          "E2 private_state_domain",
+          "G1 intent_confidence_below_threshold",
+          "G2 retrieval_score_below_threshold"
+        ],
+        "rationale": "clear software issue (iCal deleting/doubling events)"
+      },
+      {
+        "index": 16,
+        "message": "Jesus fucking Christ my phone keeps dying at like 90% y'all ain't shot prolly gon get a samsung @AppleSupport",
+        "predicted_intent": "general_complaint",
+        "intent_confidence": 0.4879,
+        "top1_score": 0.7355,
+        "reasons_fired": [
+          "G1 intent_confidence_below_threshold"
+        ],
+        "rationale": "battery dying at 90% — hardware-ish complaint, evidence covers battery diagnostics"
+      },
+      {
+        "index": 28,
+        "message": "your updates for #iPhone bite. Can't even connect to WiFi at @32366 #ditchiPhoneGoAndroid #iPhone7Horrible #sad #lotsofissues",
+        "predicted_intent": "general_complaint",
+        "intent_confidence": 0.5769,
+        "top1_score": 0.7476,
+        "reasons_fired": [
+          "G1 intent_confidence_below_threshold"
+        ],
+        "rationale": "ranting tone but a single clear technical issue (WiFi won't connect); evidence-grounded WiFi troubleshooting is safe"
+      }
+    ],
+    "honest_caveats": [
+      "n=29 (the golden test split): every rate carries the wide exact CI reported alongside it — 0 false-autos in 10 should-escalate messages bounds the true false-auto rate below ~26% at 95% confidence, not at zero.",
+      "Ground truth is ONE human's judgement against fixed written criteria; no inter-annotator agreement exists.",
+      "The policy's numeric gates reuse the Phase 3/4 thresholds fixed before Phase 6; the domain rules reuse the Phase 2 taxonomy hints. No rule was tuned on these test labels.",
+      "The runtime signals (predicted intent, confidence, top-1 score) come from the recorded Phase 5 run; re-running generation would produce slightly different confidences/scores and could shift borderline decisions.",
+      "Precision/recall treat 'escalate' as the positive class; the operationally dominant error (over-escalation) is reported separately because it costs human minutes, not customer safety."
+    ]
+  },
+  "per_example": [
+    {
+      "index": 1,
+      "message": "my App Store is not working!!!!",
+      "golden_intent": "software_bug",
+      "predicted_intent": "device_hardware",
+      "intent_confidence": 0.367,
+      "top1_score": 0.9143,
+      "ground_truth": "auto_ok",
+      "ground_truth_rationale": "clear single software issue (App Store not working); standard troubleshooting evidence exists",
+      "policy_action": "escalate",
+      "policy_reasons": [
+        {
+          "rule": "G1",
+          "name": "intent_confidence_below_threshold",
+          "detail": "intent confidence 0.367 < 0.60 — the Phase 3 head's prediction cannot be trusted to route a public reply"
+        }
+      ],
+      "outcome": "over_escalation",
+      "phase5_gates_only_auto": false
+    },
+    {
+      "index": 2,
+      "message": ", your new iOS 11.1 not resolve the calendar problem. 😡#iOS11 #iosfail",
+      "golden_intent": "software_bug",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.6724,
+      "top1_score": 0.8376,
+      "ground_truth": "auto_ok",
+      "ground_truth_rationale": "clear software bug report (iOS 11.1 calendar); evidence-grounded reply is safe",
+      "policy_action": "auto_handle",
+      "policy_reasons": [],
+      "outcome": "true_auto",
+      "phase5_gates_only_auto": true
+    },
+    {
+      "index": 3,
+      "message": "can’t download and open epub files to ibooks. whenever i download an epub file it appears for a second and it disappears.",
+      "golden_intent": "software_bug",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.7552,
+      "top1_score": 0.7267,
+      "ground_truth": "auto_ok",
+      "ground_truth_rationale": "clear software issue (epub/ibooks downloads)",
+      "policy_action": "auto_handle",
+      "policy_reasons": [],
+      "outcome": "true_auto",
+      "phase5_gates_only_auto": true
+    },
+    {
+      "index": 4,
+      "message": "Just upgraded to #HighSierra & now Mail will not open. Only 1 bounce& then not responding.",
+      "golden_intent": "software_bug",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.7128,
+      "top1_score": 0.6791,
+      "ground_truth": "auto_ok",
+      "ground_truth_rationale": "clear software issue (Mail won't open after HighSierra upgrade)",
+      "policy_action": "auto_handle",
+      "policy_reasons": [],
+      "outcome": "true_auto",
+      "phase5_gates_only_auto": true
+    },
+    {
+      "index": 5,
+      "message": "do you have a price quote on getting a screen fixed for iPhone 7 Plus?",
+      "golden_intent": "repair_warranty",
+      "predicted_intent": "other",
+      "intent_confidence": 0.3705,
+      "top1_score": 0.7659,
+      "ground_truth": "escalate",
+      "ground_truth_rationale": "repair PRICE QUOTE request — money stakes; prices must not be quoted from 2017 historical evidence and vary by region/plan (criteria: money/account stakes)",
+      "policy_action": "escalate",
+      "policy_reasons": [
+        {
+          "rule": "E3",
+          "name": "unmatched_intent",
+          "detail": "predicted intent 'other' — no groundable issue class, an evidence-grounded draft would rest on irrelevant cases"
+        },
+        {
+          "rule": "G1",
+          "name": "intent_confidence_below_threshold",
+          "detail": "intent confidence 0.370 < 0.60 — the Phase 3 head's prediction cannot be trusted to route a public reply"
+        }
+      ],
+      "outcome": "true_escalate",
+      "phase5_gates_only_auto": false
+    },
+    {
+      "index": 6,
+      "message": "Have you ever wanted to punch someone in the face? Like I️ have SUCH a desire to punch this one person in the face as hard as I️ can",
+      "golden_intent": "other",
+      "predicted_intent": "other",
+      "intent_confidence": 0.9193,
+      "top1_score": 0.3671,
+      "ground_truth": "escalate",
+      "ground_truth_rationale": "violent/off-topic content, no technical issue at all (criteria: safety/off-topic); a casual public auto-reply is a brand risk",
+      "policy_action": "escalate",
+      "policy_reasons": [
+        {
+          "rule": "E3",
+          "name": "unmatched_intent",
+          "detail": "predicted intent 'other' — no groundable issue class, an evidence-grounded draft would rest on irrelevant cases"
+        },
+        {
+          "rule": "G2",
+          "name": "retrieval_score_below_threshold",
+          "detail": "top-1 retrieval score 0.367 < 0.65 — evidence too weak to ground a public reply"
+        }
+      ],
+      "outcome": "true_escalate",
+      "phase5_gates_only_auto": false
+    },
+    {
+      "index": 7,
+      "message": "@AppleSupport you gotta fix the I️ like for real",
+      "golden_intent": "software_bug",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.6585,
+      "top1_score": 0.8432,
+      "ground_truth": "auto_ok",
+      "ground_truth_rationale": "clear software bug (I autocorrect), evidence covers it",
+      "policy_action": "auto_handle",
+      "policy_reasons": [],
+      "outcome": "true_auto",
+      "phase5_gates_only_auto": true
+    },
+    {
+      "index": 8,
+      "message": "Why do some ppl not have the 👀 problem @115858 it ain’t funny 👀 pay too much for y’all to be making mistakes we better have an update tmrw",
+      "golden_intent": "software_bug",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.9057,
+      "top1_score": 0.7029,
+      "ground_truth": "auto_ok",
+      "ground_truth_rationale": "bug complaint affecting some users; evidence-grounded troubleshooting reply is safe",
+      "policy_action": "auto_handle",
+      "policy_reasons": [],
+      "outcome": "true_auto",
+      "phase5_gates_only_auto": true
+    },
+    {
+      "index": 9,
+      "message": "I love when my fucking 10 month old iPhone 7+ breaks for no God damn reason 😍 @AppleSupport",
+      "golden_intent": "device_hardware",
+      "predicted_intent": "general_complaint",
+      "intent_confidence": 0.8893,
+      "top1_score": 0.7376,
+      "ground_truth": "auto_ok",
+      "ground_truth_rationale": "vulgar but real hardware complaint (iPhone 7+ broke); safe reply asks what's going on / DM",
+      "policy_action": "auto_handle",
+      "policy_reasons": [],
+      "outcome": "true_auto",
+      "phase5_gates_only_auto": true
+    },
+    {
+      "index": 10,
+      "message": "So I️ have 280 so I’m going use this time to thank everyone following me even though I️ get annoying. Y’all are the real ones. Now that I️ have 280 it’s gonna get worse... so thank you!! So stick around. Also @123765, you fucked up with this update. Should of stayed with 140",
+      "golden_intent": "general_complaint",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.6446,
+      "top1_score": 0.6478,
+      "ground_truth": "escalate",
+      "ground_truth_rationale": "off-topic rambling (follower thank-yous) with a vague complaint mixed in — no single groundable issue (criteria: ambiguity/off-topic)",
+      "policy_action": "escalate",
+      "policy_reasons": [
+        {
+          "rule": "G2",
+          "name": "retrieval_score_below_threshold",
+          "detail": "top-1 retrieval score 0.648 < 0.65 — evidence too weak to ground a public reply"
+        }
+      ],
+      "outcome": "true_escalate",
+      "phase5_gates_only_auto": false
+    },
+    {
+      "index": 11,
+      "message": "Hey @115858 stop sucking and fix this “I️” problem thank you",
+      "golden_intent": "software_bug",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.9697,
+      "top1_score": 0.8231,
+      "ground_truth": "auto_ok",
+      "ground_truth_rationale": "clear software bug (I autocorrect)",
+      "policy_action": "auto_handle",
+      "policy_reasons": [],
+      "outcome": "true_auto",
+      "phase5_gates_only_auto": true
+    },
+    {
+      "index": 12,
+      "message": "Can you make your iCal app stop deleting my saved date events, oh and stop doubling other's that would be great.",
+      "golden_intent": "software_bug",
+      "predicted_intent": "account_icloud",
+      "intent_confidence": 0.3189,
+      "top1_score": 0.5708,
+      "ground_truth": "auto_ok",
+      "ground_truth_rationale": "clear software issue (iCal deleting/doubling events)",
+      "policy_action": "escalate",
+      "policy_reasons": [
+        {
+          "rule": "E2",
+          "name": "private_state_domain",
+          "detail": "predicted intent 'account_icloud' is a private-state domain (order/quote/account/security/support-process): the correct next step depends on private information the system cannot see"
+        },
+        {
+          "rule": "G1",
+          "name": "intent_confidence_below_threshold",
+          "detail": "intent confidence 0.319 < 0.60 — the Phase 3 head's prediction cannot be trusted to route a public reply"
+        },
+        {
+          "rule": "G2",
+          "name": "retrieval_score_below_threshold",
+          "detail": "top-1 retrieval score 0.571 < 0.65 — evidence too weak to ground a public reply"
+        }
+      ],
+      "outcome": "over_escalation",
+      "phase5_gates_only_auto": false
+    },
+    {
+      "index": 13,
+      "message": "Why did the new iPhone update do nothing but kill my battery life now?? @115858",
+      "golden_intent": "software_bug",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.9338,
+      "top1_score": 0.9238,
+      "ground_truth": "auto_ok",
+      "ground_truth_rationale": "clear software issue (battery drain after update); well-covered evidence",
+      "policy_action": "auto_handle",
+      "policy_reasons": [],
+      "outcome": "true_auto",
+      "phase5_gates_only_auto": true
+    },
+    {
+      "index": 14,
+      "message": "I cannot use my iPhone after an upgrade - serious stuff - travel ticket to work as well as all communication. Please advise.",
+      "golden_intent": "software_bug",
+      "predicted_intent": "connectivity",
+      "intent_confidence": 0.4801,
+      "top1_score": 0.7306,
+      "ground_truth": "escalate",
+      "ground_truth_rationale": "iPhone UNUSABLE after upgrade with real-world stakes (travel ticket to work, all communication) (criteria: unusable device / data at stake)",
+      "policy_action": "escalate",
+      "policy_reasons": [
+        {
+          "rule": "G1",
+          "name": "intent_confidence_below_threshold",
+          "detail": "intent confidence 0.480 < 0.60 — the Phase 3 head's prediction cannot be trusted to route a public reply"
+        }
+      ],
+      "outcome": "true_escalate",
+      "phase5_gates_only_auto": false
+    },
+    {
+      "index": 15,
+      "message": "what’s the deal with my phone autocorrecting “I” into I️",
+      "golden_intent": "software_bug",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.9927,
+      "top1_score": 0.9351,
+      "ground_truth": "auto_ok",
+      "ground_truth_rationale": "clear software bug (autocorrect I); strongest evidence case",
+      "policy_action": "auto_handle",
+      "policy_reasons": [],
+      "outcome": "true_auto",
+      "phase5_gates_only_auto": true
+    },
+    {
+      "index": 16,
+      "message": "Jesus fucking Christ my phone keeps dying at like 90% y'all ain't shot prolly gon get a samsung @AppleSupport",
+      "golden_intent": "device_hardware",
+      "predicted_intent": "general_complaint",
+      "intent_confidence": 0.4879,
+      "top1_score": 0.7355,
+      "ground_truth": "auto_ok",
+      "ground_truth_rationale": "battery dying at 90% — hardware-ish complaint, evidence covers battery diagnostics",
+      "policy_action": "escalate",
+      "policy_reasons": [
+        {
+          "rule": "G1",
+          "name": "intent_confidence_below_threshold",
+          "detail": "intent confidence 0.488 < 0.60 — the Phase 3 head's prediction cannot be trusted to route a public reply"
+        }
+      ],
+      "outcome": "over_escalation",
+      "phase5_gates_only_auto": false
+    },
+    {
+      "index": 17,
+      "message": "you have misspelled a word in your page.",
+      "golden_intent": "other",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.6269,
+      "top1_score": 0.5536,
+      "ground_truth": "escalate",
+      "ground_truth_rationale": "reports a typo on Apple's own page — not a customer-device issue; a public auto-reply cannot resolve it and routing needs a human (criteria: off-topic/ambiguity)",
+      "policy_action": "escalate",
+      "policy_reasons": [
+        {
+          "rule": "G2",
+          "name": "retrieval_score_below_threshold",
+          "detail": "top-1 retrieval score 0.554 < 0.65 — evidence too weak to ground a public reply"
+        }
+      ],
+      "outcome": "true_escalate",
+      "phase5_gates_only_auto": false
+    },
+    {
+      "index": 18,
+      "message": "do you have a 24 hr number?",
+      "golden_intent": "support_process",
+      "predicted_intent": "support_process",
+      "intent_confidence": 0.2993,
+      "top1_score": 0.5515,
+      "ground_truth": "escalate",
+      "ground_truth_rationale": "asks for a support PHONE NUMBER — a specific fact that must not be quoted from stale historical evidence; support-process routing needs a human (criteria: money/account stakes analog: fact-risk + process routing)",
+      "policy_action": "escalate",
+      "policy_reasons": [
+        {
+          "rule": "E2",
+          "name": "private_state_domain",
+          "detail": "predicted intent 'support_process' is a private-state domain (order/quote/account/security/support-process): the correct next step depends on private information the system cannot see"
+        },
+        {
+          "rule": "G1",
+          "name": "intent_confidence_below_threshold",
+          "detail": "intent confidence 0.299 < 0.60 — the Phase 3 head's prediction cannot be trusted to route a public reply"
+        },
+        {
+          "rule": "G2",
+          "name": "retrieval_score_below_threshold",
+          "detail": "top-1 retrieval score 0.551 < 0.65 — evidence too weak to ground a public reply"
+        }
+      ],
+      "outcome": "true_escalate",
+      "phase5_gates_only_auto": false
+    },
+    {
+      "index": 19,
+      "message": "La última actualización de software del #iphone a 11.1 me tiene el cel demasiado lento y se bloquean las aplicaciones @AppleSupport",
+      "golden_intent": "software_bug",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.9286,
+      "top1_score": 0.8153,
+      "ground_truth": "auto_ok",
+      "ground_truth_rationale": "clear software issue (update slowed phone, Spanish); evidence covers it",
+      "policy_action": "auto_handle",
+      "policy_reasons": [],
+      "outcome": "true_auto",
+      "phase5_gates_only_auto": true
+    },
+    {
+      "index": 20,
+      "message": "just updated to latest update now I can’t access I tunes or download podcast please help",
+      "golden_intent": "software_bug",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.9181,
+      "top1_score": 0.7283,
+      "ground_truth": "auto_ok",
+      "ground_truth_rationale": "clear software issue (no iTunes access / podcast downloads after update)",
+      "policy_action": "auto_handle",
+      "policy_reasons": [],
+      "outcome": "true_auto",
+      "phase5_gates_only_auto": true
+    },
+    {
+      "index": 21,
+      "message": "Dear @115858, you’re really rude for ruining the battery life on our phones with that last update.",
+      "golden_intent": "software_bug",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.8259,
+      "top1_score": 0.822,
+      "ground_truth": "auto_ok",
+      "ground_truth_rationale": "rude but clear software complaint (battery after update)",
+      "policy_action": "auto_handle",
+      "policy_reasons": [],
+      "outcome": "true_auto",
+      "phase5_gates_only_auto": true
+    },
+    {
+      "index": 22,
+      "message": "@116333 Tim, I wrote you an email Through Apple about MacBook Pro I’ve bought but not gotten. I don’t expect this to help but no one at Apple has helped either. The more I call Apple the more frustrating it becomes. #NoCustomerService",
+      "golden_intent": "billing_purchases",
+      "predicted_intent": "device_hardware",
+      "intent_confidence": 0.3164,
+      "top1_score": 0.7315,
+      "ground_truth": "escalate",
+      "ground_truth_rationale": "MacBook Pro PAID FOR but not received + prior failed support contacts (criteria: money/account stakes; needs private order details)",
+      "policy_action": "escalate",
+      "policy_reasons": [
+        {
+          "rule": "E4",
+          "name": "content:order_or_payment_language",
+          "detail": "message contains order or payment language (match: \"bought but not gotten\") — payment/order matters or private data must not be handled by a public auto-reply"
+        },
+        {
+          "rule": "G1",
+          "name": "intent_confidence_below_threshold",
+          "detail": "intent confidence 0.316 < 0.60 — the Phase 3 head's prediction cannot be trusted to route a public reply"
+        }
+      ],
+      "outcome": "true_escalate",
+      "phase5_gates_only_auto": false
+    },
+    {
+      "index": 23,
+      "message": "sorry if i lose our streak!!!!! my phone is dumb and reset itself and locked me out of it @AppleSupport EXPLAIN",
+      "golden_intent": "software_bug",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.354,
+      "top1_score": 0.6292,
+      "ground_truth": "escalate",
+      "ground_truth_rationale": "phone reset itself and is now LOCKED — access recovery needed; wrong public advice (e.g. reset again) could lock out further; app streak loss suggests account coupling (criteria: money/account stakes + unusable device)",
+      "policy_action": "escalate",
+      "policy_reasons": [
+        {
+          "rule": "G1",
+          "name": "intent_confidence_below_threshold",
+          "detail": "intent confidence 0.354 < 0.60 — the Phase 3 head's prediction cannot be trusted to route a public reply"
+        },
+        {
+          "rule": "G2",
+          "name": "retrieval_score_below_threshold",
+          "detail": "top-1 retrieval score 0.629 < 0.65 — evidence too weak to ground a public reply"
+        }
+      ],
+      "outcome": "true_escalate",
+      "phase5_gates_only_auto": false
+    },
+    {
+      "index": 24,
+      "message": "my phone is moving really slow, there’s a delay in my keyboard as well....just got this phone 🤔",
+      "golden_intent": "software_bug",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.9554,
+      "top1_score": 0.7653,
+      "ground_truth": "auto_ok",
+      "ground_truth_rationale": "clear performance issue (slow, keyboard delay)",
+      "policy_action": "auto_handle",
+      "policy_reasons": [],
+      "outcome": "true_auto",
+      "phase5_gates_only_auto": true
+    },
+    {
+      "index": 25,
+      "message": "Why does my iPad keep asking me to sign into iCloud every 30 seconds but when I put in my NEWLY changed password it tells me it is incorrect!!! WTF...I can't even use it right now!",
+      "golden_intent": "account_icloud",
+      "predicted_intent": "account_icloud",
+      "intent_confidence": 0.8248,
+      "top1_score": 0.7693,
+      "ground_truth": "escalate",
+      "ground_truth_rationale": "iCloud sign-in loop REJECTING a newly changed password, iPad unusable — account access where the correct step depends on private account state; public password advice can compound a lockout or miss a takeover (criteria: money/account stakes)",
+      "policy_action": "escalate",
+      "policy_reasons": [
+        {
+          "rule": "E2",
+          "name": "private_state_domain",
+          "detail": "predicted intent 'account_icloud' is a private-state domain (order/quote/account/security/support-process): the correct next step depends on private information the system cannot see"
+        }
+      ],
+      "outcome": "true_escalate",
+      "phase5_gates_only_auto": true
+    },
+    {
+      "index": 26,
+      "message": "Hi @AppleSupport ! #TimeMachine still not working with #HighSierra update",
+      "golden_intent": "software_bug",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.9704,
+      "top1_score": 0.8519,
+      "ground_truth": "auto_ok",
+      "ground_truth_rationale": "clear software issue (TimeMachine + HighSierra)",
+      "policy_action": "auto_handle",
+      "policy_reasons": [],
+      "outcome": "true_auto",
+      "phase5_gates_only_auto": true
+    },
+    {
+      "index": 27,
+      "message": "iPhone 6S going to black screen with loading wheel, then to lock screen on a loop. Phone unusable. Need a fix ASAP",
+      "golden_intent": "software_bug",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.3395,
+      "top1_score": 0.9679,
+      "ground_truth": "escalate",
+      "ground_truth_rationale": "iPhone 6S boot-loop, phone UNUSABLE, urgent (criteria: unusable device / data at stake — wrong steps could force data loss)",
+      "policy_action": "escalate",
+      "policy_reasons": [
+        {
+          "rule": "G1",
+          "name": "intent_confidence_below_threshold",
+          "detail": "intent confidence 0.340 < 0.60 — the Phase 3 head's prediction cannot be trusted to route a public reply"
+        }
+      ],
+      "outcome": "true_escalate",
+      "phase5_gates_only_auto": false
+    },
+    {
+      "index": 28,
+      "message": "your updates for #iPhone bite. Can't even connect to WiFi at @32366 #ditchiPhoneGoAndroid #iPhone7Horrible #sad #lotsofissues",
+      "golden_intent": "connectivity",
+      "predicted_intent": "general_complaint",
+      "intent_confidence": 0.5769,
+      "top1_score": 0.7476,
+      "ground_truth": "auto_ok",
+      "ground_truth_rationale": "ranting tone but a single clear technical issue (WiFi won't connect); evidence-grounded WiFi troubleshooting is safe",
+      "policy_action": "escalate",
+      "policy_reasons": [
+        {
+          "rule": "G1",
+          "name": "intent_confidence_below_threshold",
+          "detail": "intent confidence 0.577 < 0.60 — the Phase 3 head's prediction cannot be trusted to route a public reply"
+        }
+      ],
+      "outcome": "over_escalation",
+      "phase5_gates_only_auto": false
+    },
+    {
+      "index": 29,
+      "message": "Ever since I updated my phone, it’s been sooo slow and keeps crashing! @AppleSupport",
+      "golden_intent": "software_bug",
+      "predicted_intent": "software_bug",
+      "intent_confidence": 0.8866,
+      "top1_score": 0.884,
+      "ground_truth": "auto_ok",
+      "ground_truth_rationale": "clear software issue (slow + crashing after update)",
+      "policy_action": "auto_handle",
+      "policy_reasons": [],
+      "outcome": "true_auto",
+      "phase5_gates_only_auto": true
+    }
+  ]
+}

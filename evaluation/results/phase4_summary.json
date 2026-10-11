@@ -1,0 +1,149 @@
+{
+  "phase": 4,
+  "generated_at": "2026-10-11 07:30:14 UTC",
+  "random_seed": 42,
+  "embedding_model": {
+    "id": "sentence-transformers/all-MiniLM-L6-v2",
+    "dim": 384,
+    "parameters": "22.3M (frozen; retrieval embeds, it never trains)",
+    "runtime": "CPU, float32"
+  },
+  "corpus": {
+    "total_pairs": 106137,
+    "golden_excluded": 200,
+    "indexed_pairs": 105871,
+    "embedded_field": "customer_message",
+    "embedding_seconds": 597.39,
+    "embedding_cache_hit": false,
+    "index_size_mb": 155.1,
+    "index_build_seconds": 0.44,
+    "self_retrieval_check": "PASS"
+  },
+  "relevance_definition": "The corpus is unlabeled, so retrieved pairs are labelled by the Phase 3 logreg_head (test accuracy 0.6552, macro-F1 0.3032). A hit at rank <= k is a retrieved pair whose predicted label equals the opener's golden label. The classifier's noise is part of the measurement and is reported, not hidden; qualitative examples let a reader judge semantic similarity directly.",
+  "corpus_label_distribution": {
+    "account_icloud": 5158,
+    "billing_purchases": 957,
+    "connectivity": 3843,
+    "device_hardware": 6150,
+    "general_complaint": 3564,
+    "other": 10171,
+    "repair_warranty": 1267,
+    "security_privacy": 475,
+    "software_bug": 72958,
+    "support_process": 1328
+  },
+  "evaluation": {
+    "val": {
+      "recall_at_1": 0.7241,
+      "recall_at_3": 0.7931,
+      "recall_at_5": 0.9655,
+      "mrr_at_5": 0.7908,
+      "n": 29,
+      "top1_agreement": 0.7241,
+      "majority_vote_accuracy": 0.7241,
+      "top1_score": {
+        "mean": 0.7982,
+        "median": 0.8106,
+        "min": 0.5736,
+        "max": 0.9306
+      }
+    },
+    "test": {
+      "recall_at_1": 0.5862,
+      "recall_at_3": 0.6552,
+      "recall_at_5": 0.7586,
+      "mrr_at_5": 0.6515,
+      "n": 29,
+      "top1_agreement": 0.5862,
+      "majority_vote_accuracy": 0.6897,
+      "top1_score": {
+        "mean": 0.7503,
+        "median": 0.7476,
+        "min": 0.3671,
+        "max": 0.9679
+      }
+    },
+    "threshold_preview": {
+      "threshold": 0.65,
+      "note": "Share of TEST openers whose top-1 cosine is at least the configured RETRIEVAL_THRESHOLD, and label-agreement recall among them \u2014 the grounding gate Phase 5/6 will consume. n=29, indicative only.",
+      "share_top1_above": 0.7931,
+      "n_above": 23,
+      "recall_at_5_when_above": 0.8261
+    }
+  },
+  "qualitative_examples": [
+    {
+      "query": ", your new iOS 11.1 not resolve the calendar problem. \ud83d\ude21#iOS11 #iosfail",
+      "golden_label": "software_bug",
+      "outcome": "hit",
+      "first_hit_rank": 1,
+      "top1": {
+        "score": 0.8376,
+        "predicted_label": "software_bug",
+        "customer_message": "Hey, @AppleSupport. You fucked the Calendar on iOS11. You tap November and try to return... CRASH! Please fix it (it worked for 10 years!).",
+        "support_response": "We\u2019re here to help. Let\u2019s team up in DM and we\u2019ll do our best to assist you."
+      }
+    },
+    {
+      "query": "can\u2019t download and open epub files to ibooks. whenever i download an epub file it appears for a second and it disappears.",
+      "golden_label": "software_bug",
+      "outcome": "hit",
+      "first_hit_rank": 3,
+      "top1": {
+        "score": 0.7267,
+        "predicted_label": "account_icloud",
+        "customer_message": "all my epub files got deleted from my ibooks",
+        "support_response": "Got it. We'd be happy to look into this with you. Can you provide us which iOS version you're using?"
+      }
+    },
+    {
+      "query": "Just upgraded to #HighSierra & now Mail will not open. Only 1 bounce& then not responding.",
+      "golden_label": "software_bug",
+      "outcome": "hit",
+      "first_hit_rank": 1,
+      "top1": {
+        "score": 0.6791,
+        "predicted_label": "software_bug",
+        "customer_message": "Hey @AppleSupport, Mail on #HighSierra is a broken mess that crashes whenever I try to compose an email would be appreciated if you fixed it",
+        "support_response": "We can help with that. To get started, be sure you've installed all available updates in the Mac App Store."
+      }
+    },
+    {
+      "query": "I love when my fucking 10 month old iPhone 7+ breaks for no God damn reason \ud83d\ude0d @AppleSupport",
+      "golden_label": "device_hardware",
+      "outcome": "no same-intent case in top-5",
+      "first_hit_rank": 0,
+      "top1": {
+        "score": 0.7376,
+        "predicted_label": "general_complaint",
+        "customer_message": "not happy my 8/9 month old iPhone 7 is failing. Can't use anything without being locked out! \ud83e\udd26\u200d\u2640\ufe0f\ud83e\udd26\u200d\u2640\ufe0f\ud83d\udc94",
+        "support_response": "Let's look into that. Can you tell us more about the issue you're experiencing? What seems to be happening with your iPhone?"
+      }
+    },
+    {
+      "query": "So I\ufe0f have 280 so I\u2019m going use this time to thank everyone following me even though I\ufe0f get annoying. Y\u2019all are the real ones. Now that I\ufe0f have 280 it\u2019s gonna get worse... so thank you!! So stick arou",
+      "golden_label": "general_complaint",
+      "outcome": "no same-intent case in top-5",
+      "first_hit_rank": 0,
+      "top1": {
+        "score": 0.6478,
+        "predicted_label": "software_bug",
+        "customer_message": "have now discovered that everyone got said 280 update. i am now stepping down from my high horse. i shall also try to lengthen every tweet to 280 characters unt",
+        "support_response": "Here\u2019s what you can do to work around the issue until it\u2019s fixed in a future software update:"
+      }
+    }
+  ],
+  "artifacts": [
+    "models/retrieval_index.faiss",
+    "models/retrieval_index.json",
+    "models/retrieval_corpus.jsonl.gz",
+    "evaluation/results/retrieval_results.json",
+    "evaluation/results/phase4_summary.json"
+  ],
+  "live_service": {
+    "port": 3030,
+    "search_endpoint": "/api/phase4/search",
+    "health_endpoint": "/api/phase4/health",
+    "note": "mini-services/retrieval-service (Bun + Python worker) serves live top-K retrieval over this index; the dashboard demo calls it through the gateway via XTransformPort=3030."
+  }
+}

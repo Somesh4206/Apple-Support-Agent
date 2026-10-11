@@ -1,0 +1,220 @@
+{
+  "phase": 6,
+  "generated_at": "2026-09-16T11:52:45.645416+00:00",
+  "random_seed": 42,
+  "policy": {
+    "type": "rule-based, explainable (no learned component)",
+    "decision": "escalate if ANY rule fires; auto_handle only when all rules pass",
+    "safety_asymmetry": "a false auto-handle is far costlier than a false escalation — the policy is deliberately conservative",
+    "rules": [
+      {
+        "id": "E2",
+        "name": "private_state_domain",
+        "fires_when": "predicted intent ∈ {account_icloud, billing_purchases, repair_warranty, security_privacy, support_process}",
+        "why": "the correct next step depends on private state the system cannot see (order, quote, account, identity, official channels); public generic advice risks harm",
+        "provenance": "Phase 2 taxonomy typically_escalated hints (4 of 5) + documented Phase 6 account_icloud refinement (decision log D25)"
+      },
+      {
+        "id": "E3",
+        "name": "unmatched_intent",
+        "fires_when": "predicted intent == 'other'",
+        "why": "no groundable issue class; an evidence draft would rest on irrelevant historical cases",
+        "provenance": "Phase 2 taxonomy (the unmatched pool)"
+      },
+      {
+        "id": "E4",
+        "name": "sensitive_content",
+        "fires_when": "message matches one of ['order_or_payment_language', 'email_address', 'phone_number', 'card_like_number']",
+        "why": "payment/order language or private data (email, phone, card-like number) in the message must not be answered — or echoed — by a public auto-reply",
+        "provenance": "Phase 5 safety rule 4, applied at the decision layer as defense-in-depth against intent misclassification"
+      },
+      {
+        "id": "G1",
+        "name": "intent_confidence_gate",
+        "fires_when": "intent_confidence < 0.60",
+        "why": "Phase 3 measured 0.780 mean confidence on correct vs 0.508 on wrong test predictions; below the threshold the routing itself is unreliable",
+        "provenance": "INTENT_CONFIDENCE_THRESHOLD fixed since Phase 3 (.env, single source of truth)"
+      },
+      {
+        "id": "G2",
+        "name": "retrieval_evidence_gate",
+        "fires_when": "top1_score < 0.65",
+        "why": "Phase 4 measured Recall@5 0.826 above vs 0.586 below the threshold; weak evidence produces clarifying questions, which a human should own",
+        "provenance": "RETRIEVAL_THRESHOLD fixed since Phase 4 (.env, single source of truth)"
+      }
+    ],
+    "inputs": [
+      "predicted intent (Phase 3 logreg head)",
+      "intent confidence (Phase 3)",
+      "top-1 retrieval score (Phase 4 FAISS)",
+      "raw message text (E4 patterns)"
+    ]
+  },
+  "ground_truth": {
+    "source": "evaluation/escalation_labels.json",
+    "criteria": [
+      "ESCALATE (money/account stakes): the issue involves purchases, refunds, payments, order delivery, warranty/repair pricing, or Apple ID/iCloud account access — wrong public advice could cause financial or account harm, or resolution needs private details.",
+      "ESCALATE (safety/off-topic): the message is abusive, violent, off-topic, or does not describe a technical issue — there is no groundable problem, and a casual auto-reply is a brand risk.",
+      "ESCALATE (ambiguity): the message is too vague or mixes many topics to safely answer with ONE public reply.",
+      "ESCALATE (unusable device / data at stake): the device is bricked/unusable or real-world data (tickets, work access) is at risk — wrong troubleshooting steps could destroy data; needs priority human help.",
+      "AUTO_OK: a single, clear technical software/hardware issue with standard troubleshooting evidence available — a grounded draft (with DM-redirect where the evidence style demands it) is safe to publish."
+    ],
+    "annotator": "assignment author (single pass, before running the policy on this set)",
+    "escalate_n": 10,
+    "auto_n": 19
+  },
+  "evaluation": {
+    "n_test": 29,
+    "confusion": {
+      "true_escalate (policy=escalate, truth=escalate)": 10,
+      "over_escalation (policy=escalate, truth=auto)": 4,
+      "false_auto (policy=auto, truth=escalate)": 0,
+      "true_auto (policy=auto, truth=auto)": 15
+    },
+    "false_auto_rate": {
+      "value": 0.0,
+      "numerator": 0,
+      "denominator": 10,
+      "ci95": [
+        0.0,
+        0.3085
+      ],
+      "ci_method": "Clopper-Pearson (exact)"
+    },
+    "false_auto_rate_overall": {
+      "value": 0.0,
+      "numerator": 0,
+      "denominator": 29,
+      "ci95": [
+        0.0,
+        0.1194
+      ],
+      "ci_method": "Clopper-Pearson (exact)"
+    },
+    "precision_escalate": {
+      "value": 0.7143,
+      "numerator": 10,
+      "denominator": 14,
+      "ci95": [
+        0.419,
+        0.9161
+      ],
+      "ci_method": "Clopper-Pearson (exact)"
+    },
+    "recall_escalate": {
+      "value": 1.0,
+      "numerator": 10,
+      "denominator": 10,
+      "ci95": [
+        0.6915,
+        1.0
+      ],
+      "ci_method": "Clopper-Pearson (exact)"
+    },
+    "f1_escalate": 0.8333,
+    "over_escalation_rate": {
+      "value": 0.2105,
+      "numerator": 4,
+      "denominator": 19,
+      "ci95": [
+        0.0605,
+        0.4557
+      ],
+      "ci_method": "Clopper-Pearson (exact)"
+    },
+    "auto_handle_rate": {
+      "value": 0.5172,
+      "numerator": 15,
+      "denominator": 29,
+      "ci95": [
+        0.3253,
+        0.7055
+      ],
+      "ci_method": "Clopper-Pearson (exact)"
+    },
+    "rule_fire_counts": {
+      "E2": 3,
+      "E3": 2,
+      "E4": 1,
+      "G1": 10,
+      "G2": 6
+    },
+    "ablation_vs_phase5_gates": {
+      "description": "the Phase 5 preview auto-handled a message iff both numeric gates passed (intent_pass AND retrieval_pass); this ablation isolates what the Phase 6 domain/content rules add",
+      "gates_only_auto_n": 16,
+      "policy_auto_n": 15,
+      "decision_deltas": [
+        {
+          "index": 25,
+          "message": "Why does my iPad keep asking me to sign into iCloud every 30 seconds but when I put in my NEWLY chan",
+          "was_auto_now_escalated": true,
+          "reasons": [
+            "E2 private_state_domain"
+          ],
+          "ground_truth": "escalate"
+        }
+      ]
+    },
+    "qualitative_over_escalations": [
+      {
+        "index": 1,
+        "message": "my App Store is not working!!!!",
+        "predicted_intent": "device_hardware",
+        "intent_confidence": 0.367,
+        "top1_score": 0.9143,
+        "reasons_fired": [
+          "G1 intent_confidence_below_threshold"
+        ],
+        "rationale": "clear single software issue (App Store not working); standard troubleshooting evidence exists"
+      },
+      {
+        "index": 12,
+        "message": "Can you make your iCal app stop deleting my saved date events, oh and stop doubling other's that would be great.",
+        "predicted_intent": "account_icloud",
+        "intent_confidence": 0.3189,
+        "top1_score": 0.5708,
+        "reasons_fired": [
+          "E2 private_state_domain",
+          "G1 intent_confidence_below_threshold",
+          "G2 retrieval_score_below_threshold"
+        ],
+        "rationale": "clear software issue (iCal deleting/doubling events)"
+      },
+      {
+        "index": 16,
+        "message": "Jesus fucking Christ my phone keeps dying at like 90% y'all ain't shot prolly gon get a samsung @AppleSupport",
+        "predicted_intent": "general_complaint",
+        "intent_confidence": 0.4879,
+        "top1_score": 0.7355,
+        "reasons_fired": [
+          "G1 intent_confidence_below_threshold"
+        ],
+        "rationale": "battery dying at 90% — hardware-ish complaint, evidence covers battery diagnostics"
+      },
+      {
+        "index": 28,
+        "message": "your updates for #iPhone bite. Can't even connect to WiFi at @32366 #ditchiPhoneGoAndroid #iPhone7Horrible #sad #lotsofissues",
+        "predicted_intent": "general_complaint",
+        "intent_confidence": 0.5769,
+        "top1_score": 0.7476,
+        "reasons_fired": [
+          "G1 intent_confidence_below_threshold"
+        ],
+        "rationale": "ranting tone but a single clear technical issue (WiFi won't connect); evidence-grounded WiFi troubleshooting is safe"
+      }
+    ],
+    "honest_caveats": [
+      "n=29 (the golden test split): every rate carries the wide exact CI reported alongside it — 0 false-autos in 10 should-escalate messages bounds the true false-auto rate below ~26% at 95% confidence, not at zero.",
+      "Ground truth is ONE human's judgement against fixed written criteria; no inter-annotator agreement exists.",
+      "The policy's numeric gates reuse the Phase 3/4 thresholds fixed before Phase 6; the domain rules reuse the Phase 2 taxonomy hints. No rule was tuned on these test labels.",
+      "The runtime signals (predicted intent, confidence, top-1 score) come from the recorded Phase 5 run; re-running generation would produce slightly different confidences/scores and could shift borderline decisions.",
+      "Precision/recall treat 'escalate' as the positive class; the operationally dominant error (over-escalation) is reported separately because it costs human minutes, not customer safety."
+    ]
+  },
+  "wall_clock_seconds": 0.0,
+  "artifacts": {
+    "results": "evaluation/results/escalation_results.json",
+    "labels": "evaluation/escalation_labels.json",
+    "summary": "evaluation/results/phase6_summary.json"
+  }
+}
