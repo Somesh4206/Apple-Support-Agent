@@ -66,6 +66,12 @@ export interface ChatQueryIntent {
   confidence?: number;
   runner_up?: string | null;
   runner_up_confidence?: number | null;
+  /** present when the logreg head and the lexical keyword head disagreed
+   *  and the ensemble had to pick a winner (hybrid retrieval path) */
+  arbitration?: string;
+  logreg_label?: string;
+  logreg_confidence?: number;
+  lexical_label?: string;
 }
 
 export interface ChatGates {
@@ -109,6 +115,9 @@ export interface ChatEvidenceItem {
   support_response?: string;
   predicted_intent?: string | null;
   predicted_confidence?: number | null;
+  /** which corpus served this pair: "curated" (bundled, complete guidance)
+   *  or "twcs" (real dataset match; original links were stripped) */
+  source?: "curated" | "twcs";
 }
 
 export interface ChatScores {

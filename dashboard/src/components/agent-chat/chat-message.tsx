@@ -194,13 +194,25 @@ function TurnMetadataStrip({ message }: { message: ChatMessage }) {
             variant="outline"
             className="px-1.5 font-mono text-[10px] text-zinc-600 dark:text-zinc-300"
             title={
-              intent.runner_up
-                ? `runner-up: ${intent.runner_up} ${
-                    isFiniteNumber(intent.runner_up_confidence)
-                      ? `(${intent.runner_up_confidence.toFixed(2)})`
-                      : ""
+              intent.arbitration
+                ? `${intent.arbitration}${
+                    intent.logreg_label
+                      ? ` — logreg head said ${intent.logreg_label}${
+                          isFiniteNumber(intent.logreg_confidence)
+                            ? ` (${intent.logreg_confidence.toFixed(2)})`
+                            : ""
+                        }`
+                      : intent.lexical_label
+                        ? ` — lexical head said ${intent.lexical_label}`
+                        : ""
                   }`
-                : "predicted intent + confidence (Phase 3 head)"
+                : intent.runner_up
+                  ? `runner-up: ${intent.runner_up} ${
+                      isFiniteNumber(intent.runner_up_confidence)
+                        ? `(${intent.runner_up_confidence.toFixed(2)})`
+                        : ""
+                    }`
+                  : "predicted intent + confidence (Phase 3 head)"
             }
           >
             {intent.label}
@@ -382,6 +394,23 @@ function EvidenceRow({ item }: { item: ChatEvidenceItem }) {
             title="cosine similarity"
           >
             {item.score.toFixed(2)}
+          </Badge>
+        ) : null}
+        {item.source ? (
+          <Badge
+            variant="outline"
+            className={
+              item.source === "curated"
+                ? "px-1 font-mono text-[10px] text-amber-700 dark:text-amber-300"
+                : "px-1 font-mono text-[10px] text-zinc-500 dark:text-zinc-400"
+            }
+            title={
+              item.source === "curated"
+                ? "bundled curated corpus — complete, self-contained guidance (steps and links included)"
+                : "real twcs dataset match — original reply had its link stripped during extraction"
+            }
+          >
+            {item.source === "curated" ? "curated" : "twcs"}
           </Badge>
         ) : null}
         {intent ? (

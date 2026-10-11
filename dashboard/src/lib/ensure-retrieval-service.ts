@@ -90,11 +90,20 @@ export function ensureRetrievalService(): Promise<EnsureResult> {
       }
       return { started: true, healthy: false, detail: `${detail} — health not confirmed yet` };
     })();
-    // A failed attempt must not be memoized forever — reset so the next
-    // caller retries. (Assignment happens after resolution; safe.)
-    void ensurePromise.then((result) => {
-      if (!result.healthy) ensurePromise = null;
-    });
+    // The memo exists ONLY to collapse concurrent callers into a single
+    // spawn attempt — it must NOT cache a successful result: a service that
+    // dies later would keep answering "healthy" from the memo and never be
+    // respawned (observed: /api kept returning "spawned pid 8173 — healthy"
+    // long after that process was gone). Reset unconditionally once the
+    // attempt settles so every new call re-probes health first.
+    void ensurePromise.then(
+      () => {
+        ensurePromise = null;
+      },
+      () => {
+        ensurePromise = null;
+      },
+    );
   }
   return ensurePromise;
 }

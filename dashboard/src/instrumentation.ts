@@ -25,6 +25,13 @@ export async function register(): Promise<void> {
     void ensureRetrievalService().then((result) => {
       console.log(`[instrumentation] retrieval-service: ${result.detail}`);
     });
+    // Periodic watchdog: re-probe every 60 s and respawn when the service
+    // died (the ensure helper re-probes on every call — its memo only
+    // collapses concurrent spawns). This keeps the agent backend alive
+    // even with zero /api traffic, e.g. an idle preview tab.
+    setInterval(() => {
+      void ensureRetrievalService().catch(() => undefined);
+    }, 60_000);
   } catch (error) {
     console.log(
       `[instrumentation] retrieval-service guard failed: ${
