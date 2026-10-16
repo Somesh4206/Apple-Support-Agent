@@ -42,12 +42,13 @@ import { type ChatWorkerState } from "@/components/agent-chat/panel";
  * Short human label for the retrieval backend serving the evidence — shown
  * in the header so "is the dataset connected?" is answered at a glance.
  * Since the hybrid merge, the ML path always blends the real twcs index
- * with the bundled curated corpus (complete guidance pairs).
+ * with the bundled curated corpus (complete guidance pairs). Live web
+ * research (open-web grounding) runs on top for every researchable turn.
  */
 function backendLabel(backend?: string): string {
-  if (backend === "faiss-ml") return "twcs ML index + curated set";
-  if (backend === "builtin-lexical") return "curated evidence set";
-  return "evidence index";
+  if (backend === "faiss-ml") return "twcs ML + curated + live web research";
+  if (backend === "builtin-lexical") return "curated set + live web research";
+  return "evidence + live web research";
 }
 
 /**

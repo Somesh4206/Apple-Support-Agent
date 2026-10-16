@@ -64,6 +64,7 @@ const REQUEST_TIMEOUT_MS = 30_000;
 const LLM_TIMEOUT_MS = 120_000;
 const MAX_INPUT_CHARS = 500;
 const MAX_REPLY_CHARS = 280; // Twitter-style reply budget (safety rule 6)
+const WEB_REPLY_MAX_CHARS = 500; // researched replies carry source links — slightly larger budget
 
 // Phase 5 thresholds come from the project .env (single source of truth,
 // same values the Python pipeline consumes via src/config.py).
@@ -150,6 +151,14 @@ const startedAt = Date.now();
 import { existsSync, readdirSync, openSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { builtinSearch, BUILTIN_CORPUS_SIZE } from "./src/lexical_engine";
+import {
+  buildWebResearchUserPrompt,
+  researchWeb,
+  WEB_SYSTEM_PROMPT,
+  KIND_LABEL,
+  type WebSource,
+  type WebResearchOutcome,
+} from "./src/web_research";
 
 const HIVER_MODELS_DIR = join(PIPELINE_ROOT, "models");
 const PYTHON_ARTIFACT_FILES = [
@@ -527,11 +536,11 @@ async function getZai(): Promise<any> {
 const SYSTEM_PROMPT = `You are the draft-reply engine of a customer-support prototype ("Apple Support AI"), built for a machine-learning assignment. You write ONE public reply to a customer, grounded STRICTLY in numbered historical support cases given as evidence.
 
 Safety rules — non-negotiable:
-1. Use only facts, troubleshooting steps, settings paths and links that appear in the evidence cases. Never invent prices, dates, software versions, policies, phone numbers or links.
+1. Use only facts, troubleshooting steps, settings paths and links that appear in the evidence cases or in the numbered live web references (when provided). Never invent prices, dates, software versions, policies, phone numbers or links.
 2. Be CONCRETE: when the evidence contains steps, button sequences, settings paths or self-service links that fit the customer's issue, include the most relevant ones — that is the whole point of grounding. Do not collapse into a vague "we'll look into it" reply when real steps are available in the evidence.
 3. If the evidence does not clearly address the customer's issue, do not guess: say you'd like to look into it with them and ask ONE short clarifying question.
 4. Redirect to Direct Messages ONLY when the customer's issue is account-, payment- or security-specific, or when the matched evidence itself was a DM handoff for that exact situation. Never tack a DM invite onto hardware, software or how-to answers — those deserve the actual steps. Never ask for or repeat personal details in public.
-5. Grounding style: weave in ONE light, natural cue that the advice reflects how similar issues were handled historically (e.g. "In similar cases…", "Customers have fixed this by…", "This was commonly resolved with…"). VARY the wording and placement — never open the reply with the same stock phrase, and never imply it is current company policy.
+5. Grounding style: weave in ONE light, natural cue that the advice reflects how similar issues were handled historically (e.g. "In similar cases…", "Customers have fixed this by…", "This was commonly resolved with…"). When live web references are provided, the cue may instead reflect them (e.g. "the current documented steps…", "a fix users report…"). VARY the wording and placement — never open the reply with the same stock phrase, and never imply it is current company policy.
 6. Style: warm, concise, professional; match the evidence replies. No hashtags, no emoji, no signatures, no quotation marks around the reply.
 7. Length: at most 280 characters, one short paragraph (or two sentences).
 
@@ -632,6 +641,15 @@ function scoreReply(reply: string, evidence: EvidencePair[]): ReplyScores {
     length_chars: reply.length,
     length_words: reply.trim().split(/\s+/).filter(Boolean).length,
   };
+}
+
+/** True when the reply cites one of the live web sources (link present) —
+ *  counts as a valid grounding cue for the framing heuristic. */
+function webCitedInReply(reply: string, sources: WebSource[]): boolean {
+  return sources.some((s) => {
+    const bare = s.url.replace(/^https?:\/\//i, "").replace(/\/$/, "");
+    return reply.includes(s.url) || reply.includes(bare);
+  });
 }
 
 function buildUserPrompt(
@@ -819,6 +837,18 @@ const E4_PATTERNS: Array<[string, RegExp]> = [
 
 type EscalationReason = { rule: string; name: string; detail: string };
 
+/** Message-only PII probe (E4 content patterns minus the payment-language
+ *  rule) — used to decide whether live web research may run. Payment
+ *  language is fine to research (public self-service guidance); actual
+ *  email/phone/card data is not (safety reply first, no search). */
+function messageHasPiiPatterns(message: string): boolean {
+  for (const [name, pattern] of E4_PATTERNS) {
+    if (name === "order_or_payment_language") continue;
+    if (pattern.test(message)) return true;
+  }
+  return false;
+}
+
 function decideEscalation(
   message: string,
   predictedIntent: string,
@@ -881,7 +911,12 @@ function decideEscalation(
 // account-specific is ever automated.
 type EscalationAck = {
   reply: string;
-  kind: "greeting" | "self_service" | "clarify" | "secure_continue";
+  kind:
+    | "greeting"
+    | "self_service"
+    | "clarify"
+    | "secure_continue"
+    | "researched";
 };
 
 // Bare greeting — the whole message is a salutation (optionally with
@@ -1259,6 +1294,7 @@ function buildChatUserPrompt(
   retrievalThreshold: number,
   history: ChatStoredMessage[],
   conversation: { state: "fresh" | "auto" | "escalated" },
+  webSources: WebSource[] = [],
 ): string {
   const top1 = evidence.length > 0 ? evidence[0].score : 0;
   const strength =
@@ -1327,6 +1363,19 @@ function buildChatUserPrompt(
     );
     lines.push(`    Customer: "${ev.customer_message.slice(0, 400)}"`);
     lines.push(`    Support: "${ev.support_response.slice(0, 400)}"`);
+  }
+  if (webSources.length > 0) {
+    lines.push("");
+    lines.push(
+      "Live web references (searched just now — official Apple pages, Reddit threads, Twitter/X posts, forum discussions; use them for current, concrete guidance and cite at most 2 links inline when they genuinely help):",
+    );
+    webSources.forEach((s, i) => {
+      lines.push(`[W${i + 1}] ${KIND_LABEL[s.kind]} · ${s.host}`);
+      lines.push(`    Title: ${s.title.slice(0, 200)}`);
+      lines.push(`    Link: ${s.url}`);
+      const body = s.extracted ?? s.snippet;
+      if (body) lines.push(`    Content: ${body.slice(0, 1000)}`);
+    });
   }
   lines.push("");
   lines.push("Draft the reply now, following every safety rule.");
@@ -1403,6 +1452,23 @@ async function handleChatTurn(body: any): Promise<Response> {
       -CHAT_HISTORY_TURNS,
     );
 
+    // Live web research (open-web grounding): Google-style results, Reddit
+    // threads, Twitter/X posts and comments, Apple forum discussions +
+    // official pages. Kicked off in PARALLEL with the local retrieval so the
+    // added latency is just the search round-trip. Skipped for bare
+    // greetings (nothing to research), public PII (safety reply first — the
+    // message is never searched) and ultra-short messages (the clarify macro
+    // asks for detail instead of searching noise). Disable via
+    // WEB_RESEARCH_ENABLED=0 in .env.
+    const researchEligible =
+      envNum("WEB_RESEARCH_ENABLED", 1) === 1 &&
+      !GREETING_RE.test(message.trim()) &&
+      !messageHasPiiPatterns(message) &&
+      message.trim().split(/\s+/).filter(Boolean).length >= 3;
+    const researchPromise: Promise<WebResearchOutcome> | null = researchEligible
+      ? getZai().then((zai: any) => researchWeb(zai, message))
+      : null;
+
     const search = await runSearch(message, k);
     const evidence: EvidencePair[] = search.results ?? [];
     const intent = search.query_intent ?? {
@@ -1443,6 +1509,19 @@ async function handleChatTurn(body: any): Promise<Response> {
       userMsgId = persistChatMessage(sessionId, "user", message, null, null);
     }
 
+    // Collect the live web research (it ran in parallel with retrieval +
+    // policy decisioning). Any failure degrades to the local-evidence path.
+    let webResearch: WebResearchOutcome | null = null;
+    if (researchPromise) {
+      try {
+        webResearch = await researchPromise;
+      } catch {
+        webResearch = null;
+      }
+    }
+    const webSources: WebSource[] =
+      webResearch && webResearch.used ? webResearch.sources : [];
+
     const replyEnvelope: Record<string, unknown> = {
       query_intent: intent,
       gates,
@@ -1453,6 +1532,7 @@ async function handleChatTurn(body: any): Promise<Response> {
           "TypeScript mirror of src/escalation/policy.py — cross-checked by scripts/evaluate_agent.py",
       },
       evidence,
+      web_research: webResearch,
     };
 
     if (decision.action === "auto_handle") {
@@ -1463,11 +1543,16 @@ async function handleChatTurn(body: any): Promise<Response> {
         retrievalThreshold,
         promptHistory,
         conversation,
+        webSources,
       );
       const tLlm = Date.now();
       const { reply, model, attempts } = await callLlm(SYSTEM_PROMPT, userPrompt);
       const llmMs = Date.now() - tLlm;
       const scores = scoreReply(reply, evidence);
+      // A cited live web source is an equally valid grounding cue
+      if (webSources.length > 0 && webCitedInReply(reply, webSources)) {
+        scores.framing_compliant = true;
+      }
 
       const agentMsgId = persistChatMessage(
         sessionId,
@@ -1482,6 +1567,7 @@ async function handleChatTurn(body: any): Promise<Response> {
           evidence: evidence.slice(0, 3),
           scores,
           llm: { model, attempts },
+          web_research: webResearch,
         },
       );
 
@@ -1514,6 +1600,9 @@ async function handleChatTurn(body: any): Promise<Response> {
         timings: {
           embed_ms: search.timings?.embed_ms,
           faiss_search_ms: search.timings?.faiss_search_ms,
+          web_research_ms: webResearch
+            ? webResearch.search_ms + webResearch.read_ms
+            : undefined,
           llm_ms: llmMs,
           total_ms: Date.now() - t0,
         },
@@ -1523,32 +1612,85 @@ async function handleChatTurn(body: any): Promise<Response> {
           dataset: datasetStatus(),
           worker_state: workerState,
           disclaimer:
-            "Historical evidence (2017 era) — drafts are grounded in similar past cases, not current Apple policy.",
+            webSources.length > 0
+              ? "Grounded in historical cases + live web references (official pages, Reddit, Twitter/X, forums) — not current Apple policy."
+              : "Historical evidence (2017 era) — drafts are grounded in similar past cases, not current Apple policy.",
         },
       });
     }
 
-    // Escalation path: ZERO LLM calls. The agent message is the
-    // deterministic, intent-aware safe reply (official self-service
-    // pointers + honest handoff note) — the customer always gets a real
-    // answer; account-specific resolution stays with the human in DMs.
-    const ack = escalationReply(message, decision.reasons, intent.label);
+    // Escalation path. When live web research found usable sources, the
+    // customer now gets a RESEARCHED public answer (LLM grounded strictly
+    // in the web sources — official pages, Reddit threads, Twitter/X posts,
+    // forums — with links cited) instead of the deterministic macro. The
+    // policy decision is UNTOUCHED (same rules, same thresholds, still
+    // escalates to a human); the macro remains the fallback when research
+    // is unavailable, and account-specific resolution still continues with
+    // the human in DMs.
+    let ack = escalationReply(message, decision.reasons, intent.label);
+    let researched = false;
+    let llmModel = "";
+    let llmAttempts = 0;
+    let llmMs = 0;
+    let researchedScores: ReplyScores | null = null;
+    if (
+      webSources.length >= 2 &&
+      ack.kind !== "secure_continue" &&
+      ack.kind !== "greeting"
+    ) {
+      try {
+        const webPrompt = buildWebResearchUserPrompt(
+          message,
+          intent,
+          webSources,
+          webResearch?.queries ?? [],
+          promptHistory.map((m) => ({ role: m.role, content: m.content })),
+          true,
+        );
+        const tLlm = Date.now();
+        const gen = await callLlm(WEB_SYSTEM_PROMPT, webPrompt);
+        llmMs = Date.now() - tLlm;
+        llmModel = gen.model;
+        llmAttempts = gen.attempts;
+        if (gen.reply.length <= WEB_REPLY_MAX_CHARS + 120) {
+          ack = { reply: gen.reply, kind: "researched" };
+          researched = true;
+          // score the researched reply against the web sources instead of
+          // the historical pairs (it cites them, not the cases)
+          researchedScores = scoreReply(gen.reply, []);
+          if (webCitedInReply(gen.reply, webSources)) {
+            researchedScores.framing_compliant = true;
+          }
+        }
+      } catch {
+        /* research synthesis failed — the deterministic macro below still answers */
+      }
+    }
+    const replyStatus = researched
+      ? "researched_reply"
+      : "handoff_acknowledgment";
+    const noteForAgent = researched
+      ? "Live web research was auto-sent as the public reply (official + community sources, links cited). Account-specific resolution continues with you in DMs."
+      : "Draft generation was intentionally skipped (policy: escalate, 0 LLM calls). This acknowledgment was auto-sent as the safe public reply — official self-service pointers only. Account-specific resolution continues with you in DMs.";
+
     const agentMsgId = persistChatMessage(
       sessionId,
       "agent",
       ack.reply,
       "escalate",
       {
-        reply_status: "handoff_acknowledgment",
+        reply_status: replyStatus,
         query_intent: intent,
         gates,
         policy: decision,
         evidence: evidence.slice(0, 3),
+        web_research: researched ? webResearch : undefined,
+        scores: researched ? (researchedScores ?? undefined) : undefined,
+        llm: researched ? { model: llmModel, attempts: llmAttempts } : undefined,
         handoff: {
           reasons: decision.reasons,
           ack_kind: ack.kind,
-          note_for_agent:
-            "Draft generation was intentionally skipped (policy: escalate, 0 LLM calls). This acknowledgment was auto-sent as the safe public reply — official self-service pointers only. Account-specific resolution continues with you in DMs.",
+          note_for_agent: noteForAgent,
         },
       },
     );
@@ -1570,22 +1712,34 @@ async function handleChatTurn(body: any): Promise<Response> {
         created_at: new Date().toISOString(),
       },
       decision: "escalate",
-      reply_status: "handoff_acknowledgment",
+      reply_status: replyStatus,
       ...replyEnvelope,
+      ...(researched
+        ? {
+            scores: researchedScores ?? undefined,
+            llm: {
+              model: llmModel,
+              attempts: llmAttempts,
+              max_reply_chars: WEB_REPLY_MAX_CHARS,
+            },
+          }
+        : {}),
       handoff: {
         next_step: "human_review",
         reasons: decision.reasons,
         ack_kind: ack.kind,
         suggested_public_acknowledgment: ack.reply,
-        note_for_agent:
-          "Draft generation was intentionally skipped (policy: escalate, 0 LLM calls). The acknowledgment above was auto-sent as the safe public reply; account-specific resolution continues with you in DMs.",
+        note_for_agent: noteForAgent,
         evidence_for_review: evidence.slice(0, 3),
       },
       conversation: conversationState(loadSessionMessages(sessionId)),
       timings: {
         embed_ms: search.timings?.embed_ms,
         faiss_search_ms: search.timings?.faiss_search_ms,
-        llm_ms: 0,
+        web_research_ms: webResearch
+          ? webResearch.search_ms + webResearch.read_ms
+          : undefined,
+        llm_ms: llmMs,
         total_ms: Date.now() - t0,
       },
       meta: {
@@ -1593,8 +1747,9 @@ async function handleChatTurn(body: any): Promise<Response> {
         retrieval_backend: search.backend,
         dataset: datasetStatus(),
         worker_state: workerState,
-        disclaimer:
-          "Historical evidence (2017 era) — drafts are grounded in similar past cases, not current Apple policy.",
+        disclaimer: researched
+          ? "Reply grounded in live web sources (official pages, Reddit, Twitter/X, forums) — researched at answer time; verify before relying on it."
+          : "Historical evidence (2017 era) — drafts are grounded in similar past cases, not current Apple policy.",
       },
     });
   } catch (err) {

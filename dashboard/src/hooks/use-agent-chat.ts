@@ -190,6 +190,7 @@ export function useAgentChat(): UseAgentChat {
           scores: payload.scores,
           llm: payload.llm,
           handoff: payload.handoff,
+          web_research: payload.web_research,
           timings: payload.timings,
         };
         const agentRow: ChatMessage = {

@@ -120,6 +120,43 @@ export interface ChatEvidenceItem {
   source?: "curated" | "twcs";
 }
 
+/* ------------------------------------------------------------------ */
+/* Live web research (open-web grounding)                              */
+/* ------------------------------------------------------------------ */
+
+export type ChatWebSourceKind =
+  | "reddit"
+  | "twitter"
+  | "forum"
+  | "official"
+  | "web";
+
+/** One live web source the agent researched for a turn (search result or
+ *  page extract — official Apple pages, Reddit threads, Twitter/X posts,
+ *  forum discussions). */
+export interface ChatWebSource {
+  title?: string;
+  url?: string;
+  host?: string;
+  kind?: ChatWebSourceKind;
+  snippet?: string;
+  date?: string;
+  /** which search query surfaced this source */
+  query?: string;
+  /** page_reader extract — present only for the deep-read source */
+  extracted?: string;
+}
+
+/** Envelope for the live web research performed on a turn. */
+export interface ChatWebResearch {
+  used?: boolean;
+  queries?: string[];
+  sources?: ChatWebSource[];
+  search_ms?: number;
+  read_ms?: number;
+  error?: string;
+}
+
 export interface ChatScores {
   grounding_overlap?: number;
   unsupported_specifics?: string[];
@@ -134,8 +171,14 @@ export interface ChatScores {
 export interface ChatHandoff {
   next_step?: string;
   reasons?: ChatPolicyReason[];
-  /** how the auto-sent escalation reply was chosen */
-  ack_kind?: "greeting" | "self_service" | "clarify" | "secure_continue";
+  /** how the auto-sent escalation reply was chosen ("researched" = live
+   *  web-researched answer with cited sources) */
+  ack_kind?:
+    | "greeting"
+    | "self_service"
+    | "clarify"
+    | "secure_continue"
+    | "researched";
   suggested_public_acknowledgment?: string;
   note_for_agent?: string;
   evidence_for_review?: ChatEvidenceItem[];
@@ -150,6 +193,7 @@ export interface ChatLlm {
 export interface ChatTimings {
   embed_ms?: number;
   faiss_search_ms?: number;
+  web_research_ms?: number;
   llm_ms?: number;
   total_ms?: number;
 }
@@ -185,7 +229,7 @@ export interface ChatMessage {
 }
 
 export interface ChatMessageMeta {
-  /** "ready_to_send" | "handoff_acknowledgment" */
+  /** "ready_to_send" | "handoff_acknowledgment" | "researched_reply" */
   reply_status?: string;
   query_intent?: ChatQueryIntent;
   gates?: ChatGates;
@@ -194,6 +238,8 @@ export interface ChatMessageMeta {
   scores?: ChatScores;
   llm?: ChatLlm;
   handoff?: ChatHandoff;
+  /** live web research performed for this turn (open-web grounding) */
+  web_research?: ChatWebResearch | null;
   /** client-side enrichment from the POST response timings */
   timings?: ChatTimings;
 }
@@ -219,7 +265,7 @@ export interface ChatTurnResponse {
     created_at?: string;
   };
   decision?: ChatDecision;
-  /** "ready_to_send" (auto) | "handoff_acknowledgment" (escalate) */
+  /** "ready_to_send" (auto) | "handoff_acknowledgment" (escalate) | "researched_reply" (escalate, web-researched) */
   reply_status?: string;
   query_intent?: ChatQueryIntent;
   gates?: ChatGates;
@@ -228,6 +274,7 @@ export interface ChatTurnResponse {
   scores?: ChatScores;
   llm?: ChatLlm;
   handoff?: ChatHandoff;
+  web_research?: ChatWebResearch | null;
   conversation?: ChatConversation;
   timings?: ChatTimings;
   meta?: {

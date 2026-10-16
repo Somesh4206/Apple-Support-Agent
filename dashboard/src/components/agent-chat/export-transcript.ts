@@ -63,9 +63,11 @@ export function downloadAgentChatTranscript(
       message.decision === "auto_handle"
         ? "auto-handled (reply ready to send)"
         : message.decision === "escalate"
-          ? ackKind === "greeting" || ackKind === "clarify"
-            ? "gathering details (reply sent)"
-            : "human handoff (safe reply sent)"
+          ? ackKind === "researched"
+            ? "web-researched answer (sources cited, human follows up in DMs)"
+            : ackKind === "greeting" || ackKind === "clarify"
+              ? "gathering details (reply sent)"
+              : "human handoff (safe reply sent)"
           : "";
     lines.push(
       `## ${who}${stamp ? ` — ${stamp}` : ""}${decision ? ` · ${decision}` : ""}`,
@@ -114,9 +116,37 @@ export function downloadAgentChatTranscript(
     const timings = meta.timings;
     if (timings && isFiniteNumber(timings.total_ms)) {
       const llm = isFiniteNumber(timings.llm_ms) ? timings.llm_ms : 0;
+      const web = isFiniteNumber(timings.web_research_ms)
+        ? ` · ${Math.round(timings.web_research_ms)} ms web research`
+        : "";
       lines.push(
-        `- Latency: ${(timings.total_ms / 1000).toFixed(1)}s total · ${Math.round(llm)} ms LLM`,
+        `- Latency: ${(timings.total_ms / 1000).toFixed(1)}s total · ${Math.round(llm)} ms LLM${web}`,
       );
+    }
+
+    const webResearch = meta.web_research;
+    const webSources = webResearch?.sources ?? [];
+    if (webResearch && webSources.length > 0) {
+      const seconds =
+        isFiniteNumber(webResearch.search_ms) ||
+        isFiniteNumber(webResearch.read_ms)
+          ? ` · ${(((webResearch.search_ms ?? 0) + (webResearch.read_ms ?? 0)) / 1000).toFixed(1)}s`
+          : "";
+      lines.push(
+        `- Web research: ${webSources.length} source(s)${seconds}${
+          webResearch.queries && webResearch.queries.length > 0
+            ? ` · queries: ${webResearch.queries.map((q) => `"${q}"`).join(", ")}`
+            : ""
+        }`,
+      );
+      for (const source of webSources) {
+        lines.push(
+          `  - [${source.kind ?? "web"}] ${source.title ?? "—"} — ${source.url ?? "—"}`,
+        );
+        if (source.snippet) {
+          lines.push(`    ${source.snippet.replace(/\s+/g, " ").slice(0, 200)}`);
+        }
+      }
     }
 
     const evidence = meta.evidence ?? [];
